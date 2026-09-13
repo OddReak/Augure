@@ -71,3 +71,16 @@ export function libelleJourLong(date: string): string {
 export function libelleDateLongue(date: string): string {
   return FORMATTEUR_DATE_LONGUE.format(new Date(`${date}T12:00:00Z`));
 }
+
+/**
+ * Âge d'une donnée en texte court (§8bis, état « hors ligne » : « données
+ * d'il y a 2 h », « Dernier relevé à 5:02 »). Minutes sous l'heure, heures
+ * arrondies au-delà — la précision de la minute n'a pas de sens passé la
+ * première heure et ferait clignoter le sous-titre à chaque nouveau rendu.
+ */
+export function ageEnTexte(horodatage: string, maintenant: Date): string {
+  const minutes = Math.max(0, Math.round((maintenant.getTime() - Date.parse(horodatage)) / 60_000));
+  if (minutes < 1) return 'à l’instant';
+  if (minutes < 60) return `${minutes} min`;
+  return `${Math.round(minutes / 60)} h`;
+}

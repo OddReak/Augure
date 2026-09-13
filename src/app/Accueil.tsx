@@ -10,6 +10,7 @@ import { useCoordonneesActuelles } from '../features/meteo/useCoordonneesActuell
 import { usePrevisionLieu } from '../features/meteo/usePrevisionLieu';
 import { MenuLieu } from '../features/lieux/MenuLieu';
 import { useMagasinUi } from '../lib/magasin';
+import { useEnLigne } from '../lib/useEnLigne';
 import { Bande } from '../ui/Bande';
 import { Pied } from '../ui/Pied';
 
@@ -21,6 +22,7 @@ export function Accueil() {
   const { latitude, longitude, nomLieu } = useCoordonneesActuelles();
   const requete = usePrevisionLieu({ latitude, longitude, nomLieu });
   const definirPalierMeteo = useMagasinUi((etat) => etat.definirPalierMeteo);
+  const enLigne = useEnLigne();
 
   useEffect(() => {
     if (requete.data) {
@@ -55,6 +57,7 @@ export function Accueil() {
         coucherSoleil={requete.data.coucherSoleil}
         onTitreClick={() => navigate('/mes-lieux')}
         onOuvrirMenu={() => setMenuOuvert(true)}
+        horsLigne={!enLigne}
       />
       <FriseHoraire points={requete.data.horaire} />
       <SeptJours

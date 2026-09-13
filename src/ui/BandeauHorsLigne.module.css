@@ -1,0 +1,16 @@
+.bandeau {
+  background: var(--encre);
+  color: var(--papier);
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 11px var(--e5);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.bandeau svg {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+}

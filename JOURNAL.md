@@ -154,7 +154,7 @@ Non vérifié en réel : aucune réponse Foreca authentique observée (toujours 
 Commande pour relancer les tests : `pnpm verify`
 
 ## Phase 8 — Navigation et écrans secondaires
-**État** : en cours, `pnpm verify` vert. Session interrompue à la demande de l'humain avant la fin de la phase — reprendre ici plutôt que revenir en arrière.
+**État** : close, `pnpm verify` vert.
 
 Fait :
 - Chapeau/Pastille (`src/ui`) : primitives génériques du `.chapeau`/`.pastille`, réutilisées par tous les écrans poussés.
@@ -169,9 +169,8 @@ Fait :
 - `SigneLexique` (`src/design`) : appui long (500 ms) ouvrant la fiche du Lexique (§5.4, règle d'accessibilité) — câblé sur le glyphe du héros et du détail d'un jour, seuls emplacements non déjà imbriqués dans un élément cliquable. Sept jours / vignettes / résultats de recherche gardent un `<Signe>` simple (décision, DECISIONS.md).
 - Cartes (`/cartes`) : `CarteSVG.tsx` reprend telle quelle la grille et la silhouette de terrain de `carteSVG()` du mockup (précipitations en cinq aplats, jamais un dégradé). Illustratif tant qu'aucune clé Foreca Maps n'est disponible (§4.1, jeton séparé de l'API météo) — le sélecteur de couche reste réel et persistant, mais Vent/Température le disent explicitement plutôt que de laisser croire à une carte différente (décision, DECISIONS.md ; action correspondante dans ACTIONS.md).
 - Domaine étendu : `ConditionCourante` (ventKmh, humiditePourcent, pressionHpa, indiceUv), `JourPrevision` (pluieAccumuleeMm, ventMaxKmh), `signeAffiche` (seuils canicule/gel appliqués à la vignette de lieu), `domain/fuseau.ts` (libelleJourLong, libelleDateLongue).
+- État « hors ligne » (§8bis, mockup `ecranHorsLigne()`), dernier état limite manquant de l'accueil — « position refusée » et « échec de chargement » existaient déjà, respectivement dans Réglages et Accueil : `src/lib/useEnLigne.ts` (`navigator.onLine` + événements `online`/`offline`, `useSyncExternalStore`), `domain/fuseau.ts#ageEnTexte` (« 2 h », « 45 min », « à l'instant »), `src/ui/BandeauHorsLigne.tsx` (bandeau plein encre/papier, glyphe `hors_ligne`, repris tel quel du mockup). Câblé dans `Hero.tsx` : sous-titre du chapeau remplacé par l'âge de la donnée, bandeau inséré entre le chapeau et le héros — la donnée déjà chargée reste affichée, seul l'habillage change.
 
-Non vérifié en réel : aucun changement (toujours pas de clé Foreca). Les unités choisies en Réglages ne changent encore aucun affichage ailleurs dans l'application (gap assumé, pas caché). La carte est illustrative (voir ci-dessus), pas les vraies tuiles Foreca.
-
-Reste à faire avant de clore la phase : état « hors ligne » (bandeau + âge de la donnée sur l'accueil — la « position refusée » et l'« échec de chargement » existent déjà, respectivement dans Réglages et Accueil).
+Non vérifié en réel : aucun changement (toujours pas de clé Foreca). Les unités choisies en Réglages ne changent encore aucun affichage ailleurs dans l'application (gap assumé, pas caché). La carte est illustrative (voir ci-dessus), pas les vraies tuiles Foreca. Le bandeau hors ligne n'a été exercé qu'en émulation Playwright (`context.setOffline`), jamais sur un vrai appareil en coupant réellement le réseau — et tant que la phase 9 (service worker) n'est pas construite, l'application elle-même ne se charge pas hors ligne : seule une session déjà ouverte, qui perd la connexion en cours de route, affiche ce bandeau.
 
 Commande pour relancer les tests : `pnpm verify`

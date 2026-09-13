@@ -1,10 +1,11 @@
 import { Paysage } from '../../design/Paysage';
 import { SigneLexique } from '../../design/SigneLexique';
 import { hauteurMarcheCiel, courseSolaire } from '../../design/marche-ciel';
-import { decalageDe } from '../../domain/fuseau';
+import { ageEnTexte, decalageDe, versHeureLocale } from '../../domain/fuseau';
 import { SIGNES_METEO } from '../../domain/signes';
 import type { ConditionCourante } from '../../domain/types';
 import { partagerLieu } from '../../lib/partager';
+import { BandeauHorsLigne } from '../../ui/BandeauHorsLigne';
 import { Chapeau } from '../../ui/Chapeau';
 import { Pastille } from '../../ui/Pastille';
 import styles from './Hero.module.css';
@@ -17,6 +18,8 @@ interface HeroProps {
   onTitreClick: () => void;
   onOuvrirMenu: () => void;
   maintenant?: Date;
+  /** §8bis : bandeau plein écran remplaçant le sous-titre du chapeau, navigateur hors ligne. */
+  horsLigne?: boolean;
 }
 
 /**
@@ -35,8 +38,10 @@ export function Hero({
   onTitreClick,
   onOuvrirMenu,
   maintenant = new Date(),
+  horsLigne = false,
 }: HeroProps) {
-  const course = courseSolaire(maintenant, leverSoleil, coucherSoleil, decalageDe(condition.horodatage));
+  const decalage = decalageDe(condition.horodatage);
+  const course = courseSolaire(maintenant, leverSoleil, coucherSoleil, decalage);
   const hauteurCiel = hauteurMarcheCiel(course);
   const titreSigne = SIGNES_METEO[condition.signe].nom;
 
@@ -46,9 +51,13 @@ export function Hero({
         collant
         gauche={<Pastille icone="partage" libelle="Partager" onClick={() => void partagerLieu(nomLieu)} />}
         titre={nomLieu}
+        {...(horsLigne ? { sousTitre: `données d’il y a ${ageEnTexte(condition.horodatage, maintenant)}` } : {})}
         onTitreClick={onTitreClick}
         droite={<Pastille icone="plus" libelle="Menu" onClick={onOuvrirMenu} />}
       />
+      {horsLigne ? (
+        <BandeauHorsLigne dernierReleveHeure={versHeureLocale(new Date(condition.horodatage), decalage)} />
+      ) : null}
       <header className={styles.heros}>
         <div className={styles.marque}>
           <SigneLexique nom={condition.signe} taille={96} titre={titreSigne} className={styles.grandSigne} />
