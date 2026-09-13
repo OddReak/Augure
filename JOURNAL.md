@@ -58,8 +58,26 @@ Non vérifié en réel : aucune réponse Foreca réelle n'a encore été observ�
 Commande pour relancer les tests : `pnpm verify`
 
 ## Phase 3 — Domaine, adaptateur Foreca et fixtures
+**État** : close, `pnpm verify` vert.
+
+Fait :
+- `src/domain/types.ts` étoffé : `CoordonneesGeo`, `Lieu`, `ConditionCourante`, `PointHoraire`, `JourPrevision`, `PrevisionLieu`. Unités en SI partout (§4.1).
+- `api/_lib/foreca-location.ts` : `formaterCibleForeca`, seule fonction autorisée à construire `{location}` — teste et verrouille le piège longitude-avant-latitude (`-0.68,44.74` pour Cestas).
+- `api/_lib/foreca-auth.ts` : authentification pilotée par `FORECA_MODE`, en-tête `X-RapidAPI-Key` ou `Authorization: Bearer`, jeton mémorisé au niveau module avec une marge de 60 s. Vérifié contre `developer.foreca.com` (recherche web) : la voie directe utilise un jeton statique généré dans « My API », pas un flux identifiant/mot de passe programmatique — `FORECA_USER`/`FORECA_PASSWORD` ne servent qu'à l'humain pour se connecter au tableau de bord (voir DECISIONS.md).
+- `tsconfig.api.json` ajouté et référencé depuis `tsconfig.json` : `api/` était jusqu'ici hors du périmètre de `pnpm typecheck`.
+- **Correctif supplémentaire** : `pnpm typecheck` (`tsc --noEmit` sur le tsconfig racine) ne vérifiait en réalité aucun fichier, les `references` n'étant suivies qu'en mode `--build`. Remplacé par `tsc -b` (voir DECISIONS.md) — vérifie maintenant les 440+ fichiers du projet, `api/` compris.
+- `src/api/foreca-types.ts` (formes brutes Foreca) et `src/api/foreca.ts` (adaptateur → domaine), `src/api/index.ts` en façade.
+- `src/mocks/fixtures/cestas.ts` : fixture Cestas fidèle au mockup (44,74 / −0,68, 28°, 22 points horaires de `H_JOUR`, 7 jours de `SEPT`) au format brut Foreca.
+- `src/mocks/handlers.ts` + `src/mocks/browser.ts` (MSW) : interceptent `/api/current|hourly|daily` et servent les fixtures. Activé dans `main.tsx` derrière `VITE_MOCK=1` (nouvelle variable, absente du tableau du §2 — ajoutée sciemment, ce n'est pas un secret).
+- Tests : `foreca-location.test.ts` (piège de coordonnées), `foreca-auth.test.ts` (mémorisation du jeton, renouvellement à la marge de 60 s, échec clair si `FORECA_TOKEN` manque), `foreca-adapter.test.ts` (contrat adaptateur sur la fixture Cestas), `mode-mock.test.ts` (MSW intercepte réellement une requête `fetch`, sans réseau — via `msw/node`, indépendamment de l'écran qui consommera ces données en phase 4+).
+
+Non vérifié en réel : aucune réponse Foreca authentique observée (pas de clé) ; les noms de champs bruts (`temperature`, `feelsLikeTemp`, `symbol`, enveloppes `current`/`hourly`/`daily`…) viennent d'une lecture de la documentation publique, pas d'un exemple de réponse — à corriger en phase 7 dès que des réponses réelles sont enregistrées, comme prévu par le document maître lui-même.
+
+Commande pour relancer les tests : `pnpm verify`
+
+## Phase 4 — Héros et paysage
 **État** : à démarrer.
 
-Prochaine étape : types de domaine complets, adaptateur Foreca, `foreca-auth.ts` piloté par `FORECA_MODE`, formatage `longitude,latitude` (avec le test de non-inversion), fixtures MSW pour Cestas/28°/22h/7 jours.
+Prochaine étape : barre supérieure collante, bloc de température, phrase, six composants de paysage (`Paysage.tsx`, chemins recopiés de `paysage()` dans le mockup), bascule de palier animée, régression visuelle sur les six paliers en 390×844, test de trame (§5.5) sur face lumière/face ombre.
 
 Commande pour relancer les tests : `pnpm verify`
