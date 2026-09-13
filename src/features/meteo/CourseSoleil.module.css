@@ -1,0 +1,24 @@
+.astre {
+  padding: 0 var(--e5);
+}
+
+.pieds {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 13px;
+}
+.pieds b {
+  display: block;
+  font-family: var(--police-titre), serif;
+  font-variation-settings: 'opsz' 24;
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.pieds span {
+  opacity: 0.55;
+}
+.pieds > div:last-child {
+  text-align: right;
+}

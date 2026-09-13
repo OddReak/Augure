@@ -1,6 +1,10 @@
 import { useEffect } from 'react';
+import { decalageDe } from '../domain/fuseau';
+import { CourseSoleil } from '../features/meteo/CourseSoleil';
 import { FriseHoraire } from '../features/meteo/FriseHoraire';
 import { Hero } from '../features/meteo/Hero';
+import { Lune } from '../features/meteo/Lune';
+import { SeptJours } from '../features/meteo/SeptJours';
 import { usePrevisionLieu } from '../features/meteo/usePrevisionLieu';
 import { useMagasinUi } from '../lib/magasin';
 import { Bande } from '../ui/Bande';
@@ -48,6 +52,13 @@ export function Accueil() {
         coucherSoleil={requete.data.coucherSoleil}
       />
       <FriseHoraire points={requete.data.horaire} />
+      <SeptJours jours={requete.data.quotidien} aujourdhui={requete.data.quotidien[0]?.date ?? ''} />
+      <CourseSoleil
+        leverSoleil={requete.data.leverSoleil}
+        coucherSoleil={requete.data.coucherSoleil}
+        decalage={decalageDe(requete.data.courant.horodatage)}
+      />
+      <Lune />
     </main>
   );
 }

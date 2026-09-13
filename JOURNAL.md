@@ -111,8 +111,28 @@ Non vérifié en réel : le lever/coucher inséré reste la même heure HH:MM po
 Commande pour relancer les tests : `pnpm verify`
 
 ## Phase 6 — Sept jours, soleil, lune
-**État** : à démarrer.
+**État** : close, `pnpm verify` vert.
 
-Prochaine étape : barres segmentées sur échelle fixe −5 → 40 °C avec curseur du jour courant, arc solaire (`arcSoleil()` du mockup), disque lunaire et phases (`disqueLune()`, attention au drapeau de sens au premier quartier), calcul Meeus du lever/coucher réel par jour (qui remplacera l'heure unique de la phase 5, voir DECISIONS.md).
+Fait :
+- `src/domain/soleil.ts` : lever/coucher du soleil (Meeus, éléments moyens — précision de la minute), `leverCoucherUtc(instant, coordonnees)`. Validé numériquement contre trois relevés indépendants (sunrise-sunset.org, recherche web) pour Cestas aux deux solstices et à l'équinoxe de septembre 2026 : écart maximal inférieur à quatre minutes (voir DECISIONS.md).
+- `src/domain/lune.ts` : `fractionIlluminee` (approximation âge/cosinus), `nomPhase` (huit noms, par tranche de 1/8 de mois synodique), `prochainesPhases` (algorithme complet de Meeus ch. 49, JDE moyen + corrections périodiques). Les cinq références utilisées par les tests (dates réelles de nouvelle lune, premier quartier, pleine lune, dernier quartier, nouvelle lune de septembre-octobre 2026) viennent d'une recherche web indépendante, pas du mockup — qui s'avère leur correspondre exactement. Un bug de signe dans le terme dominant de la correction « pleine lune » (voir DECISIONS.md) a été détecté et corrigé grâce à ce test contre des références réelles.
+- `src/domain/fuseau.ts` : module partagé (extrait de `frise.ts`, phase 5) pour lire/formater un horodatage dans le fuseau qu'il porte lui-même (`decalageDe`, `dateDe`, `versHeureLocale`, `versIsoAvecDecalage`, `libelleJourCourt`) — jamais dans celui du terminal qui exécute le code.
+- `src/domain/frise.ts` recalcule maintenant le lever/coucher par date via `soleil.ts` (au lieu de l'heure HH:MM unique de la phase 5) ; comparaisons passées à `Date.parse` plutôt qu'à la comparaison lexicale de chaînes.
+- **Correctif rétroactif** : `courseSolaire` (phase 4, `design/marche-ciel.ts`) lisait l'heure via `Date#getHours()` — le fuseau du terminal, pas celui du lieu affiché. Corrigé (paramètre `decalageIso` explicite), `Hero.tsx` mis à jour en conséquence. Voir DECISIONS.md pour l'analyse du bug et pourquoi aucun test antérieur ne l'avait révélé.
+- `src/design/disque-lune-geometrie.ts` + `src/design/DisqueLune.tsx` : terminateur en demi-ellipse, piège du drapeau de sens verrouillé par un test paramétré (§6).
+- `src/design/ArcSolaire.tsx` : arc solaire (`arcSoleil()` du mockup), position réutilisant `courseSolaire`.
+- `src/design/TrameDefs.tsx` : composant de motif de trame extrait de `Paysage.tsx` et partagé avec `DisqueLune.tsx`.
+- `src/design/sept-jours-geometrie.ts` + `src/features/meteo/SeptJours.tsx` : barre à quinze segments sur échelle fixe −5→40 °C, curseur sur le jour courant.
+- `src/features/meteo/CourseSoleil.tsx`, `src/features/meteo/Lune.tsx` : mise en forme des modules ci-dessus, câblés dans `Accueil.tsx` sous la frise horaire.
+- Tests : `soleil.test.ts` (trois relevés réels), `lune.test.ts` (cinq dates de référence réelles + bornes [0,1] sur 400 jours + prochaines phases triées et toujours après la date donnée), `disque-lune-geometrie.test.ts` (drapeau de sens paramétré f=0/.25/.5/.75/1, exactement les valeurs citées par le document maître), `sept-jours-geometrie.test.ts` (échelle fixe, au moins un segment actif, bornes basse/haute), `marche-ciel.test.ts` étoffé (décalage horaire explicite, dates construites en UTC).
+
+Non vérifié en réel : la position de la lune elle-même (lever/coucher lunaire) n'est pas calculée — hors du critère d'acceptation de cette phase, voir DECISIONS.md ; `Lune.tsx` n'affiche que fraction illuminée et nom de phase. Le lever/coucher du soleil utilisé par la frise horaire (phase 5) et le héros (phase 4) est maintenant réel (Meeus), mais reste non confronté à une observation en conditions réelles depuis le lieu effectif de l'utilisateur — seulement contre des relevés tiers pour Cestas.
+
+Commande pour relancer les tests : `pnpm verify`
+
+## Phase 7 — Données réelles
+**État** : à démarrer. Dépend d'une clé Foreca (portail développeur ou RapidAPI) — voir le bloc d'accès initial du §1 ; en son absence, cette phase reste construite contre les fixtures MSW et marquée non vérifiée en réel jusqu'à ce qu'une clé arrive.
+
+Prochaine étape : brancher les fonctions Vercel `/api/*` sur le vrai Foreca (`api/_lib/foreca-auth.ts`, `api/_lib/foreca-location.ts` déjà prêts depuis la phase 3), enregistrer de vraies réponses comme fixtures pour corriger les hypothèses de forme documentées dans `src/api/foreca-types.ts`, endpoint `/api/air` (qualité de l'air, absente depuis la phase 5), chaîne de repli de position (dernière position connue → IP → GPS → recherche manuelle, §7), garde-fou de quota (`api/_lib/quota.ts`).
 
 Commande pour relancer les tests : `pnpm verify`

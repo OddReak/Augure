@@ -1,4 +1,5 @@
 import { useId } from 'react';
+import { TrameDefs } from './TrameDefs';
 import styles from './Paysage.module.css';
 
 /**
@@ -70,17 +71,7 @@ export function Paysage({ hauteurCiel = 46 }: PaysageProps) {
       preserveAspectRatio="none"
       aria-hidden="true"
     >
-      <defs>
-        <pattern
-          id={idMotif}
-          width={PAS_TRAME}
-          height={PAS_TRAME}
-          patternUnits="userSpaceOnUse"
-          patternTransform="rotate(45)"
-        >
-          <rect width={PAS_TRAME} height={1} fill="rgb(var(--trame-rgb) / var(--trame-op))" />
-        </pattern>
-      </defs>
+      <TrameDefs id={idMotif} pas={PAS_TRAME} />
       <rect width={390} height={hauteurCiel} fill="var(--ciel)" />
       <g fill="var(--ciel-b)">{cielB}</g>
       <g fill={`url(#${idMotif})`}>{cielB}</g>

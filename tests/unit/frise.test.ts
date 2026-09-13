@@ -2,6 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { avecJalons, avecSeparateursJour, construireFrise } from '../../src/domain/frise';
 import type { PointHoraire } from '../../src/domain/types';
 
+// Cestas (44,74 · −0,68), la fixture de référence de tout le projet (§4.1).
+// Le 2026-09-19, le lever/coucher réel (Meeus) tombe vers 07:44/20:08 CEST —
+// validé indépendamment contre sunrise-sunset.org (voir `soleil.test.ts`).
+const CESTAS = { latitude: 44.74, longitude: -0.68 };
+
 function point(heure: string, date = '2026-09-19', temperatureC = 20): PointHoraire {
   return {
     horodatage: `${date}T${heure}:00+02:00`,
@@ -15,43 +20,46 @@ function point(heure: string, date = '2026-09-19', temperatureC = 20): PointHora
   };
 }
 
-describe('insertion des jalons lever/coucher (§domain/frise.ts, phase 5)', () => {
+describe('insertion des jalons lever/coucher (§domain/frise.ts, phases 5-6)', () => {
   it('le coucher est inséré au bon index, entre les deux heures qui l\'encadrent', () => {
     const points = [point('19:00', undefined, 24), point('20:00', undefined, 22), point('21:00', undefined, 20)];
-    const resultat = avecJalons(points, '07:39', '20:22');
+    const resultat = avecJalons(points, CESTAS);
 
     expect(resultat).toHaveLength(4); // pas de lever dans cette plage, un seul coucher inséré
     const index = resultat.findIndex((p) => p.jalon === 'coucher');
-    expect(index).toBe(2); // entre le point de 20:00 (index 1) et celui de 21:00
+    expect(index).toBe(2); // entre le point de 20:00 (index 1) et celui de 21:00 — coucher réel ≈ 20:08
     expect(resultat[index - 1].horodatage).toContain('20:00');
     expect(resultat[index + 1].horodatage).toContain('21:00');
-    expect(resultat[index].horodatage).toBe('2026-09-19T20:22:00+02:00');
+    expect(resultat[index].horodatage.startsWith('2026-09-19T20:')).toBe(true);
     expect(resultat[index].signe).toBe('coucher');
   });
 
   it('interpole la température entre les deux points qui encadrent le jalon', () => {
     const points = [point('20:00', undefined, 24), point('21:00', undefined, 20)];
-    const resultat = avecJalons(points, '07:39', '20:22'); // 22/60 = 36,7 % de l'intervalle
+    const resultat = avecJalons(points, CESTAS);
     const jalon = resultat.find((p) => p.jalon === 'coucher')!;
-    expect(jalon.temperatureC).toBe(Math.round(24 + (20 - 24) * (22 / 60)));
+    // le coucher tombe environ huit minutes après 20:00 (~20:08 réel, cf. `soleil.test.ts`) :
+    // la température interpolée doit rester très proche de celle du point de 20:00.
+    expect(jalon.temperatureC).toBeGreaterThanOrEqual(23);
+    expect(jalon.temperatureC).toBeLessThanOrEqual(24);
   });
 
   it("n'insère rien quand l'heure du jalon tombe hors de la plage couverte par les points", () => {
     const points = [point('10:00'), point('11:00'), point('12:00')];
-    const resultat = avecJalons(points, '07:39', '20:22');
+    const resultat = avecJalons(points, CESTAS);
     expect(resultat).toHaveLength(3);
     expect(resultat.some((p) => p.jalon)).toBe(false);
   });
 
   it('insère lever et coucher indépendamment quand les deux tombent dans la plage', () => {
     const points = [point('07:00'), point('08:00'), point('19:00'), point('20:00'), point('21:00')];
-    const resultat = avecJalons(points, '07:39', '20:22');
+    const resultat = avecJalons(points, CESTAS);
     expect(resultat.filter((p) => p.jalon === 'lever')).toHaveLength(1);
     expect(resultat.filter((p) => p.jalon === 'coucher')).toHaveLength(1);
     expect(resultat).toHaveLength(7);
     // l'ordre chronologique est préservé
-    const horodatages = resultat.map((p) => p.horodatage);
-    expect([...horodatages].sort()).toEqual(horodatages);
+    const instants = resultat.map((p) => Date.parse(p.horodatage));
+    expect([...instants].sort((a, b) => a - b)).toEqual(instants);
   });
 
   it('insère un jalon par date rencontrée dans une série qui couvre plusieurs jours', () => {
@@ -63,7 +71,7 @@ describe('insertion des jalons lever/coucher (§domain/frise.ts, phase 5)', () =
       point('20:00', '2026-09-20'),
       point('21:00', '2026-09-20'),
     ];
-    const resultat = avecJalons(points, '07:39', '20:22');
+    const resultat = avecJalons(points, CESTAS);
     expect(resultat.filter((p) => p.jalon === 'coucher')).toHaveLength(2);
   });
 });
@@ -95,9 +103,9 @@ describe('construireFrise — composition jalons puis repères de jour', () => {
       point('07:00', '2026-09-20'),
       point('08:00', '2026-09-20'),
     ];
-    const resultat = construireFrise(points, '07:39', '20:22');
-    const horodatages = resultat.map((p) => p.horodatage);
-    expect([...horodatages].sort()).toEqual(horodatages);
+    const resultat = construireFrise(points, CESTAS);
+    const instants = resultat.map((p) => Date.parse(p.horodatage));
+    expect([...instants].sort((a, b) => a - b)).toEqual(instants);
     expect(resultat.some((p) => p.jalon === 'lever')).toBe(true);
     expect(resultat.find((p) => p.horodatage.startsWith('2026-09-20T00:00'))?.sep).toBe('dim.');
   });

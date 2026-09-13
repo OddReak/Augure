@@ -1,36 +1,20 @@
-import type { PointHoraire } from './types';
+import { dateDe, decalageDe, libelleJourCourt, versIsoAvecDecalage } from './fuseau';
+import { leverCoucherUtc } from './soleil';
+import type { CoordonneesGeo, PointHoraire } from './types';
 
 /**
- * Frise horaire (§5, phase 5, `horaires()` du mockup) : deux enrichissements
+ * Frise horaire (§5/§6, `horaires()` du mockup) : deux enrichissements
  * appliqués à la série reçue de Foreca, ni l'un ni l'autre fournis par le
  * fournisseur — ce sont des insertions applicatives.
  *
  *  - un jalon lever/coucher, inséré à son heure exacte entre les deux
- *    points horaires qui l'encadrent ;
+ *    points horaires qui l'encadrent, une fois par date rencontrée dans la
+ *    série (lever/coucher réels, calcul Meeus — `domain/soleil.ts`,
+ *    phase 6) ;
  *  - un repère de jour (« dim. »), posé sur le premier point d'une
  *    nouvelle date, jamais inséré comme point à part (le mockup le porte
  *    directement sur le point horaire existant : `{h:'00', …, sep:'dim.'}`).
  */
-
-const MOTIF_DECALAGE = /([+-]\d{2}:\d{2}|Z)$/;
-
-function decalageDe(horodatage: string): string {
-  return MOTIF_DECALAGE.exec(horodatage)?.[1] ?? '';
-}
-
-function dateDe(horodatage: string): string {
-  return horodatage.slice(0, 10);
-}
-
-/**
- * Construit l'horodatage ISO du jalon pour une date donnée, en reprenant le
- * décalage horaire (fuseau) d'un point voisin — Foreca ne renvoie pas de
- * lever/coucher par jour tant que le calcul Meeus n'est pas câblé (phase 6) :
- * une seule heure HH:MM sert pour chaque date rencontrée dans la série.
- */
-function horodatageJalon(date: string, heureHhMm: string, decalage: string): string {
-  return `${date}T${heureHhMm}:00${decalage}`;
-}
 
 function interpole(avant: number, apres: number, fraction: number): number {
   return avant + (apres - avant) * fraction;
@@ -40,11 +24,12 @@ function interpole(avant: number, apres: number, fraction: number): number {
  * Insère un jalon (lever ou coucher) dans la série, à son heure exacte,
  * une fois par date présente dans les points — sans jamais retirer un point
  * horaire existant. N'insère rien pour une date où l'heure du jalon tombe
- * hors de la plage couverte par les points de ce jour-là.
+ * hors de la plage couverte par les points de ce jour-là, ou en jour/nuit
+ * polaire (`leverCoucherUtc` renvoie alors `null` pour cette date).
  */
 function inserisJalon(
   points: readonly PointHoraire[],
-  heureHhMm: string,
+  coordonnees: CoordonneesGeo,
   type: 'lever' | 'coucher',
 ): PointHoraire[] {
   const resultat = [...points];
@@ -52,13 +37,17 @@ function inserisJalon(
 
   for (const date of dates) {
     const decalage = decalageDe(points.find((p) => dateDe(p.horodatage) === date)?.horodatage ?? '');
-    const cible = horodatageJalon(date, heureHhMm, decalage);
+    const instants = leverCoucherUtc(new Date(`${date}T12:00:00Z`), coordonnees);
+    if (!instants) continue; // jour ou nuit polaire ce jour-là : rien à insérer
 
-    const indexApres = resultat.findIndex((p) => p.horodatage > cible);
+    const instantUtc = type === 'lever' ? instants.leverUtc : instants.coucherUtc;
+    const cible = versIsoAvecDecalage(instantUtc, decalage);
+
+    const indexApres = resultat.findIndex((p) => Date.parse(p.horodatage) > Date.parse(cible));
     if (indexApres <= 0) continue; // avant le premier point ou après le dernier : hors plage, rien à insérer
     const avant = resultat[indexApres - 1];
     const apres = resultat[indexApres];
-    if (cible <= avant.horodatage) continue;
+    if (Date.parse(cible) <= Date.parse(avant.horodatage)) continue;
 
     const duree = Date.parse(apres.horodatage) - Date.parse(avant.horodatage);
     const fraction = duree > 0 ? (Date.parse(cible) - Date.parse(avant.horodatage)) / duree : 0;
@@ -89,23 +78,8 @@ function inserisJalon(
 }
 
 /** Insère les jalons lever puis coucher (l'ordre n'affecte pas le résultat, les deux sont indépendants). */
-export function avecJalons(
-  points: readonly PointHoraire[],
-  leverHhMm: string,
-  coucherHhMm: string,
-): PointHoraire[] {
-  return inserisJalon(inserisJalon(points, leverHhMm, 'lever'), coucherHhMm, 'coucher');
-}
-
-// `timeZone: 'UTC'` couplé à un ancrage à midi UTC (voir plus bas) : le jour
-// de semaine doit suivre le calendrier local du point (déjà encodé dans les
-// dix premiers caractères de son horodatage), jamais le fuseau du serveur
-// qui exécute ce code — sans quoi minuit dans un fuseau positif se relit
-// comme la veille sur un serveur en UTC.
-const FORMATTEUR_JOUR = new Intl.DateTimeFormat('fr-FR', { weekday: 'short', timeZone: 'UTC' });
-
-function libelleJour(date: string): string {
-  return FORMATTEUR_JOUR.format(new Date(`${date}T12:00:00Z`));
+export function avecJalons(points: readonly PointHoraire[], coordonnees: CoordonneesGeo): PointHoraire[] {
+  return inserisJalon(inserisJalon(points, coordonnees, 'lever'), coordonnees, 'coucher');
 }
 
 /** Pose un repère de jour (« dim. ») sur le premier point de chaque nouvelle date, jamais sur le premier. */
@@ -116,15 +90,11 @@ export function avecSeparateursJour(points: readonly PointHoraire[]): PointHorai
     const nouveauJour = i > 0 && date !== dateCourante;
     dateCourante = date;
     if (!nouveauJour) return p;
-    return { ...p, sep: libelleJour(date) };
+    return { ...p, sep: libelleJourCourt(date) };
   });
 }
 
 /** Compose les deux enrichissements dans l'ordre attendu par le rendu : jalons, puis repères de jour. */
-export function construireFrise(
-  points: readonly PointHoraire[],
-  leverHhMm: string,
-  coucherHhMm: string,
-): PointHoraire[] {
-  return avecSeparateursJour(avecJalons(points, leverHhMm, coucherHhMm));
+export function construireFrise(points: readonly PointHoraire[], coordonnees: CoordonneesGeo): PointHoraire[] {
+  return avecSeparateursJour(avecJalons(points, coordonnees));
 }

@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import { adapterConditionCourante, adapterHoraire, adapterQuotidien } from '../../api/foreca';
 import type { ForecaReponseCourante, ForecaReponseHoraire, ForecaReponseQuotidienne } from '../../api/foreca-types';
 import { construireFrise } from '../../domain/frise';
+import { decalageDe, versHeureLocale } from '../../domain/fuseau';
+import { leverCoucherUtc } from '../../domain/soleil';
 import { signeDuSymboleForeca } from '../../domain/symboles';
 import type { PrevisionLieu } from '../../domain/types';
 import { phrasePlaceholder } from './phrase';
@@ -40,17 +42,22 @@ export function usePrevisionLieu({ latitude, longitude, nomLieu }: OptionsPrevis
         courant,
         phrasePlaceholder(signeDuSymboleForeca(courant.current.symbol)),
       );
+      const coordonnees = { latitude, longitude };
 
-      // Lever/coucher réels arrivent en phase 6 (calcul Meeus) ; valeurs de la fixture en attendant.
-      const leverSoleil = '07:39';
-      const coucherSoleil = '20:22';
+      // Lever/coucher réels du jour courant (§6, phase 6 : calcul Meeus — `domain/soleil.ts`),
+      // affichés dans le fuseau porté par l'horodatage Foreca lui-même (pas de zone IANA connue
+      // pour un couple lat/lon seul). `null` seulement en jour/nuit polaire (hors périmètre France).
+      const decalage = decalageDe(condition.horodatage);
+      const instants = leverCoucherUtc(new Date(), coordonnees);
+      const leverSoleil = instants ? versHeureLocale(instants.leverUtc, decalage) : '--:--';
+      const coucherSoleil = instants ? versHeureLocale(instants.coucherUtc, decalage) : '--:--';
 
       return {
-        lieu: { nom: nomLieu, coordonnees: { latitude, longitude } },
+        lieu: { nom: nomLieu, coordonnees },
         courant: condition,
-        // Jalons lever/coucher et repères de jour insérés ici (§domain/frise.ts, phase 5) :
+        // Jalons lever/coucher et repères de jour insérés ici (§domain/frise.ts, phase 5/6) :
         // ni l'un ni l'autre ne viennent de Foreca, l'insertion est une seule fois pour tous les écrans.
-        horaire: construireFrise(adapterHoraire(horaire), leverSoleil, coucherSoleil),
+        horaire: construireFrise(adapterHoraire(horaire), coordonnees),
         quotidien: adapterQuotidien(quotidien),
         leverSoleil,
         coucherSoleil,
