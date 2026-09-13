@@ -1,0 +1,41 @@
+.grille {
+  display: grid;
+  border: 0 solid var(--encre);
+  border-width: var(--trait-structure) 0 0 var(--trait-structure);
+}
+
+.onglet {
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 46px;
+  padding: 8px 3px;
+  white-space: nowrap;
+  border: 0 solid var(--encre);
+  border-width: 0 var(--trait-structure) var(--trait-structure) 0;
+  background: transparent;
+  color: var(--encre);
+}
+
+.onglet svg {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+}
+
+.onglet[aria-selected='true'] {
+  background: var(--encre);
+  color: var(--papier);
+}
+
+.onglet:focus-visible {
+  outline: 3px solid var(--signe);
+  outline-offset: -4px;
+  position: relative;
+  z-index: 1;
+}

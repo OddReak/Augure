@@ -22,8 +22,27 @@ Non vérifié en réel : rien à ce stade, aucune dépendance externe.
 Commande pour relancer les tests : `pnpm verify`
 
 ## Phase 1 — Système de design
+**État** : close, `pnpm verify` vert.
+
+Fait :
+- `design/mockup.html` versionné (il ne l'était pas encore dans le dépôt Git).
+- `src/design/jetons.css` : les six paliers recopiés au caractère près depuis le mockup (quatorze jetons chacun), l'échelle de température t1–t5 avec sa version sombre sous `veille`/`colere`, l'échelle d'espacement et les trois épaisseurs de trait (§8bis), la classe utilitaire `.trame`.
+- Sélecteur `[data-palier=...]` plutôt que `html[data-palier=...]` : permet à la fois de piloter la racine en production et d'afficher plusieurs paliers simultanément dans le styleguide (chaque `<figure>` porte son propre `data-palier`).
+- Polices Fraunces et Karla auto-hébergées : téléchargées depuis Google Fonts (subsets latin + latin-ext, variables) et servies depuis `public/fonts`, `@font-face` dans `jetons.css`. Aucune requête vers Google Fonts au runtime.
+- Primitives `src/ui` : `Bande`, `Etiquette`, `Interrupteur`, `Segment`, `Onglets`, `Feuille` — CSS modules, angle droit partout, jetons uniquement (aucune couleur en dur).
+- Store Zustand unique (`src/lib/magasin.ts`), persisté, pour l'instant limité au palier forcé par le styleguide.
+- Route `/styleguide` (non liée dans une nav) : galerie des six paliers, échelle de température, primitives. React Router en `createBrowserRouter`.
+- Test `tests/unit/jetons.test.ts` : les six paliers définissent bien les quatorze jetons attendus, valeurs exactes vérifiées pour `vigies`.
+- Test `tests/unit/regles-de-rendu.test.ts` : échoue si `box-shadow`, `filter: blur`, `border-radius` non nul hors `.chassis`, `linear-gradient(`/`radial-gradient(` apparaissent dans `src/**/*.css` ; `repeating-linear-gradient(` n'est toléré que dans `jetons.css`. Aucun fichier ne porte encore `.chassis` — la règle sera exercée réellement en phase 9 (châssis PWA) ; en attendant elle protège déjà contre toute régression.
+- Capture Playwright de `/styleguide` (`tests/e2e/styleguide.spec.ts-snapshots/styleguide-chromium-linux.png`) comme référence visuelle.
+
+Non vérifié en réel : rendu sur un vrai iPhone (contrastes, tailles tactiles) — seulement vérifié en résolution desktop de capture.
+
+Commande pour relancer les tests : `pnpm verify`
+
+## Phase 2 — Signes
 **État** : à démarrer.
 
-Prochaine étape : lire `design/mockup.html` (bloc `:root`, sélecteurs `.tel[data-palier=...]`), recopier les jetons dans `src/design/jetons.css`, poser `data-palier` sur la racine, typographie auto-hébergée (Fraunces/Karla dans `public/fonts`), primitives `src/ui`, route `/styleguide`.
+Prochaine étape : extraire l'objet `GL` de `design/mockup.html` (40 tracés) vers `src/design/signes.svg` en `<symbol>`, composant `<Signe>`, tables `src/domain/signes.ts` et `src/domain/paliers.ts` (projection symbole Foreca → signe + palier).
 
 Commande pour relancer les tests : `pnpm verify`

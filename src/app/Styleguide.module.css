@@ -1,0 +1,70 @@
+.page {
+  padding: var(--e5);
+  font-family: var(--police-texte);
+}
+
+.titre {
+  font-family: var(--police-titre);
+  font-weight: 600;
+  font-size: 30px;
+  margin: 0 0 var(--e5);
+}
+
+.galerie {
+  display: flex;
+  gap: var(--e5);
+  flex-wrap: wrap;
+}
+
+.carte {
+  width: 260px;
+  border: var(--trait-structure) solid #000;
+  background: var(--papier);
+  color: var(--encre);
+}
+
+.ciel {
+  background: var(--ciel);
+  color: var(--ciel-txt);
+  padding: var(--e4);
+}
+
+.ombre {
+  background: var(--ciel-b);
+  padding: var(--e3) var(--e4);
+}
+
+.plans {
+  display: flex;
+}
+
+.plan {
+  flex: 1;
+  height: 40px;
+}
+
+.corps {
+  padding: var(--e4);
+}
+
+.nom {
+  font-weight: 700;
+  margin: 0 0 var(--e2);
+}
+
+.echelleTemp {
+  display: flex;
+  margin-top: var(--e5);
+  border: var(--trait-structure) solid var(--doc-trait, #000);
+}
+
+.bandeTemp {
+  flex: 1;
+  height: 60px;
+  color: #fff;
+  display: flex;
+  align-items: flex-end;
+  padding: var(--e2);
+  font-size: 12px;
+  font-weight: 700;
+}
