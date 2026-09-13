@@ -16,6 +16,9 @@
 
 export type ModeForeca = 'direct' | 'rapidapi';
 
+/** Hôte RapidAPI du listing « Foreca Weather API » — partagé avec `foreca-client.ts` (§4.1). */
+export const HOTE_RAPIDAPI = 'foreca-weather.p.rapidapi.com';
+
 interface JetonMemorise {
   valeur: string;
   expireLe: number;
@@ -67,7 +70,10 @@ export async function enteteAutorisationForeca(
     if (!cle) {
       throw new Error('FORECA_RAPIDAPI_KEY manquant alors que FORECA_MODE=rapidapi.');
     }
-    return { 'X-RapidAPI-Key': cle };
+    // `X-RapidAPI-Host` est requis en plus de la clé (confirmé phase 7 contre le client
+    // open-source mr-ransel/ha-foreca-weather, qui envoie les deux) : RapidAPI route la
+    // requête vers le fournisseur par cet en-tête, pas seulement par le domaine appelé.
+    return { 'X-RapidAPI-Key': cle, 'X-RapidAPI-Host': HOTE_RAPIDAPI };
   }
 
   const jeton = await obtenirJetonDirect(horloge);

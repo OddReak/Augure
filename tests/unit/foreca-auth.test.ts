@@ -12,10 +12,13 @@ afterEach(() => {
 });
 
 describe('authentification Foreca', () => {
-  it('mode rapidapi : pose l\'en-tête X-RapidAPI-Key', async () => {
+  it("mode rapidapi : pose les en-têtes X-RapidAPI-Key et X-RapidAPI-Host", async () => {
     process.env.FORECA_MODE = 'rapidapi';
     process.env.FORECA_RAPIDAPI_KEY = 'cle-de-test';
-    await expect(enteteAutorisationForeca()).resolves.toEqual({ 'X-RapidAPI-Key': 'cle-de-test' });
+    await expect(enteteAutorisationForeca()).resolves.toEqual({
+      'X-RapidAPI-Key': 'cle-de-test',
+      'X-RapidAPI-Host': 'foreca-weather.p.rapidapi.com',
+    });
   });
 
   it('mode direct : pose Authorization: Bearer <jeton>', async () => {
