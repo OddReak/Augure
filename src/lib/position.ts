@@ -13,6 +13,14 @@ import type { CoordonneesGeo } from '../domain/types';
 
 export type SourcePosition = 'stockage' | 'ip' | 'gps';
 
+// Repli tant qu'aucune source de la chaîne du §7 n'a répondu — le tout premier
+// appel, avant toute persistance et hors de l'infrastructure Vercel (`/api/position`
+// répond 204 en local). Coordonnées de Cestas, identiques à la fixture MSW de la
+// phase 3, pour que le mode mock continue de fonctionner sans dépendre d'une vraie
+// position. Partagé entre l'accueil et « Mes lieux » (§8) : les deux écrans doivent
+// s'accorder sur ce qu'est « la position actuelle » quand rien n'est encore résolu.
+export const POSITION_PAR_DEFAUT: CoordonneesGeo = { latitude: 44.74, longitude: -0.68 };
+
 export interface PositionResolue {
   coordonnees: CoordonneesGeo;
   source: SourcePosition;

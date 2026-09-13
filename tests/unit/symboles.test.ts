@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { estSigneMeteoConnu, palierDuSymboleForeca, signeDuSymboleForeca } from '../../src/domain/symboles';
+import { estSigneMeteoConnu, palierDuSymboleForeca, signeAffiche, signeDuSymboleForeca } from '../../src/domain/symboles';
 import { IDS_SIGNES_METEO } from '../../src/domain/signes';
 
 describe('décodage des symboles Foreca', () => {
@@ -61,5 +61,21 @@ describe('décodage des symboles Foreca', () => {
 describe('table des seize signes météo', () => {
   it('contient exactement seize entrées', () => {
     expect(IDS_SIGNES_METEO).toHaveLength(16);
+  });
+});
+
+describe('signeAffiche (§8, vignette de « Mes lieux »)', () => {
+  it('bascule sur canicule à partir de 34 °C, quel que soit le signe de base', () => {
+    expect(signeAffiche('soleil', 34)).toBe('canicule');
+    expect(signeAffiche('voile', 39)).toBe('canicule');
+  });
+
+  it('bascule sur gel à 0 °C et en dessous', () => {
+    expect(signeAffiche('soleil', 0)).toBe('gel');
+    expect(signeAffiche('lune', -5)).toBe('gel');
+  });
+
+  it('garde le signe de base entre les deux seuils', () => {
+    expect(signeAffiche('pluie', 15)).toBe('pluie');
   });
 });

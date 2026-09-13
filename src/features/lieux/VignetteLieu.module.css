@@ -1,0 +1,102 @@
+.enveloppe {
+  border-bottom: var(--trait-structure) solid var(--encre);
+}
+
+.vignette {
+  background: var(--ciel);
+  color: var(--ciel-txt);
+  padding: 16px var(--e5) 18px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 16px;
+  align-items: center;
+  cursor: pointer;
+  border: 0;
+  width: 100%;
+  font: inherit;
+  text-align: left;
+}
+
+.nom {
+  font-weight: 700;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.nom svg {
+  width: 15px;
+  height: 15px;
+}
+
+.sous {
+  font-size: 12.5px;
+  opacity: 0.65;
+  margin-top: 2px;
+}
+
+.temp {
+  font-family: var(--police-titre);
+  font-variation-settings: 'opsz' 48;
+  font-size: 38px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.bas {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13.5px;
+  opacity: 0.85;
+  font-weight: 500;
+}
+
+.bas svg {
+  width: 25px;
+  height: 25px;
+}
+
+.mm {
+  text-align: right;
+  font-size: 15px;
+  opacity: 0.75;
+  font-family: var(--police-titre);
+  font-variation-settings: 'opsz' 24;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.actions {
+  display: flex;
+  gap: 0;
+  background: var(--ciel);
+  color: var(--ciel-txt);
+  border-top: var(--trait-filet) solid currentColor;
+}
+
+.actions button {
+  flex: 1;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 4px;
+  background: transparent;
+  color: inherit;
+  border: 0;
+  border-right: var(--trait-filet) solid currentColor;
+  cursor: pointer;
+}
+
+.actions button:last-child {
+  border-right: 0;
+}
+
+.actions button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}

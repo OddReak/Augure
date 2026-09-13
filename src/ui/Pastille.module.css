@@ -1,0 +1,25 @@
+.pastille {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  border: var(--trait-structure) solid currentColor;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.pastille svg {
+  width: 20px;
+  height: 20px;
+}
+
+.plein {
+  background: currentColor;
+}
+
+.plein svg {
+  color: var(--papier);
+}

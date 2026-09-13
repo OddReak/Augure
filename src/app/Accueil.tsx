@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { decalageDe } from '../domain/fuseau';
 import { CourseSoleil } from '../features/meteo/CourseSoleil';
 import { FriseHoraire } from '../features/meteo/FriseHoraire';
@@ -6,33 +7,32 @@ import { Hero } from '../features/meteo/Hero';
 import { Lune } from '../features/meteo/Lune';
 import { SeptJours } from '../features/meteo/SeptJours';
 import { usePrevisionLieu } from '../features/meteo/usePrevisionLieu';
+import { MenuLieu } from '../features/lieux/MenuLieu';
 import { useMagasinUi } from '../lib/magasin';
+import { POSITION_PAR_DEFAUT } from '../lib/position';
 import { usePosition } from '../lib/usePosition';
 import { Bande } from '../ui/Bande';
+import { Pied } from '../ui/Pied';
 
-// Repli tant qu'aucune source de la chaîne du §7 (stockage → IP → GPS) n'a
-// répondu — le tout premier appel, avant toute persistance et hors de
-// l'infrastructure Vercel (§7 : `/api/position` répond 204 en local).
-// Coordonnées de Cestas, identiques à la fixture MSW de la phase 3, pour que
-// le mode mock continue de fonctionner sans dépendre d'une vraie position.
-const POSITION_PAR_DEFAUT = { latitude: 44.74, longitude: -0.68 };
-
-// Aucune recherche inverse coordonnées → nom de lieu tant que l'écran de
-// recherche (phase 8) n'existe pas : « Cestas » n'est correct que pour le
-// repli par défaut, un nom générique le reste tant que la position vient
-// d'une source réelle (IP ou GPS). Voir DECISIONS.md.
+// Aucune recherche inverse coordonnées → nom de lieu tant qu'un géocodage
+// inverse n'est pas câblé (§8, décision, voir DECISIONS.md) : « Cestas »
+// n'est correct que pour le repli par défaut, un nom générique le reste
+// tant que la position vient d'une source réelle (IP ou GPS).
 function nomLieuPour(source: 'defaut' | 'stockage' | 'ip' | 'gps'): string {
   return source === 'defaut' ? 'Cestas' : 'Votre position';
 }
 
 /** Écran d'accueil (§6) : barre collante, héros, paysage. */
 export function Accueil() {
+  const navigate = useNavigate();
   const position = usePosition();
-  const requete = usePrevisionLieu({
-    latitude: position?.coordonnees.latitude ?? POSITION_PAR_DEFAUT.latitude,
-    longitude: position?.coordonnees.longitude ?? POSITION_PAR_DEFAUT.longitude,
-    nomLieu: nomLieuPour(position?.source ?? 'defaut'),
-  });
+  const lieuActif = useMagasinUi((etat) => etat.lieuActif);
+  const [menuOuvert, setMenuOuvert] = useState(false);
+
+  const coordonnees = lieuActif?.coordonnees ?? position?.coordonnees ?? POSITION_PAR_DEFAUT;
+  const nomLieu = lieuActif?.nom ?? nomLieuPour(position?.source ?? 'defaut');
+
+  const requete = usePrevisionLieu({ latitude: coordonnees.latitude, longitude: coordonnees.longitude, nomLieu });
   const definirPalierMeteo = useMagasinUi((etat) => etat.definirPalierMeteo);
 
   useEffect(() => {
@@ -66,15 +66,23 @@ export function Accueil() {
         condition={requete.data.courant}
         leverSoleil={requete.data.leverSoleil}
         coucherSoleil={requete.data.coucherSoleil}
+        onTitreClick={() => navigate('/mes-lieux')}
+        onOuvrirMenu={() => setMenuOuvert(true)}
       />
       <FriseHoraire points={requete.data.horaire} />
-      <SeptJours jours={requete.data.quotidien} aujourdhui={requete.data.quotidien[0]?.date ?? ''} />
+      <SeptJours
+        jours={requete.data.quotidien}
+        aujourdhui={requete.data.quotidien[0]?.date ?? ''}
+        onJourClick={(date) => navigate(`/jour/${date}`)}
+      />
       <CourseSoleil
         leverSoleil={requete.data.leverSoleil}
         coucherSoleil={requete.data.coucherSoleil}
         decalage={decalageDe(requete.data.courant.horodatage)}
       />
       <Lune />
+      <Pied actif="ciel" />
+      {menuOuvert ? <MenuLieu lieu={requete.data.lieu} onFermer={() => setMenuOuvert(false)} /> : null}
     </main>
   );
 }

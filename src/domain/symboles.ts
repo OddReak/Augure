@@ -104,3 +104,20 @@ export function palierDuSymboleForeca(code: string, contexte: ContextePalier = {
 export function estSigneMeteoConnu(id: string): id is IdSigneMeteo {
   return (IDS_SIGNES_METEO as string[]).includes(id);
 }
+
+/**
+ * Glyphe affiché pour une vignette de lieu (§6, `ecranLieux()`) : au-delà
+ * d'un seuil de température, le signe de seuil (canicule/gel) prime sur la
+ * condition du moment — c'est ce que montre le mockup pour Séville (39 °C,
+ * glyphe « canicule », pas « soleil »). Seuils : ≥ 34 °C (aligné sur le
+ * déclencheur du palier fournaise, §5.2), ≤ 0 °C (le gel de l'eau ; le
+ * document maître ne donne aucune valeur pour ce signe, décision tranchée
+ * ici, voir DECISIONS.md). Appliqué pour l'instant seulement à la vignette
+ * de « Mes lieux » (phase 8) — le héros et la frise horaire gardent le
+ * signe brut de Foreca, écart documenté dans DECISIONS.md.
+ */
+export function signeAffiche(signeBase: IdSigneMeteo, temperatureC: number): IdSigneMeteo {
+  if (temperatureC >= 34) return 'canicule';
+  if (temperatureC <= 0) return 'gel';
+  return signeBase;
+}

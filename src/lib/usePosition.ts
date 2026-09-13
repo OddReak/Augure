@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
 import type { CoordonneesGeo } from '../domain/types';
-import { positionAffinee, positionInitiale, type SourcePosition } from './position';
+import {
+  etatPermissionGeolocalisation,
+  positionAffinee,
+  positionInitiale,
+  type EtatPermissionGeolocalisation,
+  type SourcePosition,
+} from './position';
 
 export interface EtatPosition {
   coordonnees: CoordonneesGeo;
@@ -36,6 +42,32 @@ export function usePosition(): EtatPosition | null {
     return () => {
       annule = true;
       cancelAnimationFrame(idFrame);
+    };
+  }, []);
+
+  return etat;
+}
+
+/**
+ * État courant de la permission de géolocalisation (§6, Réglages → Position),
+ * relu à chaque retour au premier plan — l'utilisateur peut changer ce
+ * réglage depuis les Réglages iOS pendant que l'application est en arrière-plan.
+ */
+export function usePermissionGeolocalisation(): EtatPermissionGeolocalisation | null {
+  const [etat, setEtat] = useState<EtatPermissionGeolocalisation | null>(null);
+
+  useEffect(() => {
+    let annule = false;
+    function relire(): void {
+      etatPermissionGeolocalisation().then((valeur) => {
+        if (!annule) setEtat(valeur);
+      });
+    }
+    relire();
+    window.addEventListener('focus', relire);
+    return () => {
+      annule = true;
+      window.removeEventListener('focus', relire);
     };
   }, []);
 

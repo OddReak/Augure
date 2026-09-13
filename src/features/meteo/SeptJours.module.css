@@ -9,6 +9,20 @@
   gap: var(--e3);
   padding: 11px 0;
   border-bottom: var(--trait-filet) solid var(--trait);
+  /* Reset : `.jour` habille aussi bien un <div> (pas de clic) qu'un <button> (§8, détail du jour). */
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  text-align: left;
+  cursor: pointer;
+}
+.jour:disabled,
+div.jour {
+  cursor: default;
 }
 .jour:last-child {
   border-bottom: 0;

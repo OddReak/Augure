@@ -1,0 +1,24 @@
+.liste {
+  border-top: var(--trait-majeur) solid var(--encre);
+}
+
+.ajouter {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  padding: var(--e5);
+  font-weight: 600;
+  font-size: 15.5px;
+  background: var(--papier);
+  color: var(--encre);
+  width: 100%;
+  border: 0;
+  border-bottom: var(--trait-structure) solid var(--encre);
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.ajouter svg {
+  width: 22px;
+  height: 22px;
+}

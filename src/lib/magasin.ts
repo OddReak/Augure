@@ -27,6 +27,23 @@ interface EtatUi {
    */
   lieuActif: Lieu | null;
   definirLieuActif: (lieu: Lieu | null) => void;
+
+  /**
+   * Préférences d'affichage (§6, écran Réglages). Persistées, mais pas
+   * encore appliquées à l'affichage lui-même (Hero/Frise/Sept jours restent
+   * en °C · km/h) — c'est le réglage qui existe avant ses consommateurs,
+   * limite documentée dans JOURNAL.md et DECISIONS.md.
+   */
+  uniteTemperature: 'C' | 'F';
+  definirUniteTemperature: (unite: 'C' | 'F') => void;
+  uniteVent: 'kmh' | 'ms' | 'mph';
+  definirUniteVent: (unite: 'kmh' | 'ms' | 'mph') => void;
+  signesSeuls: boolean;
+  definirSignesSeuls: (actif: boolean) => void;
+  notifResume: boolean;
+  definirNotifResume: (actif: boolean) => void;
+  notifVigilance: boolean;
+  definirNotifVigilance: (actif: boolean) => void;
 }
 
 /**
@@ -64,6 +81,17 @@ export const useMagasinUi = create<EtatUi>()(
 
       lieuActif: null,
       definirLieuActif: (lieu) => set({ lieuActif: lieu }),
+
+      uniteTemperature: 'C',
+      definirUniteTemperature: (unite) => set({ uniteTemperature: unite }),
+      uniteVent: 'kmh',
+      definirUniteVent: (unite) => set({ uniteVent: unite }),
+      signesSeuls: false,
+      definirSignesSeuls: (actif) => set({ signesSeuls: actif }),
+      notifResume: true,
+      definirNotifResume: (actif) => set({ notifResume: actif }),
+      notifVigilance: true,
+      definirNotifVigilance: (actif) => set({ notifVigilance: actif }),
     }),
     { name: 'augure-ui' },
   ),
