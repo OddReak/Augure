@@ -1,3 +1,16 @@
+/* `role="dialog"` lui-même : sans position ni taille propre, un élément dont
+   les deux enfants sont `position: absolute` se réduit à 0×0 (ils sortent du
+   flux et ne contribuent à aucune hauteur) — invisible pour les outils
+   d'accessibilité et les tests, même si le rendu visuel semblait correct
+   (les enfants se positionnaient alors contre le bloc englobant racine,
+   solidaire du défilement de la page plutôt que réellement fixe). `fixed` +
+   `inset: 0` corrige les deux à la fois. */
+.dialogue {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+}
+
 .voile {
   position: absolute;
   inset: 0;

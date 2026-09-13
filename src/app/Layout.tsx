@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useMagasinUi } from '../lib/magasin';
 import { Sprite } from '../design/Sprite';
+import { FeuilleInstallation } from '../features/installation/FeuilleInstallation';
+import { RegistreurPwa } from '../pwa/RegistreurPwa';
 
 /**
  * Pose `data-palier` sur la racine du document (§5.2 : « un seul attribut
@@ -22,6 +24,10 @@ export function Layout() {
     <>
       <Sprite />
       <Outlet />
+      <FeuilleInstallation />
+      {/* Jamais sous VITE_MOCK=1 (§9, DECISIONS.md) : le service worker MSW (phase 3)
+          doit rester le seul à contrôler la page dans les tests et en développement mocké. */}
+      {import.meta.env.VITE_MOCK !== '1' ? <RegistreurPwa /> : null}
     </>
   );
 }

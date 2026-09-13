@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" aria-label="Icône Augure">
+  <rect width="100" height="100" fill="#F5C044"/><rect y="54" width="100" height="46" fill="#EBA229"/>
+  <path d="M0 100V76l24-8 22 9 20-11 18 8v26Z" fill="#BC4626"/>
+  <path d="M0 100v-12l26 5 22-7 26 6 26-6v14Z" fill="#8A2A1C"/>
+  <g transform="translate(50 40)"><circle r="13" fill="#2B1409"/>
+  <g stroke="#2B1409" stroke-width="5" stroke-linecap="square">
+  <path d="M0-27v7M0 20v7M-27 0h7M20 0h7M-19.1-19.1l5 5M14.1 14.1l5 5M19.1-19.1l-5 5M-14.1 14.1l-5 5"/></g></g>
+</svg>

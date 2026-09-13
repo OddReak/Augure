@@ -14,11 +14,11 @@ interface FeuilleProps {
  */
 export function Feuille({ titre, description, children, onFermer }: FeuilleProps) {
   return (
-    <div role="dialog" aria-modal="true" aria-label={titre}>
+    <div role="dialog" aria-modal="true" aria-label={titre} className={styles.dialogue}>
       <div className={`${styles.voile} trame`} onClick={onFermer} aria-hidden="true" />
       <div className={styles.feuille}>
         <h4>{titre}</h4>
-        {description ? <p>{description}</p> : null}
+        {description ? <p className="selectionnable">{description}</p> : null}
         {children}
       </div>
     </div>

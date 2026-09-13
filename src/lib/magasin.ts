@@ -44,6 +44,17 @@ interface EtatUi {
   definirNotifResume: (actif: boolean) => void;
   notifVigilance: boolean;
   definirNotifVigilance: (actif: boolean) => void;
+
+  /**
+   * Feuille d'installation (§7, §9) : « à la deuxième ou troisième ouverture,
+   * jamais à la première ». Incrémenté une fois par lancement (`main.tsx`),
+   * jamais par rendu — un lancement, pas un composant, est « une ouverture ».
+   */
+  ouvertures: number;
+  enregistrerOuverture: () => void;
+  /** Vrai une fois que l'utilisateur a explicitement accusé réception (« J'ai compris ») — ne plus jamais proposer. */
+  installationAcquittee: boolean;
+  acquitterInstallation: () => void;
 }
 
 /**
@@ -92,6 +103,11 @@ export const useMagasinUi = create<EtatUi>()(
       definirNotifResume: (actif) => set({ notifResume: actif }),
       notifVigilance: true,
       definirNotifVigilance: (actif) => set({ notifVigilance: actif }),
+
+      ouvertures: 0,
+      enregistrerOuverture: () => set((etat) => ({ ouvertures: etat.ouvertures + 1 })),
+      installationAcquittee: false,
+      acquitterInstallation: () => set({ installationAcquittee: true }),
     }),
     { name: 'augure-ui' },
   ),
