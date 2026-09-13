@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { PALIERS, type Palier } from '../domain/types';
+import { IDS_SIGNES_METEO } from '../domain/signes';
+import { ID_ICONES_INTERFACE } from '../design/icones';
+import { Signe } from '../design/Signe';
 import { Bande } from '../ui/Bande';
 import { Etiquette } from '../ui/Etiquette';
 import { Interrupteur } from '../ui/Interrupteur';
@@ -67,6 +70,24 @@ export function Styleguide() {
           <div className={styles.bandeTemp} style={{ background: 'var(--t5)' }}>
             t5 ≥30°
           </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Signes ({IDS_SIGNES_METEO.length} météo + {ID_ICONES_INTERFACE.length} interface)</h2>
+        <div className={styles.grilleSignes}>
+          {IDS_SIGNES_METEO.map((id) => (
+            <div key={id} className={styles.caseSigne}>
+              <Signe nom={id} taille={28} titre={id} />
+              <span>{id}</span>
+            </div>
+          ))}
+          {ID_ICONES_INTERFACE.map((id) => (
+            <div key={id} className={styles.caseSigne}>
+              <Signe nom={id} taille={28} />
+              <span>{id}</span>
+            </div>
+          ))}
         </div>
       </section>
 

@@ -41,8 +41,25 @@ Non vérifié en réel : rendu sur un vrai iPhone (contrastes, tailles tactiles)
 Commande pour relancer les tests : `pnpm verify`
 
 ## Phase 2 — Signes
+**État** : close, `pnpm verify` vert.
+
+Fait :
+- `src/design/signes.svg` : sprite de 44 `<symbol>` extraits tels quels de l'objet `GL` du mockup (script Node jetable, non versionné — voir DECISIONS.md pour l'écart avec les « 40 chemins » / « 23 glyphes » annoncés par le document maître).
+- `src/design/Sprite.tsx` : injecte le sprite une fois, monté dans `app/Layout.tsx`.
+- `src/design/Signe.tsx` : composant `<Signe nom taille titre?>`, décoratif (`aria-hidden`) sans `titre`, porteur de sens (`role="img"` + `aria-label`) avec `titre`. L'appui long qui ouvre la fiche Lexique reste à câbler en phase 8, une fois l'écran Lexique construit.
+- `src/domain/signes.ts` : table des seize signes météo officiels (nom + translittération, recopiés de l'objet `NOM` du mockup), avec décomposition (`composeDe`) pour les quatre signes dont les deux constituants sont eux-mêmes un des seize (voile, averse, grêle, gel).
+- `src/design/icones.ts` : liste des vingt-huit icônes d'interface du sprite, hors signes météo.
+- `src/domain/symboles.ts` : décodage des codes Foreca `[d|n][nébulosité][taux precip][type precip]` d'après le schéma documenté sur developer.foreca.com/resources (recherche web, pas deviné — l'exemple `d421` de ce site correspond à celui du document maître) ; `signeDuSymboleForeca` (jamais orphelin, repli `couvert` + `console.warn` journalisé) ; `palierDuSymboleForeca` (priorité colere › fournaise › cendre › ondee › veille › vigies).
+- Section « Signes » ajoutée au styleguide (planche des 44 glyphes), capture Playwright régénérée.
+- Tests : `tests/unit/symboles.test.ts` (exemple `d421`, code inconnu → repli journalisé, préfixe `n` → palier veille, balayage complet des 630 codes du champ documenté sans orphelin) ; `tests/unit/signes.test.ts` (sprite ↔ tables en bijection exacte, 44 = 44).
+
+Non vérifié en réel : aucune réponse Foreca réelle n'a encore été observée (pas de clé) — le décodage s'appuie sur le schéma publié par Foreca lui-même, pas sur une fixture. À revalider en phase 3/7 dès qu'une clé ou des réponses enregistrées sont disponibles.
+
+Commande pour relancer les tests : `pnpm verify`
+
+## Phase 3 — Domaine, adaptateur Foreca et fixtures
 **État** : à démarrer.
 
-Prochaine étape : extraire l'objet `GL` de `design/mockup.html` (40 tracés) vers `src/design/signes.svg` en `<symbol>`, composant `<Signe>`, tables `src/domain/signes.ts` et `src/domain/paliers.ts` (projection symbole Foreca → signe + palier).
+Prochaine étape : types de domaine complets, adaptateur Foreca, `foreca-auth.ts` piloté par `FORECA_MODE`, formatage `longitude,latitude` (avec le test de non-inversion), fixtures MSW pour Cestas/28°/22h/7 jours.
 
 Commande pour relancer les tests : `pnpm verify`

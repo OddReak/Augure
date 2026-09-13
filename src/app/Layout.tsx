@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useMagasinUi } from '../lib/magasin';
+import { Sprite } from '../design/Sprite';
 
 /**
  * Pose `data-palier` sur la racine du document (§5.2 : « un seul attribut
@@ -15,5 +16,10 @@ export function Layout() {
     document.documentElement.dataset.palier = palierForce ?? 'vigies';
   }, [palierForce]);
 
-  return <Outlet />;
+  return (
+    <>
+      <Sprite />
+      <Outlet />
+    </>
+  );
 }
