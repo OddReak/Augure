@@ -40,6 +40,10 @@ export interface ConditionCourante {
   palier: Palier;
   /** Phrase d'accroche (§5.6) : une affirmation, jamais une exhortation. */
   phrase: string;
+  ventKmh: number;
+  humiditePourcent: number;
+  pressionHpa: number;
+  indiceUv: number;
 }
 
 export interface PointHoraire {
@@ -65,6 +69,8 @@ export interface JourPrevision {
   symboleBrut: string;
   temperatureMinC: number;
   temperatureMaxC: number;
+  pluieAccumuleeMm: number;
+  ventMaxKmh: number;
 }
 
 /** Niveau de vigilance officielle (§4.1, endpoint `warning`), priorité croissante. */

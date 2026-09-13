@@ -22,7 +22,7 @@ interface ChapeauProps {
 export function Chapeau({ gauche, titre, sousTitre, droite, onTitreClick, collant = false }: ChapeauProps) {
   const contenuTitre = (
     <span className={styles.lieu}>
-      {titre}
+      <span>{titre}</span>
       {sousTitre ? <small>{sousTitre}</small> : null}
     </span>
   );

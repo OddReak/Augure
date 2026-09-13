@@ -43,6 +43,10 @@ export function adapterConditionCourante(
       ...(vigilance !== undefined ? { vigilance } : {}),
     }),
     phrase,
+    ventKmh: p.windSpeed,
+    humiditePourcent: p.relHumidity,
+    pressionHpa: p.pressure,
+    indiceUv: p.uvIndex,
   };
 }
 
@@ -66,6 +70,8 @@ export function adapterQuotidien(reponse: ForecaReponseQuotidienne): JourPrevisi
     symboleBrut: p.symbol,
     temperatureMinC: p.minTemp,
     temperatureMaxC: p.maxTemp,
+    pluieAccumuleeMm: p.precipAccum,
+    ventMaxKmh: p.maxWindSpeed,
   }));
 }
 

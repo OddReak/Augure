@@ -6,33 +6,20 @@ import { FriseHoraire } from '../features/meteo/FriseHoraire';
 import { Hero } from '../features/meteo/Hero';
 import { Lune } from '../features/meteo/Lune';
 import { SeptJours } from '../features/meteo/SeptJours';
+import { useCoordonneesActuelles } from '../features/meteo/useCoordonneesActuelles';
 import { usePrevisionLieu } from '../features/meteo/usePrevisionLieu';
 import { MenuLieu } from '../features/lieux/MenuLieu';
 import { useMagasinUi } from '../lib/magasin';
-import { POSITION_PAR_DEFAUT } from '../lib/position';
-import { usePosition } from '../lib/usePosition';
 import { Bande } from '../ui/Bande';
 import { Pied } from '../ui/Pied';
-
-// Aucune recherche inverse coordonnées → nom de lieu tant qu'un géocodage
-// inverse n'est pas câblé (§8, décision, voir DECISIONS.md) : « Cestas »
-// n'est correct que pour le repli par défaut, un nom générique le reste
-// tant que la position vient d'une source réelle (IP ou GPS).
-function nomLieuPour(source: 'defaut' | 'stockage' | 'ip' | 'gps'): string {
-  return source === 'defaut' ? 'Cestas' : 'Votre position';
-}
 
 /** Écran d'accueil (§6) : barre collante, héros, paysage. */
 export function Accueil() {
   const navigate = useNavigate();
-  const position = usePosition();
-  const lieuActif = useMagasinUi((etat) => etat.lieuActif);
   const [menuOuvert, setMenuOuvert] = useState(false);
 
-  const coordonnees = lieuActif?.coordonnees ?? position?.coordonnees ?? POSITION_PAR_DEFAUT;
-  const nomLieu = lieuActif?.nom ?? nomLieuPour(position?.source ?? 'defaut');
-
-  const requete = usePrevisionLieu({ latitude: coordonnees.latitude, longitude: coordonnees.longitude, nomLieu });
+  const { latitude, longitude, nomLieu } = useCoordonneesActuelles();
+  const requete = usePrevisionLieu({ latitude, longitude, nomLieu });
   const definirPalierMeteo = useMagasinUi((etat) => etat.definirPalierMeteo);
 
   useEffect(() => {

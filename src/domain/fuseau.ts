@@ -57,3 +57,17 @@ const FORMATTEUR_JOUR = new Intl.DateTimeFormat('fr-FR', { weekday: 'short', tim
 export function libelleJourCourt(date: string): string {
   return FORMATTEUR_JOUR.format(new Date(`${date}T12:00:00Z`));
 }
+
+const FORMATTEUR_JOUR_LONG = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', timeZone: 'UTC' });
+const FORMATTEUR_DATE_LONGUE = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', timeZone: 'UTC' });
+
+/** Jour de semaine en toutes lettres (« dimanche »), casse de phrase (§5.6). */
+export function libelleJourLong(date: string): string {
+  const texte = FORMATTEUR_JOUR_LONG.format(new Date(`${date}T12:00:00Z`));
+  return texte.charAt(0).toUpperCase() + texte.slice(1);
+}
+
+/** Date en toutes lettres (« 13 septembre »), pour le sous-titre du chapeau (§6, Détail d'un jour). */
+export function libelleDateLongue(date: string): string {
+  return FORMATTEUR_DATE_LONGUE.format(new Date(`${date}T12:00:00Z`));
+}
