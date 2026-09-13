@@ -67,6 +67,18 @@ export interface JourPrevision {
   temperatureMaxC: number;
 }
 
+/** Niveau de vigilance officielle (§4.1, endpoint `warning`), priorité croissante. */
+export type NiveauVigilance = 'aucune' | 'jaune' | 'orange' | 'rouge';
+
+export interface Avertissement {
+  niveau: NiveauVigilance;
+  /** Code générique du type d'alerte (vent, orage, inondation…), non traduit (phase 7). */
+  type: string;
+  depuis: string;
+  jusqua: string;
+  description?: string;
+}
+
 export interface PrevisionLieu {
   lieu: Lieu;
   courant: ConditionCourante;
@@ -74,4 +86,6 @@ export interface PrevisionLieu {
   quotidien: JourPrevision[];
   leverSoleil: string;
   coucherSoleil: string;
+  /** Avertissements officiels actifs (§4.1) — [] tant qu'aucune vigilance n'est déclarée. */
+  avertissements: Avertissement[];
 }

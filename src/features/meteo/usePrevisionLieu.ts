@@ -1,6 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
-import { adapterConditionCourante, adapterHoraire, adapterQuotidien } from '../../api/foreca';
-import type { ForecaReponseCourante, ForecaReponseHoraire, ForecaReponseQuotidienne } from '../../api/foreca-types';
+import {
+  adapterAvertissements,
+  adapterConditionCourante,
+  adapterHoraire,
+  adapterQuotidien,
+  fusionnerQualiteAir,
+  vigilanceMax,
+} from '../../api/foreca';
+import type {
+  ForecaReponseAvertissements,
+  ForecaReponseCourante,
+  ForecaReponseHoraire,
+  ForecaReponseQualiteAir,
+  ForecaReponseQuotidienne,
+} from '../../api/foreca-types';
 import { construireFrise } from '../../domain/frise';
 import { decalageDe, versHeureLocale } from '../../domain/fuseau';
 import { leverCoucherUtc } from '../../domain/soleil';
@@ -25,8 +38,10 @@ async function recuperer<T>(url: string): Promise<T> {
 /**
  * Assemble une prévision complète depuis les fonctions `/api/*` (proxy
  * Foreca, phase 7 — servies par les fixtures MSW tant que `VITE_MOCK=1`,
- * §3). La position n'est pas encore branchée sur la chaîne de repli du §7 :
- * `latitude`/`longitude`/`nomLieu` sont pour l'instant fournis par l'appelant.
+ * §3). `/api/air` et `/api/alerts` sont tolérants à l'échec : une panne sur
+ * l'un ne doit pas faire échouer tout l'écran d'accueil pour une donnée
+ * secondaire (qualité de l'air, vigilance) — `Promise.allSettled`, repli sur
+ * « rien » plutôt que sur une erreur globale.
  */
 export function usePrevisionLieu({ latitude, longitude, nomLieu }: OptionsPrevision) {
   return useQuery<PrevisionLieu>({
@@ -38,11 +53,26 @@ export function usePrevisionLieu({ latitude, longitude, nomLieu }: OptionsPrevis
         recuperer<ForecaReponseQuotidienne>(`/api/daily?lat=${latitude}&lon=${longitude}`),
       ]);
 
+      const [airEtabli, alertesEtablies] = await Promise.allSettled([
+        recuperer<ForecaReponseQualiteAir>(`/api/air?lat=${latitude}&lon=${longitude}`),
+        recuperer<ForecaReponseAvertissements>(`/api/alerts?lat=${latitude}&lon=${longitude}`),
+      ]);
+
+      const avertissements =
+        alertesEtablies.status === 'fulfilled' ? adapterAvertissements(alertesEtablies.value) : [];
+      const vigilance = vigilanceMax(avertissements);
+
       const condition = adapterConditionCourante(
         courant,
         phrasePlaceholder(signeDuSymboleForeca(courant.current.symbol)),
+        vigilance,
       );
       const coordonnees = { latitude, longitude };
+
+      let pointsHoraires = adapterHoraire(horaire);
+      if (airEtabli.status === 'fulfilled') {
+        pointsHoraires = fusionnerQualiteAir(pointsHoraires, airEtabli.value);
+      }
 
       // Lever/coucher réels du jour courant (§6, phase 6 : calcul Meeus — `domain/soleil.ts`),
       // affichés dans le fuseau porté par l'horodatage Foreca lui-même (pas de zone IANA connue
@@ -57,10 +87,11 @@ export function usePrevisionLieu({ latitude, longitude, nomLieu }: OptionsPrevis
         courant: condition,
         // Jalons lever/coucher et repères de jour insérés ici (§domain/frise.ts, phase 5/6) :
         // ni l'un ni l'autre ne viennent de Foreca, l'insertion est une seule fois pour tous les écrans.
-        horaire: construireFrise(adapterHoraire(horaire), coordonnees),
+        horaire: construireFrise(pointsHoraires, coordonnees),
         quotidien: adapterQuotidien(quotidien),
         leverSoleil,
         coucherSoleil,
+        avertissements,
       };
     },
   });

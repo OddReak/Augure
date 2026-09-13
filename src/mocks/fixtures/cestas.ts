@@ -1,9 +1,12 @@
 import type {
   ForecaPeriodeHoraire,
   ForecaPeriodeQuotidienne,
+  ForecaReponseAvertissements,
   ForecaReponseCourante,
   ForecaReponseHoraire,
+  ForecaReponseQualiteAir,
   ForecaReponseQuotidienne,
+  ForecaReponseRecherche,
 } from '../../api/foreca-types';
 
 /**
@@ -72,7 +75,7 @@ function construireHeureIso(index: number, heure: string): string {
 }
 
 export const CESTAS_HORAIRE: ForecaReponseHoraire = {
-  hourly: HORAIRE_BRUT.map(([heure, temperature, symbol], index): ForecaPeriodeHoraire => {
+  forecast: HORAIRE_BRUT.map(([heure, temperature, symbol], index): ForecaPeriodeHoraire => {
     const estNuit = symbol.startsWith('n');
     return {
       time: construireHeureIso(index, heure),
@@ -104,7 +107,7 @@ const QUOTIDIEN_BRUT: Array<[date: string, min: number, max: number, symbole: st
 ];
 
 export const CESTAS_QUOTIDIEN: ForecaReponseQuotidienne = {
-  daily: QUOTIDIEN_BRUT.map(([date, minTemp, maxTemp, symbol]): ForecaPeriodeQuotidienne => ({
+  forecast: QUOTIDIEN_BRUT.map(([date, minTemp, maxTemp, symbol]): ForecaPeriodeQuotidienne => ({
     date,
     minTemp,
     maxTemp,
@@ -113,6 +116,25 @@ export const CESTAS_QUOTIDIEN: ForecaReponseQuotidienne = {
     windDir: 210,
     precipAccum: symbol === 'd410' ? 3.2 : 0,
   })),
+};
+
+// Qualité de l'air (phase 7, endpoint séparé, §4.1) : valeurs d'auteur plausibles
+// (AQI américain, converties par `eaqiDepuisAqiUs`) — le mockup ne documente pas
+// cette métrique, absente de ses fixtures d'origine.
+export const CESTAS_AIR: ForecaReponseQualiteAir = {
+  forecast: HORAIRE_BRUT.map(([heure], index) => ({
+    time: construireHeureIso(index, heure),
+    AQI: 30 + ((index * 5) % 40),
+  })),
+};
+
+// Scénario « vigies » : aucune vigilance active.
+export const CESTAS_ALERTES: ForecaReponseAvertissements = { warnings: [] };
+
+export const CESTAS_RECHERCHE: ForecaReponseRecherche = {
+  locations: [
+    { id: 'cestas-fr', name: 'Cestas', country: 'France', adminArea: 'Nouvelle-Aquitaine', lat: 44.74, lon: -0.68 },
+  ],
 };
 
 export const CESTAS_PHRASE = 'Ciel dégagé pendant la prochaine heure.';

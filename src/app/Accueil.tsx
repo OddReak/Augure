@@ -7,16 +7,32 @@ import { Lune } from '../features/meteo/Lune';
 import { SeptJours } from '../features/meteo/SeptJours';
 import { usePrevisionLieu } from '../features/meteo/usePrevisionLieu';
 import { useMagasinUi } from '../lib/magasin';
+import { usePosition } from '../lib/usePosition';
 import { Bande } from '../ui/Bande';
 
-// Position temporaire, en dur : la chaîne de repli du §7 (dernière position
-// connue → IP → GPS → recherche manuelle) arrive en phase 7/8. Coordonnées
-// de Cestas, identiques à la fixture MSW de la phase 3.
-const LIEU_PROVISOIRE = { latitude: 44.74, longitude: -0.68, nomLieu: 'Cestas' };
+// Repli tant qu'aucune source de la chaîne du §7 (stockage → IP → GPS) n'a
+// répondu — le tout premier appel, avant toute persistance et hors de
+// l'infrastructure Vercel (§7 : `/api/position` répond 204 en local).
+// Coordonnées de Cestas, identiques à la fixture MSW de la phase 3, pour que
+// le mode mock continue de fonctionner sans dépendre d'une vraie position.
+const POSITION_PAR_DEFAUT = { latitude: 44.74, longitude: -0.68 };
+
+// Aucune recherche inverse coordonnées → nom de lieu tant que l'écran de
+// recherche (phase 8) n'existe pas : « Cestas » n'est correct que pour le
+// repli par défaut, un nom générique le reste tant que la position vient
+// d'une source réelle (IP ou GPS). Voir DECISIONS.md.
+function nomLieuPour(source: 'defaut' | 'stockage' | 'ip' | 'gps'): string {
+  return source === 'defaut' ? 'Cestas' : 'Votre position';
+}
 
 /** Écran d'accueil (§6) : barre collante, héros, paysage. */
 export function Accueil() {
-  const requete = usePrevisionLieu(LIEU_PROVISOIRE);
+  const position = usePosition();
+  const requete = usePrevisionLieu({
+    latitude: position?.coordonnees.latitude ?? POSITION_PAR_DEFAUT.latitude,
+    longitude: position?.coordonnees.longitude ?? POSITION_PAR_DEFAUT.longitude,
+    nomLieu: nomLieuPour(position?.source ?? 'defaut'),
+  });
   const definirPalierMeteo = useMagasinUi((etat) => etat.definirPalierMeteo);
 
   useEffect(() => {
