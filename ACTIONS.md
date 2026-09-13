@@ -7,6 +7,9 @@ Accumulé jusqu'ici :
 ## Dépôt et déploiement
 - Fusionner la branche `worktree-augure-build` (ou celle en cours à la clôture) vers `main` : le déploiement Vercel se déclenche sur `main`, et cette session ne pousse jamais directement dessus.
 
+## Cartes (phase 8)
+- L'écran Cartes affiche une carte de précipitations illustrative, pas les vraies tuiles Foreca Maps : le jeton Foreca Maps est séparé de la clé de l'API météo (§4.1). Si les cartes réelles sont souhaitées, souscrire à Foreca Maps et fournir le jeton — une fonction Vercel de proxy restera à écrire (`api/maps/tile.ts`, sur le modèle de `api/current.ts`).
+
 ## Foreca (phase 7)
 - Ouvrir un accès sur developer.foreca.com, ou souscrire au plan Basic du listing « Foreca Weather API » sur RapidAPI.
 - Vercel → Settings → Environment Variables :

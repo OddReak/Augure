@@ -154,8 +154,24 @@ Non vérifié en réel : aucune réponse Foreca authentique observée (toujours 
 Commande pour relancer les tests : `pnpm verify`
 
 ## Phase 8 — Navigation et écrans secondaires
-**État** : à démarrer.
+**État** : en cours, `pnpm verify` vert. Session interrompue à la demande de l'humain avant la fin de la phase — reprendre ici plutôt que revenir en arrière.
 
-Prochaine étape : Recherche (branchée sur `/api/places`, déjà prêt), Mes lieux avec persistance locale et réordonnancement, Détail d'un jour, Cartes, Lexique et fiche de signe (appui long sur un `<Signe>`, câblage annoncé mais reporté depuis la phase 2), Réglages (dont l'attribution Foreca — texte exact vérifié en phase 7, voir DECISIONS.md), menu de lieu, états limites (position refusée, échec de chargement, hors ligne).
+Fait :
+- Chapeau/Pastille (`src/ui`) : primitives génériques du `.chapeau`/`.pastille`, réutilisées par tous les écrans poussés.
+- Pied (`src/ui/Pied.tsx`) : nav basse à trois destinations (Ciel/Cartes/Lexique) + recherche — jamais Mes lieux ni Réglages, atteints depuis le chapeau (décision, DECISIONS.md).
+- Store étendu (`src/lib/magasin.ts`) : `lieuxEnregistres` (persisté), `lieuActif`, `deplacerLieu` ; préférences d'affichage (unités, signes seuls, notifications) persistées mais pas encore appliquées à l'affichage (gap documenté).
+- Recherche (`/recherche`) : `/api/places` avec anti-rebond, température par résultat, état vide fidèle au mockup.
+- Mes lieux (`/mes-lieux`) : position live en tête + lieux enregistrés en dessous, chaque vignette calcule son propre palier (`useResumeLieu`) posé en `data-palier` sur son propre conteneur ; réorganisation par mode explicite (Monter/Descendre/Retirer), pas de glisser-déposer. Fixtures `LIEUX_DEMO` : un lieu par palier (Cestas/Rennes/Annecy/Toulouse/Chamonix/Séville), verrouillées par `demo-lieux.test.ts`.
+- Menu du lieu (feuille, depuis la pastille « Menu » du héros) : ajouter/retirer des lieux, partager, raccourcis vers Réglages.
+- Réglages (`/reglages`) : section Position reflétant l'état réel de `navigator.permissions` (jamais un faux interrupteur) ; export/effacement des données locales réels ; unités et signes-seuls persistés.
+- Détail d'un jour (`/jour/:date`) : réutilise la requête de l'accueil (même clé TanStack Query, aucun second appel réseau) ; frise horaire omise au-delà des 48 h couvertes par `/api/hourly` ; Humidité/Pression/Indice UV/Course du soleil réservés au jour courant (l'endpoint quotidien ne les fournit pas pour les autres jours).
+- Lexique (`/lexique`) + fiche de signe (`/lexique/:signe`) : seize signes, décomposition (`composeDe`), seuils de déclenchement rédigés à partir de la logique réellement implémentée (`domain/lexique.ts`, verrouillé par `lexique.test.ts`) — le filtre par primitive de tracé du mockup (Disque/Barre/Chevron/Point) n'est pas repris, aucune classification fiable n'étant donnée par le document maître (décision, DECISIONS.md).
+- `SigneLexique` (`src/design`) : appui long (500 ms) ouvrant la fiche du Lexique (§5.4, règle d'accessibilité) — câblé sur le glyphe du héros et du détail d'un jour, seuls emplacements non déjà imbriqués dans un élément cliquable. Sept jours / vignettes / résultats de recherche gardent un `<Signe>` simple (décision, DECISIONS.md).
+- Cartes (`/cartes`) : `CarteSVG.tsx` reprend telle quelle la grille et la silhouette de terrain de `carteSVG()` du mockup (précipitations en cinq aplats, jamais un dégradé). Illustratif tant qu'aucune clé Foreca Maps n'est disponible (§4.1, jeton séparé de l'API météo) — le sélecteur de couche reste réel et persistant, mais Vent/Température le disent explicitement plutôt que de laisser croire à une carte différente (décision, DECISIONS.md ; action correspondante dans ACTIONS.md).
+- Domaine étendu : `ConditionCourante` (ventKmh, humiditePourcent, pressionHpa, indiceUv), `JourPrevision` (pluieAccumuleeMm, ventMaxKmh), `signeAffiche` (seuils canicule/gel appliqués à la vignette de lieu), `domain/fuseau.ts` (libelleJourLong, libelleDateLongue).
+
+Non vérifié en réel : aucun changement (toujours pas de clé Foreca). Les unités choisies en Réglages ne changent encore aucun affichage ailleurs dans l'application (gap assumé, pas caché). La carte est illustrative (voir ci-dessus), pas les vraies tuiles Foreca.
+
+Reste à faire avant de clore la phase : état « hors ligne » (bandeau + âge de la donnée sur l'accueil — la « position refusée » et l'« échec de chargement » existent déjà, respectivement dans Réglages et Accueil).
 
 Commande pour relancer les tests : `pnpm verify`

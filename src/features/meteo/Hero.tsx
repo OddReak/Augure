@@ -1,5 +1,5 @@
-import { Signe } from '../../design/Signe';
 import { Paysage } from '../../design/Paysage';
+import { SigneLexique } from '../../design/SigneLexique';
 import { hauteurMarcheCiel, courseSolaire } from '../../design/marche-ciel';
 import { decalageDe } from '../../domain/fuseau';
 import { SIGNES_METEO } from '../../domain/signes';
@@ -51,7 +51,7 @@ export function Hero({
       />
       <header className={styles.heros}>
         <div className={styles.marque}>
-          <Signe nom={condition.signe} taille={96} titre={titreSigne} className={styles.grandSigne} />
+          <SigneLexique nom={condition.signe} taille={96} titre={titreSigne} className={styles.grandSigne} />
           <div>
             <p className={styles.temp}>
               {Math.round(condition.temperatureC)}

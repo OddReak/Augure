@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { hauteurMarcheCiel } from '../design/marche-ciel';
 import { Paysage } from '../design/Paysage';
 import { Signe } from '../design/Signe';
+import { SigneLexique } from '../design/SigneLexique';
 import { dateDe, decalageDe, libelleDateLongue, libelleJourLong } from '../domain/fuseau';
 import { SIGNES_METEO } from '../domain/signes';
 import { CourseSoleil } from '../features/meteo/CourseSoleil';
@@ -65,7 +66,7 @@ export function DetailJour() {
       />
       <header className={styles.heros}>
         <div className={styles.marque}>
-          <Signe nom={jour.signe} taille={96} titre={titreSigne} className={styles.grandSigne} />
+          <SigneLexique nom={jour.signe} taille={96} titre={titreSigne} className={styles.grandSigne} />
           <div>
             <p className={styles.temp}>
               {Math.round(jour.temperatureMaxC)}
