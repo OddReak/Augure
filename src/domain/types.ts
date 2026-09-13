@@ -55,6 +55,8 @@ export interface PointHoraire {
   qualiteAirEaqi?: number;
   /** Un jalon lever/coucher inséré à son heure exacte (phase 5) — jamais fourni par Foreca. */
   jalon?: 'lever' | 'coucher';
+  /** Libellé du jour (« dim. ») posé sur le premier point d'une nouvelle date (phase 5, frise horaire). */
+  sep?: string;
 }
 
 export interface JourPrevision {

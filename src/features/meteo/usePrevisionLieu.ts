@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { adapterConditionCourante, adapterHoraire, adapterQuotidien } from '../../api/foreca';
 import type { ForecaReponseCourante, ForecaReponseHoraire, ForecaReponseQuotidienne } from '../../api/foreca-types';
+import { construireFrise } from '../../domain/frise';
 import { signeDuSymboleForeca } from '../../domain/symboles';
 import type { PrevisionLieu } from '../../domain/types';
 import { phrasePlaceholder } from './phrase';
@@ -40,14 +41,19 @@ export function usePrevisionLieu({ latitude, longitude, nomLieu }: OptionsPrevis
         phrasePlaceholder(signeDuSymboleForeca(courant.current.symbol)),
       );
 
+      // Lever/coucher réels arrivent en phase 6 (calcul Meeus) ; valeurs de la fixture en attendant.
+      const leverSoleil = '07:39';
+      const coucherSoleil = '20:22';
+
       return {
         lieu: { nom: nomLieu, coordonnees: { latitude, longitude } },
         courant: condition,
-        horaire: adapterHoraire(horaire),
+        // Jalons lever/coucher et repères de jour insérés ici (§domain/frise.ts, phase 5) :
+        // ni l'un ni l'autre ne viennent de Foreca, l'insertion est une seule fois pour tous les écrans.
+        horaire: construireFrise(adapterHoraire(horaire), leverSoleil, coucherSoleil),
         quotidien: adapterQuotidien(quotidien),
-        // Lever/coucher réels arrivent en phase 6 (calcul Meeus) ; valeurs de la fixture en attendant.
-        leverSoleil: '07:39',
-        coucherSoleil: '20:22',
+        leverSoleil,
+        coucherSoleil,
       };
     },
   });

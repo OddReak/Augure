@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { FriseHoraire } from '../features/meteo/FriseHoraire';
 import { Hero } from '../features/meteo/Hero';
 import { usePrevisionLieu } from '../features/meteo/usePrevisionLieu';
 import { useMagasinUi } from '../lib/magasin';
@@ -46,6 +47,7 @@ export function Accueil() {
         leverSoleil={requete.data.leverSoleil}
         coucherSoleil={requete.data.coucherSoleil}
       />
+      <FriseHoraire points={requete.data.horaire} />
     </main>
   );
 }

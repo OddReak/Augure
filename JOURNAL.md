@@ -96,8 +96,23 @@ Non vérifié en réel : la marche de ciel n'a été vérifiée que par sa formu
 Commande pour relancer les tests : `pnpm verify`
 
 ## Phase 5 — Frise horaire
-**État** : à démarrer. Phase la plus risquée du projet (le document le signale explicitement) : à isoler.
+**État** : close, `pnpm verify` vert.
 
-Prochaine étape : SVG en défilement horizontal (`horaires()` du mockup : pas de 58 px, bande de tracé y=76→112, hauteur 152), quantification par bande (§5.2, `ECH_UV`/`ECH_AIR`/`ECH_PLUIE`/`ECH_VENT`), jalons lever/coucher insérés à l'heure exacte, séparateur de jour collant, sélecteur de six métriques en grille 3×2.
+Fait :
+- `src/domain/quantification.ts` : `bandeTemperature` (les cinq bandes t1–t5, §5.2), les quatre échelles par colonnes `ECH_UV`/`ECH_AIR`/`ECH_PLUIE`/`ECH_VENT` (valeurs hexadécimales recopiées du mockup), `niveau()` (le palier d'une valeur), `plafondAxeColonnes()` (la borne haute de la bande qui contient le pic de la série, jamais le pic lui-même — §5.2), le catalogue `METRIQUES` des six métriques (deux en polyligne, quatre en colonnes).
+- `src/domain/frise.ts` : `avecJalons()` insère un jalon lever/coucher à son heure exacte entre les deux points horaires qui l'encadrent (une insertion par date rencontrée dans la série, jamais un point retiré), avec température/ressenti/vent/UV/qualité de l'air interpolés linéairement ; `avecSeparateursJour()` pose un repère de jour (« dim. ») sur le premier point de chaque nouvelle date ; `construireFrise()` compose les deux. Piège de fuseau horaire verrouillé (voir DECISIONS.md) : le libellé de jour est ancré à midi UTC sur la seule date, jamais lu via `Date#getHours()` en fuseau local.
+- `src/design/frise-geometrie.ts` : géométrie pure (`positionsColonnes`, `positionSeparateur`, `largeurFrise`), reprise de `horaires()` du mockup (pas de 58 px, bande de tracé y=74→116, hauteur 156) — ne prend jamais la métrique en paramètre, ce qui garantit structurellement que changer de métrique ne déplace aucune colonne.
+- `src/features/meteo/FriseHoraire.tsx` (+ `.module.css`) : SVG en défilement horizontal (`.rail`), têtes d'heure + glyphe de condition, polyligne colorée par bande de température (temp/ressenti) ou colonnes colorées par niveau d'indice (pluie/vent/UV/qualité de l'air), séparateur de jour tourné à −90°, sélecteur de six métriques en grille 3×2 (réutilise `Onglets`, phase 1). `svg[role="img"]` avec `aria-label`, doublé d'une table de lecture linéaire visuellement masquée (§7).
+- `usePrevisionLieu` applique désormais `construireFrise` à la réponse `/api/hourly` adaptée ; `Accueil.tsx` rend `<FriseHoraire>` sous le héros.
+- Tests : `quantification.test.ts` (bandes, échelles, `niveau`, `plafondAxeColonnes` — le pic ne doit jamais être son propre plafond), `frise.test.ts` (index d'insertion exact du coucher, interpolation, absence d'insertion hors plage, plusieurs jalons/jours, ordre chronologique préservé, repère de jour posé au bon endroit), `frise-geometrie.test.ts` (pas fixe, décalage par repère de jour, largeur totale, indépendance vis-à-vis de la métrique). `tests/e2e/frise.spec.ts` (390×844) : les positions `data-x` des colonnes sont identiques après bascule des six métriques ; le défilement du rail ne perturbe pas la géométrie ; les six libellés du sélecteur ne débordent pas en français, ni après substitution par des variantes plus longues.
+
+Non vérifié en réel : le lever/coucher inséré reste la même heure HH:MM pour toutes les dates de la série (pas de calcul par jour avant la phase 6, voir DECISIONS.md) ; la qualité de l'air (`qualiteAirEaqi`) est absente tant que l'endpoint `/api/air` n'est pas câblé (phase 7) — la métrique « air » de la frise affiche 0 en attendant, correctement quantifié mais pas encore une vraie donnée.
+
+Commande pour relancer les tests : `pnpm verify`
+
+## Phase 6 — Sept jours, soleil, lune
+**État** : à démarrer.
+
+Prochaine étape : barres segmentées sur échelle fixe −5 → 40 °C avec curseur du jour courant, arc solaire (`arcSoleil()` du mockup), disque lunaire et phases (`disqueLune()`, attention au drapeau de sens au premier quartier), calcul Meeus du lever/coucher réel par jour (qui remplacera l'heure unique de la phase 5, voir DECISIONS.md).
 
 Commande pour relancer les tests : `pnpm verify`

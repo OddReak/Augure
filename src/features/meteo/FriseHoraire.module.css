@@ -1,0 +1,35 @@
+.rail {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0 0 4px var(--e5);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.rail::-webkit-scrollbar {
+  display: none;
+}
+.rail svg {
+  display: block;
+  height: auto;
+}
+
+.selecteur {
+  padding: var(--e4) var(--e5) 0;
+  border-top: var(--trait-filet) solid var(--trait);
+  margin-top: var(--e4);
+}
+
+/* Table équivalente en lecture linéaire (§7) : la frise est un `<svg role="img">`,
+   cette table porte la même donnée pour les technologies d'assistance qui ne
+   lisent pas un graphique — jamais affichée visuellement. */
+.lectureLineaire {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
