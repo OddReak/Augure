@@ -5,6 +5,9 @@ import type { Palier } from '../domain/types';
 interface EtatUi {
   palierForce: Palier | null;
   forcerPalier: (palier: Palier | null) => void;
+  /** Palier dérivé de la dernière condition météo reçue (phase 4+). */
+  palierMeteo: Palier | null;
+  definirPalierMeteo: (palier: Palier | null) => void;
 }
 
 /**
@@ -18,6 +21,8 @@ export const useMagasinUi = create<EtatUi>()(
     (set) => ({
       palierForce: null,
       forcerPalier: (palier) => set({ palierForce: palier }),
+      palierMeteo: null,
+      definirPalierMeteo: (palier) => set({ palierMeteo: palier }),
     }),
     { name: 'augure-ui' },
   ),

@@ -12,7 +12,10 @@ export default defineConfig({
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
+    // VITE_MOCK=1 : les fonctions /api/* de la phase 7 n'existent pas encore côté `vite preview`,
+    // le parcours e2e tourne donc contre les fixtures MSW (§3), comme en développement.
     command: 'pnpm build && pnpm preview',
+    env: { VITE_MOCK: '1' },
     url: 'http://localhost:4173',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

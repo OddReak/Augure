@@ -76,8 +76,28 @@ Non vérifié en réel : aucune réponse Foreca authentique observée (pas de cl
 Commande pour relancer les tests : `pnpm verify`
 
 ## Phase 4 — Héros et paysage
-**État** : à démarrer.
+**État** : close, `pnpm verify` vert.
 
-Prochaine étape : barre supérieure collante, bloc de température, phrase, six composants de paysage (`Paysage.tsx`, chemins recopiés de `paysage()` dans le mockup), bascule de palier animée, régression visuelle sur les six paliers en 390×844, test de trame (§5.5) sur face lumière/face ombre.
+Fait :
+- `src/design/Paysage.tsx` : chemins recopiés tels quels de la fonction `paysage()` du mockup (trois plans, arcades, cyprès), un `<pattern>` de trame par instance (`useId`, §5.5). La bande `cielb` (marche d'ombre) est désormais paramétrable en hauteur (`hauteurCiel`) au lieu d'être fixée à 46 — c'est ce qui permet la marche animée.
+- `src/design/marche-ciel.ts` : `courseSolaire` (0 au lever, 0,5 à midi, 1 au coucher, `null` la nuit) et `hauteurMarcheCiel` — approximation par sinus, pas le calcul Meeus complet (arrive en phase 6 pour l'arc et la lune ; ici on ne place que la marche du héros dans la journée).
+- `src/features/meteo/Hero.tsx` (+ `Hero.module.css`) : barre supérieure collante (`position: sticky`), bloc de température (`tabular-nums`, Fraunces 500 opsz144), phrase, glyphe du signe courant.
+- `src/features/meteo/phrase.ts` : phrase d'accroche **placeholder**, une par signe — la composition complète du §5.6 (horizon temporel, heure de bascule) dépend de la frise horaire (phase 5), pas encore raccordée.
+- `src/features/meteo/usePrevisionLieu.ts` : assemble `/api/current|hourly|daily` via TanStack Query (§3) et l'adaptateur de la phase 3. Position en dur sur Cestas en attendant la chaîne de repli du §7/phase 7-8.
+- `src/lib/requetes.ts` : `QueryClient` + persistance IndexedDB (`idb-keyval`, `@tanstack/query-async-storage-persister`), câblé dans `App.tsx` via `PersistQueryClientProvider`.
+- `src/lib/magasin.ts` : ajout de `palierMeteo` (dérivé de la dernière condition reçue) ; `Layout.tsx` résout `data-palier` par `palierForce ?? palierMeteo ?? 'vigies'`.
+- `Accueil.tsx` n'est plus un placeholder : rend `Hero` avec les données réelles (fixture Cestas tant que `VITE_MOCK=1`), état d'erreur avec réessai, état de chargement sans spinner (§7).
+- **Deux correctifs d'outillage** : `vite.config.ts` fixe `build.target: 'es2022'` (le top-level await de `main.tsx` cassait le build par défaut) ; `playwright.config.ts` construit le serveur e2e avec `VITE_MOCK=1` puisque les fonctions `/api/*` n'existent pas encore (phase 7).
+- Tests : `marche-ciel.test.ts` (la marche varie avec l'heure solaire) ; `tests/e2e/trame.spec.ts` — capture Playwright + décodage PNG (`pngjs`) + régression linéaire, exactement la méthode prescrite au §5.5, sur les six paliers. **Écart documenté** : `veille`/`colere` (`--trame-op: 0.24`) mesurent ~24-28 % de creux, au-delà de la bande générale 6-13 % du document — bande élargie pour ces deux paliers seulement (voir DECISIONS.md), jetons du mockup non modifiés.
+- Capture `/styleguide` régénérée (échantillons de mesure de trame ajoutés).
+
+Non vérifié en réel : la marche de ciel n'a été vérifiée que par sa formule (sinus), jamais contre une vraie position solaire Meeus (phase 6) ; la phrase d'accroche est un texte fixe par signe, pas la composition finale du §5.6.
+
+Commande pour relancer les tests : `pnpm verify`
+
+## Phase 5 — Frise horaire
+**État** : à démarrer. Phase la plus risquée du projet (le document le signale explicitement) : à isoler.
+
+Prochaine étape : SVG en défilement horizontal (`horaires()` du mockup : pas de 58 px, bande de tracé y=76→112, hauteur 152), quantification par bande (§5.2, `ECH_UV`/`ECH_AIR`/`ECH_PLUIE`/`ECH_VENT`), jalons lever/coucher insérés à l'heure exacte, séparateur de jour collant, sélecteur de six métriques en grille 3×2.
 
 Commande pour relancer les tests : `pnpm verify`

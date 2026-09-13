@@ -69,6 +69,15 @@
   font-weight: 700;
 }
 
+.mesuresTrame {
+  display: flex;
+}
+
+.echantillon {
+  width: 64px;
+  height: 40px;
+}
+
 .grilleSignes {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));

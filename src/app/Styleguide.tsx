@@ -37,6 +37,18 @@ export function Styleguide() {
               <strong>{NOMS_PALIER[palier]}</strong>
             </div>
             <div className={`${styles.ombre} trame`} />
+            <div className={styles.mesuresTrame}>
+              <div
+                data-testid="face-lumiere"
+                className={styles.echantillon}
+                style={{ background: 'var(--ciel)' }}
+              />
+              <div
+                data-testid="face-ombre"
+                className={`${styles.echantillon} trame`}
+                style={{ background: 'var(--ciel-b)' }}
+              />
+            </div>
             <div className={styles.plans}>
               <div className={styles.plan} style={{ background: 'var(--p1)' }} />
               <div className={styles.plan} style={{ background: 'var(--p2)' }} />

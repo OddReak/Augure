@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
-test('l\'application se charge et affiche un titre', async ({ page }) => {
+test("l'application se charge et affiche la météo du lieu courant", async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'AUGURE' })).toBeVisible();
+  await expect(page).toHaveTitle('AUGURE');
+  await expect(page.getByText('Cestas')).toBeVisible();
 });
