@@ -1,8 +1,11 @@
-import type { IdSigneMeteo } from './signes';
+import type { IdSigneMeteo } from './signes.ts';
 
 /**
  * Types de domaine. Toutes les unités sont en SI (§4.1, « unités toujours
  * stockées en SI, converties à l'affichage »).
+ *
+ * Import relatif en `.ts` (voir `notification.ts`) : importé tel quel par
+ * l'Edge Function `envoi-quotidien` (Deno, phase 10).
  */
 
 /** Les six régimes visuels de l'application (§5.2), par priorité décroissante. */

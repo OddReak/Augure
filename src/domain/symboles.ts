@@ -1,9 +1,12 @@
-import type { IdSigneMeteo } from './signes';
-import { IDS_SIGNES_METEO } from './signes';
-import type { Palier } from './types';
+import type { IdSigneMeteo } from './signes.ts';
+import { IDS_SIGNES_METEO } from './signes.ts';
+import type { Palier } from './types.ts';
 
 /**
  * Décodage des symboles Foreca (`current`, `forecast/hourly`, `forecast/daily`).
+ *
+ * Imports relatifs en `.ts` (voir `notification.ts`) : ce module est
+ * importé tel quel par l'Edge Function `envoi-quotidien` (Deno, phase 10).
  *
  * Foreca documente son schéma (developer.foreca.com/resources) comme une
  * lettre jour/nuit suivie de trois chiffres, chacun une catégorie séparée :

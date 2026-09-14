@@ -13,6 +13,11 @@ export default tseslint.config(
       'playwright-report',
       'test-results',
       'public/mockServiceWorker.js', // généré par `msw init`, ne pas modifier ni linter
+      // Deno (Edge Function, phase 10), pas Node : globals (`Deno`), imports `npm:` et
+      // extensions `.ts` que le parseur TypeScript de ce projet ne résout pas.
+      // `grouper.ts` (module pur, testé par Vitest) est réintégré ci-dessous.
+      'supabase/functions/**',
+      '!supabase/functions/envoi-quotidien/grouper.ts',
     ],
   },
   {

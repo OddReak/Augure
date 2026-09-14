@@ -40,8 +40,6 @@ interface EtatUi {
   definirUniteVent: (unite: 'kmh' | 'ms' | 'mph') => void;
   signesSeuls: boolean;
   definirSignesSeuls: (actif: boolean) => void;
-  notifResume: boolean;
-  definirNotifResume: (actif: boolean) => void;
   notifVigilance: boolean;
   definirNotifVigilance: (actif: boolean) => void;
 
@@ -55,6 +53,10 @@ interface EtatUi {
   /** Vrai une fois que l'utilisateur a explicitement accusé réception (« J'ai compris ») — ne plus jamais proposer. */
   installationAcquittee: boolean;
   acquitterInstallation: () => void;
+  /** §10 : Réglages → Alerte quotidienne ouvre la feuille hors de la fenêtre des premières ouvertures. */
+  installationForcee: boolean;
+  forcerInstallation: () => void;
+  relacherInstallationForcee: () => void;
 }
 
 /**
@@ -99,8 +101,6 @@ export const useMagasinUi = create<EtatUi>()(
       definirUniteVent: (unite) => set({ uniteVent: unite }),
       signesSeuls: false,
       definirSignesSeuls: (actif) => set({ signesSeuls: actif }),
-      notifResume: true,
-      definirNotifResume: (actif) => set({ notifResume: actif }),
       notifVigilance: true,
       definirNotifVigilance: (actif) => set({ notifVigilance: actif }),
 
@@ -108,6 +108,9 @@ export const useMagasinUi = create<EtatUi>()(
       enregistrerOuverture: () => set((etat) => ({ ouvertures: etat.ouvertures + 1 })),
       installationAcquittee: false,
       acquitterInstallation: () => set({ installationAcquittee: true }),
+      installationForcee: false,
+      forcerInstallation: () => set({ installationForcee: true }),
+      relacherInstallationForcee: () => set({ installationForcee: false }),
     }),
     { name: 'augure-ui' },
   ),

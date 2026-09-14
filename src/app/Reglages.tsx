@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Signe } from '../design/Signe';
+import { useAbonnementNotifications } from '../features/notifications/useAbonnementNotifications';
+import { useCoordonneesActuelles } from '../features/meteo/useCoordonneesActuelles';
 import { effacerDonneesLocales } from '../lib/effacer';
 import { useMagasinUi } from '../lib/magasin';
 import { positionAffinee } from '../lib/position';
@@ -21,6 +23,8 @@ import styles from './Reglages.module.css';
 export function Reglages() {
   const navigate = useNavigate();
   const permission = usePermissionGeolocalisation();
+  const lieu = useCoordonneesActuelles();
+  const notifications = useAbonnementNotifications(lieu);
 
   const uniteTemperature = useMagasinUi((etat) => etat.uniteTemperature);
   const definirUniteTemperature = useMagasinUi((etat) => etat.definirUniteTemperature);
@@ -28,8 +32,6 @@ export function Reglages() {
   const definirUniteVent = useMagasinUi((etat) => etat.definirUniteVent);
   const signesSeuls = useMagasinUi((etat) => etat.signesSeuls);
   const definirSignesSeuls = useMagasinUi((etat) => etat.definirSignesSeuls);
-  const notifResume = useMagasinUi((etat) => etat.notifResume);
-  const definirNotifResume = useMagasinUi((etat) => etat.definirNotifResume);
   const notifVigilance = useMagasinUi((etat) => etat.notifVigilance);
   const definirNotifVigilance = useMagasinUi((etat) => etat.definirNotifVigilance);
   const lieuxEnregistres = useMagasinUi((etat) => etat.lieuxEnregistres);
@@ -106,9 +108,19 @@ export function Reglages() {
           <Signe nom="cloche" className={styles.gl} />
           <div className={styles.txt}>
             <b>Résumé du lendemain</b>
-            <span>Une notification par jour</span>
+            <span>
+              {notifications.erreur
+                ? notifications.erreur
+                : notifications.abonne
+                  ? 'Une notification par jour'
+                  : 'Désactivé'}
+            </span>
           </div>
-          <Interrupteur actif={notifResume} onChange={definirNotifResume} libelle="Résumé du lendemain" />
+          <Interrupteur
+            actif={notifications.abonne ?? false}
+            onChange={() => notifications.basculer()}
+            libelle="Résumé du lendemain"
+          />
         </div>
         <div className={styles.reglage}>
           <Signe nom="horloge" className={styles.gl} />

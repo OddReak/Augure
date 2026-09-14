@@ -1,22 +1,6 @@
 import { useEvenementInstallationDifferee } from '../../lib/installationNavigateur';
 import { useMagasinUi } from '../../lib/magasin';
-
-/** `navigator.standalone` (iOS uniquement) — absent du DOM standard. */
-interface NavigateurIos extends Navigator {
-  standalone?: boolean;
-}
-
-function estAutonome(): boolean {
-  return window.matchMedia('(display-mode: standalone)').matches || (navigator as NavigateurIos).standalone === true;
-}
-
-/** iOS/iPadOS, hors les navigateurs qui empruntent WebKit sans être Safari (Chrome/Firefox iOS, §7). */
-function estIosSafari(): boolean {
-  const ua = navigator.userAgent;
-  const estIos = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  const estSafari = /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
-  return estIos && estSafari;
-}
+import { estAutonome, estIosSafari } from '../../lib/plateforme';
 
 interface EtatInstallation {
   /** `null` : rien à proposer (déjà installé, ni iOS Safari ni `beforeinstallprompt`, ou trop tôt). */
@@ -32,15 +16,19 @@ interface EtatInstallation {
  * première ouverture, jamais si déjà installé. iOS n'expose pas
  * `beforeinstallprompt` — seul un guide manuel (Partager → Sur l'écran
  * d'accueil) est possible ; Chrome/Android expose l'événement et son propre
- * dialogue natif.
+ * dialogue natif. `installationForcee` (§10) : Réglages → Alerte
+ * quotidienne l'ouvre aussi hors de la fenêtre des deux/trois premières
+ * ouvertures, quand le Web Push exige d'abord l'installation.
  */
 export function useInstallation(): EtatInstallation {
   const evenementDiffere = useEvenementInstallationDifferee();
   const ouvertures = useMagasinUi((etat) => etat.ouvertures);
   const acquittee = useMagasinUi((etat) => etat.installationAcquittee);
   const acquitterInstallation = useMagasinUi((etat) => etat.acquitterInstallation);
+  const installationForcee = useMagasinUi((etat) => etat.installationForcee);
+  const relacherInstallationForcee = useMagasinUi((etat) => etat.relacherInstallationForcee);
 
-  const qualifie = ouvertures >= 2 && !acquittee && !estAutonome();
+  const qualifie = (ouvertures >= 2 || installationForcee) && !acquittee && !estAutonome();
   const plateforme = !qualifie ? null : evenementDiffere ? 'android' : estIosSafari() ? 'ios' : null;
 
   return {
@@ -53,6 +41,7 @@ export function useInstallation(): EtatInstallation {
     },
     fermer: (definitif) => {
       if (definitif) acquitterInstallation();
+      relacherInstallationForcee();
     },
   };
 }
