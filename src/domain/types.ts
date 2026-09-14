@@ -62,8 +62,13 @@ export interface PointHoraire {
   indiceUv: number;
   ventKmh: number;
   pluieMm: number;
-  /** Qualité de l'air (indice EAQI), absente tant que l'endpoint `/air` n'est pas câblé (phase 7). */
-  qualiteAirEaqi?: number;
+  /**
+   * Qualité de l'air (AQI américain, barème EPA — Foreca ne fournit pas
+   * l'EAQI européen, DECISIONS.md), absente tant que l'endpoint `/air` n'est
+   * pas câblé (phase 7). Affiché tel quel dans la frise (§11, post-livraison :
+   * plus parlant qu'une bande 1-6 sans contexte), coloré via `niveau(v, ECH_AIR)`.
+   */
+  qualiteAirIndice?: number;
   /** Un jalon lever/coucher inséré à son heure exacte (phase 5) — jamais fourni par Foreca. */
   jalon?: 'lever' | 'coucher';
   /** Libellé du jour (« dim. ») posé sur le premier point d'une nouvelle date (phase 5, frise horaire). */
@@ -104,14 +109,15 @@ export interface SousIndicesPollution {
 
 /**
  * Qualité de l'air détaillée par heure (§11, post-livraison — vue détaillée,
- * `src/app/QualiteAir.tsx`) : au-delà du seul `qualiteAirEaqi` déjà porté
- * par `PointHoraire` pour colorer la frise, le polluant dominant et le
- * détail par polluant.
+ * `src/app/QualiteAir.tsx`) : au-delà du seul `qualiteAirIndice` déjà porté
+ * par `PointHoraire` pour la frise, le polluant dominant et le détail par
+ * polluant. La bande (bon/moyen/…) se déduit de `aqi` via `niveau(aqi,
+ * ECH_AIR)`, jamais stockée à part — un seul calcul, jamais deux valeurs qui
+ * pourraient diverger.
  */
 export interface PointQualiteAir {
   horodatage: string;
   aqi: number;
-  eaqi: number;
   polluantDominant: string;
   sousIndices: SousIndicesPollution;
 }

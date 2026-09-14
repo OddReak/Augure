@@ -11,7 +11,6 @@ import { useMagasinUi } from '../lib/magasin';
 import { useEnLigne } from '../lib/useEnLigne';
 import { ApresPremierRendu } from '../ui/ApresPremierRendu';
 import { Bande } from '../ui/Bande';
-import { Pied } from '../ui/Pied';
 
 /*
  * §11 : budget de performance (premier rendu utile sous 1,2 s). Le Héros
@@ -95,7 +94,6 @@ export function Accueil() {
           <Lune />
         </Suspense>
       </ApresPremierRendu>
-      <Pied actif="ciel" />
       {menuOuvert ? <MenuLieu lieu={requete.data.lieu} onFermer={() => setMenuOuvert(false)} /> : null}
     </main>
   );

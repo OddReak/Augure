@@ -8,7 +8,6 @@ import type { Lieu } from '../domain/types';
 import { ResultatRecherche } from '../features/lieux/ResultatRecherche';
 import { useMagasinUi } from '../lib/magasin';
 import { Etiquette } from '../ui/Etiquette';
-import { Pied } from '../ui/Pied';
 import styles from './Recherche.module.css';
 
 const DELAI_DEBOUNCE_MS = 300;
@@ -82,7 +81,6 @@ export function Recherche() {
           </div>
         </section>
       ) : null}
-      <Pied actif="" />
     </main>
   );
 }

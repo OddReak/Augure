@@ -45,10 +45,9 @@ describe('adaptateur Foreca → domaine (contrat, fixture Cestas enregistrée)',
   it('adapte le détail de qualité de l’air (§11, post-livraison — vue détaillée)', () => {
     const detail = adapterQualiteAirDetail(CESTAS_AIR);
     expect(detail).toHaveLength(22);
-    // Premier point : jour (14h), polluant dominant = ozone, AQI = 30 → EAQI 1 (bon).
+    // Premier point : jour (14h), polluant dominant = ozone, AQI = 30.
     expect(detail[0]).toMatchObject({
       aqi: 30,
-      eaqi: 1,
       polluantDominant: 'ozone',
       sousIndices: { o3: 30 },
     });

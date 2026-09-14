@@ -1,4 +1,3 @@
-import { eaqiDepuisAqiUs } from '../domain/qualiteAir';
 import { palierDuSymboleForeca, signeDuSymboleForeca } from '../domain/symboles';
 import type {
   Avertissement,
@@ -80,7 +79,7 @@ export function adapterQuotidien(reponse: ForecaReponseQuotidienne): JourPrevisi
 
 /**
  * Détail par polluant (§11, post-livraison — vue détaillée de la qualité de
- * l'air, `src/app/QualiteAir.tsx`) : au-delà du seul indice EAQI que
+ * l'air, `src/app/QualiteAir.tsx`) : au-delà du seul AQI que
  * `fusionnerQualiteAir` pose sur la frise, le polluant dominant et les six
  * sous-indices. Un point par heure, dans le même ordre que la réponse
  * Foreca — le premier est la donnée la plus proche de maintenant, comme
@@ -90,7 +89,6 @@ export function adapterQualiteAirDetail(reponse: ForecaReponseQualiteAir): Point
   return reponse.forecast.map((p) => ({
     horodatage: p.time,
     aqi: p.AQI,
-    eaqi: eaqiDepuisAqiUs(p.AQI),
     polluantDominant: p.pollutantPhrase,
     sousIndices: {
       o3: p.AQI_O3,
@@ -106,17 +104,21 @@ export function adapterQualiteAirDetail(reponse: ForecaReponseQualiteAir): Point
 /**
  * Fusionne la qualité de l'air (endpoint séparé, §4.1) dans la frise
  * horaire, par correspondance exacte d'horodatage. Un point horaire sans
- * correspondance garde `qualiteAirEaqi` indéfini plutôt qu'une valeur
+ * correspondance garde `qualiteAirIndice` indéfini plutôt qu'une valeur
  * inventée — la métrique « air » l'affiche alors comme absente (§ phase 5).
+ * L'AQI brut est posé tel quel (§11, post-livraison) : plus parlant qu'une
+ * bande 1-6 sans contexte, `FriseHoraire.tsx` le colore via `niveau(v,
+ * ECH_AIR)` — un seul calcul, jamais une bande précalculée qui pourrait
+ * diverger de l'affichage détaillé.
  */
 export function fusionnerQualiteAir(
   horaire: PointHoraire[],
   reponse: ForecaReponseQualiteAir,
 ): PointHoraire[] {
-  const parHorodatage = new Map(reponse.forecast.map((p) => [p.time, eaqiDepuisAqiUs(p.AQI)]));
+  const parHorodatage = new Map(reponse.forecast.map((p) => [p.time, p.AQI]));
   return horaire.map((point) => {
-    const eaqi = parHorodatage.get(point.horodatage);
-    return eaqi === undefined ? point : { ...point, qualiteAirEaqi: eaqi };
+    const aqi = parHorodatage.get(point.horodatage);
+    return aqi === undefined ? point : { ...point, qualiteAirIndice: aqi };
   });
 }
 

@@ -34,10 +34,22 @@ describe('échelles par colonnes (§5.2) — valeurs recopiées du mockup', () =
     expect(niveau(11, ECH_UV)).toEqual({ seuil: 99, couleur: '#8E3A9E', libelle: 'extrême' });
   });
 
-  it('ECH_AIR suit le barème EAQI à six bandes, la seule métrique qui n\'en compte pas cinq', () => {
+  it('ECH_AIR suit le barème officiel EPA à six bandes, la seule métrique qui n\'en compte pas cinq (§11, post-livraison)', () => {
     expect(ECH_AIR).toHaveLength(6);
-    expect(niveau(1, ECH_AIR).libelle).toBe('bon');
-    expect(niveau(6, ECH_AIR).libelle).toBe('extrême');
+    // Seuils EPA officiels (0-50 Good … 301-500 Hazardous) : AQI brut, plus une bande 1-6
+    // précalculée sans contexte (§11, signalé par l'utilisateur — « l'indice indique 1 partout »).
+    expect(niveau(0, ECH_AIR).libelle).toBe('bon');
+    expect(niveau(50, ECH_AIR).libelle).toBe('bon');
+    expect(niveau(51, ECH_AIR).libelle).toBe('moyen');
+    expect(niveau(100, ECH_AIR).libelle).toBe('moyen');
+    expect(niveau(101, ECH_AIR).libelle).toBe('dégradé');
+    expect(niveau(150, ECH_AIR).libelle).toBe('dégradé');
+    expect(niveau(151, ECH_AIR).libelle).toBe('mauvais');
+    expect(niveau(200, ECH_AIR).libelle).toBe('mauvais');
+    expect(niveau(201, ECH_AIR).libelle).toBe('très mauvais');
+    expect(niveau(300, ECH_AIR).libelle).toBe('très mauvais');
+    expect(niveau(301, ECH_AIR).libelle).toBe('extrême');
+    expect(niveau(500, ECH_AIR).libelle).toBe('extrême');
   });
 
   it('ECH_PLUIE et ECH_VENT reprennent les seuils et couleurs exacts du mockup', () => {

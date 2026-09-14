@@ -11,7 +11,7 @@ import { PALIERS } from '../../src/domain/types';
  * simplement posé depuis le test plutôt que depuis un sélecteur d'écran,
  * pour auditer les écrans réels plutôt qu'une planche de démonstration.
  *
- * Le Lexique/Cartes/Réglages/Recherche ne changent pas fondamentalement
+ * Le Lexique/Réglages/Recherche ne changent pas fondamentalement
  * d'agencement d'un palier à l'autre, mais leurs jetons de couleur (encre,
  * papier, accent) en dépendent tous (§5.2) : le contraste doit donc être
  * vérifié sur chacun, pas seulement sur le Héros. `/styleguide` n'est pas
@@ -49,7 +49,6 @@ const ECRANS: Ecran[] = [
       await expect(page).toHaveURL(/\/jour\//);
     },
   },
-  { nom: 'Cartes', ouvrir: async (page) => void (await page.goto('/cartes')) },
   { nom: 'Lexique', ouvrir: async (page) => void (await page.goto('/lexique')) },
   // « orage » (§5.4) : seul signe dont la fiche est rédigée mot pour mot depuis le document
   // maître (DECISIONS.md) — un identifiant de domaine fixe, jamais dépendant d'une donnée.

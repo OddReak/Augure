@@ -53,7 +53,7 @@ function valeurMetrique(p: PointHoraire, id: IdMetrique): number {
     case 'uv':
       return p.indiceUv;
     case 'air':
-      return p.qualiteAirEaqi ?? 0;
+      return p.qualiteAirIndice ?? 0;
   }
 }
 

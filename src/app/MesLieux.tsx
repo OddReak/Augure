@@ -8,7 +8,6 @@ import { POSITION_PAR_DEFAUT } from '../lib/position';
 import { usePosition } from '../lib/usePosition';
 import { Chapeau } from '../ui/Chapeau';
 import { Pastille } from '../ui/Pastille';
-import { Pied } from '../ui/Pied';
 import styles from './MesLieux.module.css';
 
 /**
@@ -19,6 +18,12 @@ import styles from './MesLieux.module.css';
  * Réorganisation sans glisser-déposer (§8, décision, voir DECISIONS.md) :
  * la pastille « Réorganiser » du chapeau bascule un mode dans lequel chaque
  * vignette expose Monter / Descendre / Retirer plutôt que de naviguer.
+ *
+ * Chapeau réagencé (§11, post-livraison — retrait de la barre de navigation
+ * basse, DECISIONS.md) : « Retour » prend la place gauche qu'occupait
+ * « Réorganiser » (déplacée à droite), la pastille « Ajouter » est retirée —
+ * le bouton « Ajouter un lieu » en bas de liste reste l'unique entrée,
+ * comme demandé par l'utilisateur pour la recherche.
  */
 export function MesLieux() {
   const navigate = useNavigate();
@@ -42,7 +47,9 @@ export function MesLieux() {
   return (
     <main>
       <Chapeau
-        gauche={
+        gauche={<Pastille icone="retour" libelle="Retour" onClick={() => navigate(-1)} />}
+        titre="Mes lieux"
+        droite={
           <Pastille
             icone="poignee"
             libelle={enReorganisation ? 'Terminer la réorganisation' : 'Réorganiser'}
@@ -50,8 +57,6 @@ export function MesLieux() {
             onClick={() => setEnReorganisation((v) => !v)}
           />
         }
-        titre="Mes lieux"
-        droite={<Pastille icone="ajout" libelle="Ajouter" onClick={() => navigate('/recherche')} />}
       />
       <div className={styles.liste}>
         <VignetteLieu
@@ -82,7 +87,6 @@ export function MesLieux() {
         <Signe nom="ajout" />
         Ajouter un lieu
       </button>
-      <Pied actif="ciel" />
     </main>
   );
 }

@@ -7,9 +7,6 @@ Accumulé jusqu'ici :
 ## Dépôt et déploiement
 - Fusionner la branche `worktree-augure-build` (ou celle en cours à la clôture) vers `main` : le déploiement Vercel se déclenche sur `main`, et cette session ne pousse jamais directement dessus.
 
-## Cartes (phase 8)
-- L'écran Cartes affiche une carte de précipitations illustrative, pas les vraies tuiles Foreca Maps : le jeton Foreca Maps est séparé de la clé de l'API météo (§4.1). Si les cartes réelles sont souhaitées, souscrire à Foreca Maps et fournir le jeton — une fonction Vercel de proxy restera à écrire (`api/maps/tile.ts`, sur le modèle de `api/current.ts`).
-
 ## Supabase et notification quotidienne (phase 10)
 
 **Fait, post-livraison** (projet Supabase « Augure », `zbgialxsmmdfvtpqswbo`, eu-west-3) : projet créé, lié, migrations appliquées (`supabase db push`), secrets Vault déjà en place, clés VAPID générées, Edge Function déployée (`--use-api`, voir DECISIONS.md) et testée en réel — `curl` manuel : `HTTP 200`, `{"groupes":0,"appelsMeteo":0,"envois":0,"supprimes":0}` (zéro appareil inscrit à ce jour, chemin météo/Push pas encore exercé). Ferme la question du nom exact de la variable de clé secrète auto-injectée (JOURNAL.md) : ça a fonctionné sans configuration supplémentaire.

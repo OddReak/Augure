@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest';
 /**
  * §11, post-livraison : trouvé en vérifiant `/qualite-air` sur le vrai
  * déploiement Vercel — `curl` y renvoyait 404, comme sur *toute* route
- * profonde (`/reglages`, `/mes-lieux`, `/cartes`, `/jour/:date`…). Vercel ne
+ * profonde (`/reglages`, `/mes-lieux`, `/jour/:date`…). Vercel ne
  * sert le contenu statique de `dist/` qu'au chemin exact, sans repli SPA par
  * défaut — contrairement à `vite dev`/`vite preview`, ce qui a rendu ce bug
  * invisible à tous les tests e2e locaux (aucun ne fait de vraie requête HTTP

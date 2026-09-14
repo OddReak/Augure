@@ -47,6 +47,12 @@ export function MenuLieu({ lieu, onFermer }: MenuLieuProps) {
         <Signe nom="partage" />
         Partager ce lieu
       </button>
+      {/* §11, post-livraison : le Lexique n'est plus un onglet de la barre de navigation basse,
+          retirée à la demande de l'utilisateur (DECISIONS.md) — ce menu en devient l'accès. */}
+      <button type="button" className={styles.item} onClick={() => allerA('/lexique')}>
+        <Signe nom="lexique" />
+        Lexique des signes
+      </button>
       <button type="button" className={styles.item} onClick={() => allerA('/reglages')}>
         <Signe nom="unite" />
         Unités

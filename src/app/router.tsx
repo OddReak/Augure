@@ -20,7 +20,6 @@ import { Accueil } from './Accueil';
 const MesLieux = lazy(() => import('./MesLieux').then((m) => ({ default: m.MesLieux })));
 const Recherche = lazy(() => import('./Recherche').then((m) => ({ default: m.Recherche })));
 const DetailJour = lazy(() => import('./DetailJour').then((m) => ({ default: m.DetailJour })));
-const Cartes = lazy(() => import('./Cartes').then((m) => ({ default: m.Cartes })));
 const Lexique = lazy(() => import('./Lexique').then((m) => ({ default: m.Lexique })));
 const FicheSigne = lazy(() => import('./FicheSigne').then((m) => ({ default: m.FicheSigne })));
 const Reglages = lazy(() => import('./Reglages').then((m) => ({ default: m.Reglages })));
@@ -35,7 +34,6 @@ export const routeur = createBrowserRouter([
       { path: '/mes-lieux', element: <MesLieux /> },
       { path: '/recherche', element: <Recherche /> },
       { path: '/jour/:date', element: <DetailJour /> },
-      { path: '/cartes', element: <Cartes /> },
       { path: '/lexique', element: <Lexique /> },
       { path: '/lexique/:signe', element: <FicheSigne /> },
       { path: '/reglages', element: <Reglages /> },

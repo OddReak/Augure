@@ -122,7 +122,7 @@ export const CESTAS_QUOTIDIEN: ForecaReponseQuotidienne = {
 };
 
 // Qualité de l'air (phase 7, endpoint séparé, §4.1) : valeurs d'auteur plausibles
-// (AQI américain, converties par `eaqiDepuisAqiUs`) — le mockup ne documente pas
+// (AQI américain, affiché tel quel — §11, post-livraison) — le mockup ne documente pas
 // cette métrique, absente de ses fixtures d'origine. Polluant dominant alterné
 // jour/nuit (ozone le jour, particules la nuit — schéma réel courant) pour que
 // la vue détaillée (§11, post-livraison) ait quelque chose à distinguer entre

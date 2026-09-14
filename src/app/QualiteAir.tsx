@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Signe } from '../design/Signe';
 import { ECH_AIR, niveau } from '../domain/quantification';
-import { eaqiDepuisAqiUs } from '../domain/qualiteAir';
 import type { SousIndicesPollution } from '../domain/types';
 import { useCoordonneesActuelles } from '../features/meteo/useCoordonneesActuelles';
 import { usePrevisionLieu } from '../features/meteo/usePrevisionLieu';
@@ -27,13 +26,11 @@ const POLLUANTS: Array<[cle: keyof SousIndicesPollution, libelle: string]> = [
 ];
 
 /**
- * Vue détaillée de la qualité de l'air (§11, post-livraison) : l'indice
- * composite affiché dans la frise horaire (`FriseHoraire.tsx`) ne porte
- * qu'une bande EAQI (1-6) — utile pour colorer une colonne, pas pour
- * comprendre *pourquoi* elle vaut ce qu'elle vaut. Cet écran ajoute le
- * polluant dominant et le détail par polluant, chacun avec sa propre bande
- * — la même échelle `ECH_AIR` que la frise, jamais une seconde échelle
- * inventée pour l'occasion.
+ * Vue détaillée de la qualité de l'air (§11, post-livraison) : l'AQI brut
+ * affiché dans la frise horaire (`FriseHoraire.tsx`) dit déjà « combien »,
+ * pas « pourquoi ». Cet écran ajoute le polluant dominant et le détail par
+ * polluant, chacun avec sa propre bande — la même échelle `ECH_AIR`
+ * (seuils EPA officiels) que la frise, jamais une seconde échelle inventée.
  *
  * Réutilise la requête de l'accueil (même clé TanStack Query que
  * `DetailJour.tsx`) : aucun second appel réseau. Le premier point de
@@ -49,7 +46,7 @@ export function QualiteAir() {
   }
 
   const point = requete.data.qualiteAirDetail?.[0];
-  const bandeGlobale = point ? niveau(point.eaqi, ECH_AIR) : null;
+  const bandeGlobale = point ? niveau(point.aqi, ECH_AIR) : null;
 
   return (
     <main>
@@ -82,7 +79,7 @@ export function QualiteAir() {
             <ul className={styles.polluants}>
               {POLLUANTS.map(([cle, libelle]) => {
                 const valeur = point.sousIndices[cle];
-                const bande = niveau(eaqiDepuisAqiUs(valeur), ECH_AIR);
+                const bande = niveau(valeur, ECH_AIR);
                 return (
                   <li key={cle} className={styles.polluant}>
                     <span className={styles.pastilleCouleur} style={{ background: bande.couleur }} aria-hidden="true" />
