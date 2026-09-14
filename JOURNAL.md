@@ -153,6 +153,8 @@ Non vérifié en réel : aucune réponse Foreca authentique observée (toujours 
 
 Commande pour relancer les tests : `pnpm verify`
 
+**Mise à jour post-livraison (déploiement réel sur `https://augure.vercel.app`)** : une clé Foreca est désormais configurée côté Vercel (`FORECA_MODE`/`FORECA_TOKEN`, apparemment RapidAPI). `curl https://augure.vercel.app/api/current?lat=44.74&lon=-0.68` répond une vraie observation courante (température, symbole, vent, UV… horodatée à l'instant de l'appel) — la chaîne complète (fonction Edge → adaptateur → Foreca réel) fonctionne donc en production. Ferme la réserve « aucune réponse Foreca authentique observée » ci-dessus pour l'enveloppe `current` au moins ; `hourly`/`daily`/`air`/`warning` restent à vérifier de la même façon à l'occasion (mêmes fonctions, même clé). Correctif associé, repéré à ce premier déploiement réel : `api/places.ts` échouait la vérification TypeScript de Vercel (`TS2835`, imports relatifs sans extension — `moduleResolution: node16` côté Vercel, `bundler` en local, qui l'acceptait sans le signaler) ; n'a jamais fait échouer le build (avertissement, pas bloquant), corrigé par cohérence sur tout `api/`, voir DECISIONS.md.
+
 ## Phase 8 — Navigation et écrans secondaires
 **État** : close, `pnpm verify` vert.
 

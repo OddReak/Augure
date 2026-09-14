@@ -34,9 +34,9 @@ Il reste :
 - Le parcours d'abonnement complet (permission → `PushManager.subscribe()` → RPC → réception d'une notification) n'a été vérifié sur aucun appareil réel.
 
 ## Foreca (phase 7)
-- Ouvrir un accès sur developer.foreca.com, ou souscrire au plan Basic du listing « Foreca Weather API » sur RapidAPI.
-- Vercel → Settings → Environment Variables :
-  - `FORECA_MODE` = `direct` ou `rapidapi`
-  - `FORECA_TOKEN` (mode direct) ou `FORECA_RAPIDAPI_KEY` (mode rapidapi)
-  - Aucune de ces variables ne porte le préfixe `VITE_`.
-- Dès qu'une clé est active, enregistrer de vraies réponses de `current/{location}`, `forecast/hourly/{location}`, `forecast/daily/{location}`, `air-quality/forecast/hourly/{location}` et `warning/{location}` comme fixtures : les enveloppes `current`/`forecast`/`locations` sont vérifiées contre une source tierce (voir DECISIONS.md), mais les noms de champs eux-mêmes, la forme de `warning` et de `air-quality`, restent non confirmés par un exemple réel.
+
+**Fait, post-livraison** : une clé est déjà active sur Vercel (`FORECA_MODE`/`FORECA_TOKEN`). Vérifié en réel : `curl https://augure.vercel.app/api/current?lat=44.74&lon=-0.68` répond une vraie observation courante.
+
+Il reste, sans urgence :
+- Vérifier de la même façon `hourly`/`daily`/`air`/`alerts` (`/api/hourly`, `/api/daily`, `/api/air`, `/api/alerts`, mêmes paramètres `lat`/`lon`) : seul `current` a été confirmé pour l'instant.
+- Enregistrer de vraies réponses des cinq endpoints comme fixtures et relancer les tests de contrat : les enveloppes `current`/`forecast`/`locations` sont vérifiées contre une source tierce (voir DECISIONS.md), mais les noms de champs eux-mêmes, la forme de `warning` et de `air-quality`, restent non confirmés par un exemple réel malgré la clé maintenant active.
