@@ -17,11 +17,18 @@ export default defineConfig({
     // webServer. `hors-ligne-pwa.spec.ts` tourne à part (second projet ci-dessous) : le vrai
     // service worker Workbox ne s'enregistre jamais sous VITE_MOCK (DECISIONS.md, « deux
     // service workers, un seul actif ») et ce test a justement besoin qu'il s'enregistre.
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] }, testIgnore: /hors-ligne-pwa\.spec\.ts/ },
     {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
+      testIgnore: /(hors-ligne-pwa|performance|budget-bundle)\.spec\.ts/,
+    },
+    {
+      // Budget de performance (§11) : dist-pwa est le seul build sans VITE_MOCK (voir
+      // commentaire du second webServer plus bas) — le seul candidat honnête pour mesurer
+      // ce que reçoit vraiment un navigateur en production, comme hors-ligne-pwa.spec.ts.
       name: 'pwa',
       use: { ...devices['Desktop Chrome'], baseURL: 'http://localhost:4174' },
-      testMatch: /hors-ligne-pwa\.spec\.ts/,
+      testMatch: /(hors-ligne-pwa|performance|budget-bundle)\.spec\.ts/,
     },
   ],
   webServer: [

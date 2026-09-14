@@ -1,20 +1,34 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { vigilanceMax } from '../api/foreca';
 import { decalageDe } from '../domain/fuseau';
-import { CourseSoleil } from '../features/meteo/CourseSoleil';
-import { FriseHoraire } from '../features/meteo/FriseHoraire';
 import { Hero } from '../features/meteo/Hero';
-import { Lune } from '../features/meteo/Lune';
-import { SeptJours } from '../features/meteo/SeptJours';
 import { useCoordonneesActuelles } from '../features/meteo/useCoordonneesActuelles';
 import { usePrevisionLieu } from '../features/meteo/usePrevisionLieu';
 import { MenuLieu } from '../features/lieux/MenuLieu';
 import { definirBadgeVigilance } from '../lib/badge';
 import { useMagasinUi } from '../lib/magasin';
 import { useEnLigne } from '../lib/useEnLigne';
+import { ApresPremierRendu } from '../ui/ApresPremierRendu';
 import { Bande } from '../ui/Bande';
 import { Pied } from '../ui/Pied';
+
+/*
+ * §11 : budget de performance (premier rendu utile sous 1,2 s). Le Héros
+ * seul porte le critère d'acceptation final (« on sait déjà qu'il pleut,
+ * qu'il fait nuit, ou qu'un orage arrive ») ; le reste de l'écran d'accueil
+ * (frise horaire, sept jours, course du soleil, lune — avec tout le calcul
+ * Meeus qu'elle entraîne) est donc chargé à la demande, pas au premier
+ * rendu. `Suspense` avec un repli `null` : jamais un spinner entre les
+ * deux, la seconde vague de contenu suit dans la même seconde, comme entre
+ * écrans (`Layout.tsx`, même principe).
+ */
+const FriseHoraire = lazy(() => import('../features/meteo/FriseHoraire').then((m) => ({ default: m.FriseHoraire })));
+const SeptJours = lazy(() => import('../features/meteo/SeptJours').then((m) => ({ default: m.SeptJours })));
+const CourseSoleil = lazy(() =>
+  import('../features/meteo/CourseSoleil').then((m) => ({ default: m.CourseSoleil })),
+);
+const Lune = lazy(() => import('../features/meteo/Lune').then((m) => ({ default: m.Lune })));
 
 /** Écran d'accueil (§6) : barre collante, héros, paysage. */
 export function Accueil() {
@@ -65,18 +79,22 @@ export function Accueil() {
         onOuvrirMenu={() => setMenuOuvert(true)}
         horsLigne={!enLigne}
       />
-      <FriseHoraire points={requete.data.horaire} />
-      <SeptJours
-        jours={requete.data.quotidien}
-        aujourdhui={requete.data.quotidien[0]?.date ?? ''}
-        onJourClick={(date) => navigate(`/jour/${date}`)}
-      />
-      <CourseSoleil
-        leverSoleil={requete.data.leverSoleil}
-        coucherSoleil={requete.data.coucherSoleil}
-        decalage={decalageDe(requete.data.courant.horodatage)}
-      />
-      <Lune />
+      <ApresPremierRendu>
+        <Suspense fallback={null}>
+          <FriseHoraire points={requete.data.horaire} />
+          <SeptJours
+            jours={requete.data.quotidien}
+            aujourdhui={requete.data.quotidien[0]?.date ?? ''}
+            onJourClick={(date) => navigate(`/jour/${date}`)}
+          />
+          <CourseSoleil
+            leverSoleil={requete.data.leverSoleil}
+            coucherSoleil={requete.data.coucherSoleil}
+            decalage={decalageDe(requete.data.courant.horodatage)}
+          />
+          <Lune />
+        </Suspense>
+      </ApresPremierRendu>
       <Pied actif="ciel" />
       {menuOuvert ? <MenuLieu lieu={requete.data.lieu} onFermer={() => setMenuOuvert(false)} /> : null}
     </main>

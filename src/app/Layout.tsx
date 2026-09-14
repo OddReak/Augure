@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useMagasinUi } from '../lib/magasin';
 import { Sprite } from '../design/Sprite';
@@ -23,7 +23,11 @@ export function Layout() {
   return (
     <>
       <Sprite />
-      <Outlet />
+      {/* §11 : les écrans secondaires sont chargés à la demande (router.tsx) — repli `null`,
+          jamais un spinner, y compris entre écrans (§9). */}
+      <Suspense fallback={null}>
+        <Outlet />
+      </Suspense>
       <FeuilleInstallation />
       {/* Jamais sous VITE_MOCK=1 (§9, DECISIONS.md) : le service worker MSW (phase 3)
           doit rester le seul à contrôler la page dans les tests et en développement mocké. */}

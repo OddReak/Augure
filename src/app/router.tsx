@@ -1,14 +1,30 @@
+import { lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import { Layout } from './Layout';
 import { Accueil } from './Accueil';
-import { Cartes } from './Cartes';
-import { DetailJour } from './DetailJour';
-import { FicheSigne } from './FicheSigne';
-import { Lexique } from './Lexique';
-import { MesLieux } from './MesLieux';
-import { Recherche } from './Recherche';
-import { Reglages } from './Reglages';
-import { Styleguide } from './Styleguide';
+
+/**
+ * §11 : budget de performance (bundle initial < 180 Ko compressé, premier
+ * rendu utile < 1,2 s en 4G simulé). L'accueil (route `/`) reste un import
+ * statique — c'est le tout premier écran peint, il ne doit jamais attendre
+ * un second aller-retour réseau. Tous les écrans secondaires sont chargés à
+ * la demande : ils ne coûtent rien au premier rendu, et `Reglages` en
+ * particulier entraîne `@supabase/supabase-js` (phase 10, abonnement aux
+ * notifications) — la dépendance la plus lourde du projet, qu'un visiteur
+ * qui ne fait que consulter la météo n'a jamais besoin de télécharger.
+ * `Layout.tsx` porte le seul `<Suspense>` (autour de l'`<Outlet>`), avec un
+ * repli `null` : jamais de spinner de chargement, y compris entre écrans
+ * (§9 — la règle vise le lancement, mais rien dans l'esprit du document ne
+ * justifie un spinner ailleurs).
+ */
+const MesLieux = lazy(() => import('./MesLieux').then((m) => ({ default: m.MesLieux })));
+const Recherche = lazy(() => import('./Recherche').then((m) => ({ default: m.Recherche })));
+const DetailJour = lazy(() => import('./DetailJour').then((m) => ({ default: m.DetailJour })));
+const Cartes = lazy(() => import('./Cartes').then((m) => ({ default: m.Cartes })));
+const Lexique = lazy(() => import('./Lexique').then((m) => ({ default: m.Lexique })));
+const FicheSigne = lazy(() => import('./FicheSigne').then((m) => ({ default: m.FicheSigne })));
+const Reglages = lazy(() => import('./Reglages').then((m) => ({ default: m.Reglages })));
+const Styleguide = lazy(() => import('./Styleguide').then((m) => ({ default: m.Styleguide })));
 
 export const routeur = createBrowserRouter([
   {
