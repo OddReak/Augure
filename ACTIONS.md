@@ -12,34 +12,25 @@ Accumulé jusqu'ici :
 
 ## Supabase et notification quotidienne (phase 10)
 
-Dans l'ordre — chaque étape dépend de la précédente.
+**Fait, post-livraison** (projet Supabase « Augure », `zbgialxsmmdfvtpqswbo`, eu-west-3) : projet créé, lié, migrations appliquées (`supabase db push`), secrets Vault déjà en place, clés VAPID générées, Edge Function déployée (`--use-api`, voir DECISIONS.md) et testée en réel — `curl` manuel : `HTTP 200`, `{"groupes":0,"appelsMeteo":0,"envois":0,"supprimes":0}` (zéro appareil inscrit à ce jour, chemin météo/Push pas encore exercé). Ferme la question du nom exact de la variable de clé secrète auto-injectée (JOURNAL.md) : ça a fonctionné sans configuration supplémentaire.
 
-1. **Créer le projet Supabase** (si aucun n'existe déjà) sur supabase.com, puis récupérer l'URL du projet et ses clés (Settings → API) : la clé publishable (`sb_publishable_...`) et la clé secrète (`sb_secret_...`).
-2. **Lier le projet local au projet distant** : `supabase link --project-ref <ref>` (depuis la racine du dépôt).
-3. **Appliquer les migrations** : `supabase db push`. Elles créent la table `devices`, ses deux fonctions `security definer` (`abonner_appareil`/`desabonner_appareil`, le seul chemin d'écriture ouvert à `anon` — RLS ferme la table elle-même, voir DECISIONS.md), la fonction `devices_a_notifier`, et la planification `pg_cron` (`envoi-quotidien`, toutes les 15 minutes). Vérifier auparavant que les extensions `pg_cron` et `pg_net` sont activées (Database → Extensions sur le tableau de bord Supabase — activées par défaut sur un projet récent, mais à confirmer) : la seconde migration échoue sinon.
-4. **Créer les deux secrets Vault** que `net.http_post` lit à chaque déclenchement du cron (SQL Editor du tableau de bord, ou `psql` sur la chaîne de connexion du projet) :
-   ```sql
-   select vault.create_secret('https://<ref>.supabase.co', 'envoi_quotidien_url');
-   select vault.create_secret('<clé secrète service_role/sb_secret_...>', 'envoi_quotidien_service_key');
+Il reste :
+
+1. **Vercel → Settings → Environment Variables**, à ajouter :
    ```
-5. **Générer une vraie paire de clés VAPID** : `node scripts/generer-vapid.mjs` (affiche `VITE_VAPID_PUBLIC` et `VAPID_PRIVATE` — n'écrit rien sur disque). Choisir un `VAPID_SUBJECT` au format `mailto:quelqu'un@exemple.com`.
-6. **Déployer l'Edge Function** : `supabase functions deploy envoi-quotidien`.
-7. **Configurer les secrets de la fonction** (jamais dans `.env`, jamais commités) :
+   VITE_SUPABASE_URL         = https://zbgialxsmmdfvtpqswbo.supabase.co
+   VITE_SUPABASE_PUBLISHABLE = sb_publishable__IcNQ0bMW5ENPeZxbJUsFg_3lTcE8cA
+   VITE_VAPID_PUBLIC         = BJeVaD2DtTCWTKJsPT2EppRbdVkY7JnCBnK_t01bcqVZR-q8VGy0-LEZoqrIKVJhizwbnAiN-JL7EpYQZejN9Zc
+   ```
+   Redéployer ensuite.
+2. **Tester en réel** : ouvrir l'application installée sur un iPhone (Web Push exige le mode autonome sur iOS, §10) ou dans Chrome Android, activer « Résumé du lendemain » dans Réglages, puis rappeler la fonction manuellement pour vérifier l'envoi sans attendre la fenêtre de 15 minutes (la clé secrète elle-même n'est pas recopiée ici — Settings → API → clé `secret` sur le tableau de bord Supabase) :
    ```sh
-   supabase secrets set \
-     APP_BASE_URL=https://<domaine-vercel-de-l-app> \
-     VAPID_PUBLIC=<la clé publique générée à l'étape 5> \
-     VAPID_PRIVATE=<la clé privée générée à l'étape 5> \
-     VAPID_SUBJECT=mailto:quelqu'un@exemple.com
+   curl -X POST https://zbgialxsmmdfvtpqswbo.supabase.co/functions/v1/envoi-quotidien \
+     -H "Authorization: Bearer <clé secrète, tableau de bord Supabase>"
    ```
-   Ne jamais définir `ENVOI_MOCK` en production (fait répondre la fonction contre des fixtures, phase 3).
-8. **Vérifier le nom exact de la variable que Supabase injecte pour la clé secrète.** `index.ts` essaie dans l'ordre `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_SECRET_KEY`, `SUPABASE_SECRET` faute d'avoir pu le confirmer sans déploiement réel (voir JOURNAL.md — l'environnement de développement de cette session ne peut pas joindre une Edge Function en local, réseau Docker inter-conteneurs bloqué). Si aucun des trois ne fonctionne à l'usage, ajouter le bon nom via `supabase secrets set SUPABASE_SERVICE_ROLE_KEY=<clé secrète>` explicitement — la fonction le lira en priorité.
-9. **Vercel → Settings → Environment Variables** : `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE`, `VITE_VAPID_PUBLIC` (les trois exposées au client), `SUPABASE_SECRET` (si un usage serveur en a besoin plus tard).
-10. **Tester en réel** : ouvrir l'application installée sur un iPhone (Web Push exige le mode autonome sur iOS, §10) ou dans Chrome Android, activer « Résumé du lendemain » dans Réglages, puis appeler la fonction manuellement une fois pour vérifier l'envoi sans attendre la fenêtre de 15 minutes : `curl -X POST https://<ref>.supabase.co/functions/v1/envoi-quotidien -H "Authorization: Bearer <clé secrète>"`.
 
-**Non vérifié en réel, à confirmer au premier déploiement** (voir JOURNAL.md pour le détail) :
-- Le nom exact de la variable d'environnement de la clé secrète auto-injectée (étape 8).
-- `supabase functions serve` contre un Supabase local : bloqué dans cet environnement de développement précis par une restriction réseau Docker inter-conteneurs (`gotrue`/`edge-runtime` ne peuvent pas joindre le conteneur Postgres). La migration SQL elle-même a été testée directement contre Postgres (RLS, les deux fonctions `security definer`, `devices_a_notifier` y compris son cas de chevauchement de minuit) ; la logique de l'Edge Function (regroupement, composition du texte, suppression sur 404/410) a été testée unitairement (Vitest, sans Deno) via `traiterEnvoi`, dépendances injectées. Seuls les appels réels à `npm:web-push` et à `/api/*` en production restent à vérifier après déploiement — un développeur sur une machine Docker sans cette restriction devrait pouvoir lancer `supabase functions serve` sans adaptation.
+**Non vérifié en réel, à confirmer au premier abonnement réel** :
+- Le chemin météo de l'Edge Function (`APP_BASE_URL` → `/api/current|hourly|daily` sur Vercel) : dépend d'une clé Foreca active côté Vercel (voir ci-dessous), pas encore exercé (zéro appareil inscrit).
 - Le parcours d'abonnement complet (permission → `PushManager.subscribe()` → RPC → réception d'une notification) n'a été vérifié sur aucun appareil réel.
 
 ## Foreca (phase 7)
