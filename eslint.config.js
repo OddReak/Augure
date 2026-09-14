@@ -1,0 +1,40 @@
+import js from '@eslint/js';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import tseslint from 'typescript-eslint';
+import prettier from 'eslint-config-prettier';
+
+export default tseslint.config(
+  {
+    ignores: [
+      'dist',
+      'dist-pwa',
+      'coverage',
+      'playwright-report',
+      'test-results',
+      'public/mockServiceWorker.js', // généré par `msw init`, ne pas modifier ni linter
+      // Deno (Edge Function, phase 10), pas Node : globals (`Deno`), imports `npm:` et
+      // extensions `.ts` que le parseur TypeScript de ce projet ne résout pas.
+      // `grouper.ts` (module pur, testé par Vitest) est réintégré ci-dessous.
+      'supabase/functions/**',
+      '!supabase/functions/envoi-quotidien/grouper.ts',
+    ],
+  },
+  {
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    files: ['**/*.{ts,tsx}'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      globals: { window: 'readonly', document: 'readonly', navigator: 'readonly' },
+    },
+    plugins: {
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+    },
+  },
+  prettier,
+);

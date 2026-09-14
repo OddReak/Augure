@@ -1,0 +1,30 @@
+.interrupteur {
+  width: 54px;
+  height: 30px;
+  flex: 0 0 auto;
+  border: var(--trait-structure) solid var(--encre);
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.interrupteur[aria-checked='true'] {
+  background: var(--encre);
+  justify-content: flex-end;
+}
+
+.galet {
+  display: block;
+  width: 22px;
+  height: 22px;
+  background: transparent;
+  border: var(--trait-structure) solid var(--encre);
+  margin: 0 2px;
+}
+
+.interrupteur[aria-checked='true'] .galet {
+  background: var(--papier);
+  border-color: var(--papier);
+}

@@ -1,0 +1,9 @@
+.bande {
+  background: var(--papier);
+  border-top: var(--trait-structure) solid var(--encre);
+  padding: var(--e5) 0 26px;
+}
+
+.serre {
+  padding: 18px 0 20px;
+}

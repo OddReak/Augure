@@ -1,0 +1,52 @@
+.etapes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.etapes li {
+  display: flex;
+  gap: var(--e4);
+  align-items: center;
+  padding: 13px 0;
+  border-top: var(--trait-filet) solid var(--trait);
+}
+
+.etapes li svg {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+}
+
+.etapes li b {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.principal {
+  display: block;
+  width: 100%;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 14px;
+  background: var(--encre);
+  color: var(--papier);
+  border: var(--trait-structure) solid var(--encre);
+  cursor: pointer;
+  margin-top: var(--e5);
+}
+
+.secondaire {
+  display: block;
+  width: 100%;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 14px;
+  background: transparent;
+  color: var(--encre);
+  border: var(--trait-structure) solid var(--encre);
+  cursor: pointer;
+  margin-top: var(--e3);
+}

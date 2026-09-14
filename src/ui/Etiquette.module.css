@@ -1,0 +1,35 @@
+.etiquette {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 var(--e5);
+  margin-bottom: var(--e4);
+}
+
+.cartouche {
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  background: var(--encre);
+  color: var(--papier);
+  display: grid;
+  place-items: center;
+}
+
+.cartouche svg {
+  width: 17px;
+  height: 17px;
+}
+
+.titre {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.note {
+  margin-left: auto;
+  font-size: 12.5px;
+  color: var(--encre-attenuee);
+  font-weight: 500;
+}

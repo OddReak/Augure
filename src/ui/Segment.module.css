@@ -1,0 +1,25 @@
+.segment {
+  display: flex;
+  flex: 0 0 auto;
+}
+
+.segment button {
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 7px 13px;
+  border: var(--trait-structure) solid var(--encre);
+  border-right-width: 0;
+  background: transparent;
+  color: var(--encre);
+  cursor: pointer;
+}
+
+.segment button:last-child {
+  border-right-width: var(--trait-structure);
+}
+
+.segment button[aria-pressed='true'] {
+  background: var(--encre);
+  color: var(--papier);
+}

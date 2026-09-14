@@ -1,0 +1,121 @@
+.zone {
+  background: var(--ciel);
+  /* §11, DECISIONS.md : --ciel-txt seul tombe sous 4,5:1 sur ondee/fournaise
+     y compris à pleine opacité — voir Chapeau.module.css, même correctif. */
+  color: var(--ciel-txt-lisible);
+  padding: 0 18px 16px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding-top: calc(var(--e3) + env(safe-area-inset-top));
+}
+
+.champ {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: var(--trait-structure) solid var(--encre);
+  background: var(--papier);
+  color: var(--encre);
+  padding: 11px 13px;
+}
+
+.champ svg {
+  width: 19px;
+  height: 19px;
+  flex: 0 0 auto;
+  opacity: 0.6;
+}
+
+.champ input {
+  flex: 1;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  border: 0;
+  background: transparent;
+  color: var(--encre);
+  outline: none;
+  min-width: 0;
+}
+
+.lien {
+  font: inherit;
+  font-size: 14.5px;
+  font-weight: 600;
+  background: transparent;
+  border: 0;
+  /* §11, DECISIONS.md : --ciel-txt seul tombe sous 4,5:1 sur ondee/fournaise
+     même à pleine opacité — --ciel-txt-lisible vaut --ciel-txt inchangé
+     ailleurs, corrigé seulement pour ces deux paliers. */
+  color: var(--ciel-txt-lisible);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.resultats {
+  padding: 0 var(--e5);
+}
+
+.resultat {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 13px;
+  align-items: center;
+  width: 100%;
+  padding: 14px 0;
+  border-bottom: var(--trait-filet) solid var(--trait);
+  cursor: pointer;
+  background: transparent;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+}
+
+.nom {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.region {
+  font-size: 12.5px;
+  color: var(--encre-attenuee);
+  margin-top: 1px;
+}
+
+.temp {
+  font-family: var(--police-titre);
+  font-variation-settings: 'opsz' 24;
+  font-size: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.vide {
+  padding: 44px 26px;
+  text-align: center;
+}
+
+.vide svg {
+  width: 46px;
+  height: 46px;
+  opacity: 0.35;
+  margin-bottom: var(--e4);
+}
+
+.vide h4 {
+  margin: 0 0 6px;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.vide p {
+  margin: 0;
+  font-size: 14.5px;
+  color: var(--encre-attenuee);
+  line-height: 1.45;
+}

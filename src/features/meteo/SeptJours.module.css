@@ -1,0 +1,70 @@
+.jours {
+  padding: 0 var(--e5);
+}
+
+.jour {
+  display: grid;
+  grid-template-columns: 44px 26px 34px 1fr 38px;
+  align-items: center;
+  gap: var(--e3);
+  padding: 11px 0;
+  border-bottom: var(--trait-filet) solid var(--trait);
+  /* Reset : `.jour` habille aussi bien un <div> (pas de clic) qu'un <button> (§8, détail du jour). */
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  text-align: left;
+  cursor: pointer;
+}
+.jour:disabled,
+div.jour {
+  cursor: default;
+}
+.jour:last-child {
+  border-bottom: 0;
+}
+
+.j {
+  font-weight: 600;
+  font-size: 14.5px;
+}
+
+.mini,
+.maxi {
+  font-family: var(--police-titre), serif;
+  font-variation-settings: 'opsz' 24;
+  font-size: 17px;
+}
+.mini {
+  color: var(--encre-attenuee);
+  text-align: right;
+}
+.maxi {
+  font-weight: 600;
+  text-align: right;
+}
+
+.barre {
+  display: flex;
+  gap: 2px;
+  height: 13px;
+}
+.barre i {
+  flex: 1;
+  background: var(--trait);
+  opacity: 0.55;
+  font-style: normal;
+}
+.barre i.on {
+  opacity: 1;
+}
+.curseur {
+  flex: 0 0 4px;
+  background: var(--encre);
+  outline: 2px solid var(--papier);
+  opacity: 1;
+}

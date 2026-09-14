@@ -1,0 +1,36 @@
+/* Châssis (§7, §8bis) : ce que demande une PWA installée, distinct des
+   jetons visuels de `jetons.css` — comportement du viewport et du tactile,
+   pas de couleur ni de forme. Importé une fois depuis `main.tsx`. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  /* Jamais 100vh (§7) : la barre d'adresse mobile le fait sauter au défilement.
+     100dvh suit la zone visible réelle, avec un repli pour les navigateurs qui
+     ne le connaissent pas encore. */
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+html {
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  -webkit-touch-callout: none;
+  /* user-select désactivé par défaut (§7) ; réactivé explicitement sur le texte
+     destiné à être sélectionné (phrases, valeurs — voir `.selectionnable`). */
+  user-select: none;
+}
+
+.selectionnable {
+  -webkit-touch-callout: default;
+  user-select: text;
+}

@@ -1,0 +1,118 @@
+.heros {
+  background: var(--ciel);
+  /* §11, DECISIONS.md : --ciel-txt seul tombe sous 4,5:1 sur ondee/fournaise
+     y compris à pleine opacité — voir Chapeau.module.css, même correctif. */
+  color: var(--ciel-txt-lisible);
+  padding: 4px var(--e5) 22px;
+}
+
+.marque {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--e4);
+}
+
+.grandSigne {
+  width: 96px;
+  height: 96px;
+  flex: 0 0 auto;
+  margin-top: 6px;
+}
+
+.temp {
+  font-family: var(--police-titre);
+  font-variation-settings: 'opsz' 144, 'SOFT' 0, 'WONK' 0;
+  font-weight: 500;
+  font-size: 108px;
+  line-height: 0.82;
+  letter-spacing: -0.045em;
+  margin: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.temp sup {
+  font-size: 0.38em;
+  vertical-align: super;
+  font-weight: 400;
+}
+
+.minimum {
+  text-align: right;
+  font-size: 15px;
+  color: var(--ciel-txt-attenuee);
+  margin: var(--e2) 0 0;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.phrase {
+  margin: 18px 0 0;
+  font-size: 19px;
+  line-height: 1.35;
+  max-width: 22ch;
+  font-weight: 500;
+}
+
+.absente {
+  padding: 30px var(--e5);
+  text-align: center;
+  font-size: 14.5px;
+  color: var(--encre-attenuee);
+}
+
+.metriques {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  padding: 0 var(--e5);
+  border-top: var(--trait-filet) solid var(--trait);
+}
+
+.metrique {
+  padding: 15px 0;
+  border-bottom: var(--trait-filet) solid var(--trait);
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.metrique:nth-child(odd) {
+  padding-right: 14px;
+  border-right: var(--trait-filet) solid var(--trait);
+}
+
+.metrique:nth-child(even) {
+  padding-left: 16px;
+}
+
+.metrique svg {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.lab {
+  font-size: 12.5px;
+  color: var(--encre-attenuee);
+  font-weight: 600;
+}
+
+.val {
+  font-family: var(--police-titre);
+  font-variation-settings: 'opsz' 36;
+  font-size: 23px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.val em {
+  font-style: normal;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--encre-attenuee);
+}

@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AUGURE — mockup complet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..800&family=Karla:wght@300..800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --doc-fond:#171310; --doc-encre:#F0E6D6; --doc-sourd:#9A8C79;
+  --doc-trait:#2E2721; --doc-signe:#D9A93B;
+  --t1:#5182A8; --t2:#6E9E86; --t3:#D9A93B; --t4:#D2582F; --t5:#9A2418;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--doc-fond);color:var(--doc-encre);
+  font-family:Karla,system-ui,sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.enveloppe{max-width:1180px;margin:0 auto;padding:0 20px 96px}
+
+.doc-tete{padding:64px 0 36px;border-bottom:2px solid var(--doc-trait)}
+.doc-tete h1{font-family:Fraunces,Georgia,serif;font-variation-settings:'opsz' 144,'SOFT' 0,'WONK' 0;
+  font-weight:600;font-size:clamp(48px,12vw,96px);line-height:.9;margin:0 0 16px;letter-spacing:-.02em}
+.doc-tete h1 span{color:var(--doc-signe)}
+.doc-tete p{max-width:64ch;color:var(--doc-sourd);margin:0 0 8px;font-size:17px}
+.doc-tete p strong{color:var(--doc-encre);font-weight:600}
+
+.bloc{padding:58px 0 0}
+.bloc > h2{font-family:Fraunces,Georgia,serif;font-variation-settings:'opsz' 96,'SOFT' 0,'WONK' 0;
+  font-weight:500;font-size:29px;margin:0 0 6px;letter-spacing:-.01em}
+.bloc > .chapo{color:var(--doc-sourd);max-width:70ch;margin:0 0 30px}
+.num{font-family:Fraunces,serif;font-size:13px;color:var(--doc-signe);display:block;
+  margin-bottom:4px;font-variation-settings:'opsz' 9}
+
+/* ── paliers ─────────────────────────────────────────────── */
+.tel[data-palier="vigies"]{
+  --trame-rgb:43 20 9; --trame-op:.075;
+  --ciel:#F5C044; --ciel-b:#EBA229; --ciel-txt:#2B1409;
+  --p1:#D9743A; --p2:#BC4626; --p3:#8A2A1C;
+  --encre:#2B1409; --papier:#FBEBCB; --trait:#E3CB9E; --signe:#C2411F;
+  --lune:#F5C044; --lune-b:#8A2A1C;
+}
+.tel[data-palier="ondee"]{
+  --trame-rgb:10 20 28; --trame-op:.09;
+  --ciel:#5C87AC; --ciel-b:#44688A; --ciel-txt:#F4F9FC;
+  --p1:#35566F; --p2:#26445C; --p3:#16293A;
+  --encre:#101E29; --papier:#D9E4EA; --trait:#AEC1CD; --signe:#D96E35;
+  --lune:#E8A268; --lune-b:#16293A;
+}
+.tel[data-palier="veille"]{
+  --trame-rgb:0 0 0; --trame-op:.24;
+  --ciel:#2B2A64; --ciel-b:#1C1B47; --ciel-txt:#EDE8F7;
+  --p1:#3C3A7C; --p2:#272455; --p3:#15133A;
+  --encre:#EDE8F7; --papier:#191835; --trait:#393772; --signe:#F0C24A;
+  --lune:#F0C24A; --lune-b:#0B0A22;
+  --t1:#7FA9CB; --t2:#8FC0A6; --t3:#EBC25C; --t4:#E87A4C; --t5:#D9503C;
+}
+.tel[data-palier="colere"]{
+  --trame-rgb:0 0 0; --trame-op:.24;
+  --ciel:#6B3A78; --ciel-b:#4C2657; --ciel-txt:#F4E9F0;
+  --p1:#5A2F66; --p2:#3E1E49; --p3:#26102E;
+  --encre:#F4E9F0; --papier:#241028; --trait:#4B2456; --signe:#F2D14B;
+  --lune:#F2D14B; --lune-b:#1E0D25;
+  --t1:#7FA9CB; --t2:#8FC0A6; --t3:#EBC25C; --t4:#E87A4C; --t5:#D9503C;
+}
+.tel[data-palier="cendre"]{
+  --trame-rgb:30 42 50; --trame-op:.075;
+  --ciel:#C6D4DC; --ciel-b:#AFC1CC; --ciel-txt:#1E2A32;
+  --p1:#9FB2BE; --p2:#7E93A1; --p3:#5E7180;
+  --encre:#1E2A32; --papier:#EDF2F5; --trait:#C7D4DB; --signe:#3E6E86;
+  --lune:#EDF2F5; --lune-b:#5E7180;
+}
+.tel[data-palier="fournaise"]{
+  --trame-rgb:42 12 7; --trame-op:.09;
+  --ciel:#E8552F; --ciel-b:#C93A22; --ciel-txt:#FFEBD0;
+  --p1:#B83A22; --p2:#8E2318; --p3:#5C1310;
+  --encre:#2A0C07; --papier:#FBD9A8; --trait:#EABB86; --signe:#B02616;
+  --lune:#FFE08A; --lune-b:#5C1310;
+}
+
+/* ── châssis ─────────────────────────────────────────────── */
+.galerie{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start}
+.piece{flex:0 0 auto;width:390px;max-width:100%;margin:0}
+.piece > figcaption{display:flex;gap:9px;align-items:baseline;flex-wrap:wrap;
+  margin:13px 2px 0;font-size:13px;color:var(--doc-sourd)}
+.piece > figcaption b{color:var(--doc-encre);font-weight:600;font-size:14px}
+.tel{width:390px;max-width:100%;background:var(--papier);color:var(--encre);
+  border:2px solid #000;border-radius:34px;overflow:hidden;font-size:15px;position:relative}
+.tel.court .defile{max-height:706px;overflow:hidden}
+.tel.mi .defile{max-height:430px;overflow:hidden}
+.tel.haut .defile{max-height:884px;overflow:hidden}
+
+.statut{background:var(--fondstatut,var(--ciel));color:var(--txtstatut,var(--ciel-txt));
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 26px 2px;font-size:14px;font-weight:700;
+  font-family:Fraunces,serif;font-variation-settings:'opsz' 14}
+.statut .droite{display:flex;gap:5px;align-items:center}
+.statut .droite i{display:block;width:15px;height:10px;background:currentColor;opacity:.85}
+.statut .droite i:nth-child(2){width:17px}
+.statut .droite i:nth-child(3){width:22px}
+
+.chapeau{background:var(--fondchapeau,var(--ciel));color:var(--txtchapeau,var(--ciel-txt));
+  display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 18px 12px}
+.chapeau .lieu{font-weight:700;font-size:17px;flex:1;text-align:center}
+.chapeau .lieu small{display:block;font-size:11.5px;font-weight:600;opacity:.6;letter-spacing:.02em}
+.pastille{width:38px;height:38px;flex:0 0 auto;border:2px solid currentColor;display:grid;
+  place-items:center;background:transparent;color:inherit;cursor:pointer;padding:0}
+.pastille svg{width:20px;height:20px}
+.pastille.plein{background:currentColor}
+.pastille.plein svg{color:var(--papier)}
+
+/* ── héros ───────────────────────────────────────────────── */
+.heros{background:var(--ciel);color:var(--ciel-txt);padding:4px 26px 0}
+.heros .marque{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.heros .glyphe-grand{width:96px;height:96px;flex:0 0 auto;margin-top:6px}
+.temp{font-family:Fraunces,Georgia,serif;font-variation-settings:'opsz' 144,'SOFT' 0,'WONK' 0;
+  font-weight:500;font-size:108px;line-height:.82;letter-spacing:-.045em;margin:0;text-align:right}
+.temp sup{font-size:.38em;vertical-align:super;font-weight:400;letter-spacing:0}
+.ressenti{text-align:right;font-size:15px;opacity:.72;margin:8px 0 0;font-weight:500}
+.phrase{margin:18px 0 0;font-size:19px;line-height:1.35;max-width:22ch;font-weight:500}
+.paysage{display:block;width:100%;height:auto;margin-top:-2px}
+
+/* ── bandes ──────────────────────────────────────────────── */
+.bande{background:var(--papier);border-top:2px solid var(--encre);padding:22px 0 26px}
+.bande.serre{padding:18px 0 20px}
+.etiquette{display:flex;align-items:center;gap:10px;padding:0 22px;margin-bottom:16px}
+.etiquette .cartouche{width:26px;height:26px;flex:0 0 auto;background:var(--encre);
+  color:var(--papier);display:grid;place-items:center}
+.etiquette .cartouche svg{width:17px;height:17px}
+.etiquette h3{margin:0;font-size:15px;font-weight:700}
+.etiquette .note{margin-left:auto;font-size:12.5px;opacity:.55;font-weight:500}
+
+.rail{overflow-x:auto;overflow-y:hidden;padding:0 0 4px 22px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.rail svg{display:block;height:auto}
+
+.selecteur{padding:18px 22px 0;border-top:1px solid var(--trait);margin-top:18px}
+.selecteur .grille{display:grid;grid-template-columns:repeat(3,1fr);
+  border:0 solid var(--encre);border-width:2px 0 0 2px}
+.onglet{font:inherit;font-size:12px;font-weight:600;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  min-height:46px;padding:8px 3px;white-space:nowrap;
+  border:0 solid var(--encre);border-width:0 2px 2px 0;
+  background:transparent;color:var(--encre)}
+.onglet svg{width:17px;height:17px;flex:0 0 auto}
+.onglet[aria-selected="true"]{background:var(--encre);color:var(--papier)}
+.onglet:focus-visible{outline:3px solid var(--signe);outline-offset:-4px;position:relative;z-index:1}
+
+.jours{padding:0 22px}
+.jour{display:grid;grid-template-columns:44px 26px 34px 1fr 38px;align-items:center;
+  gap:12px;padding:11px 0;border-bottom:1px solid var(--trait)}
+.jour:last-child{border-bottom:0}
+.jour .j{font-weight:600;font-size:14.5px}
+.jour .gl{width:24px;height:24px}
+.jour .mini,.jour .maxi{font-family:Fraunces,serif;font-variation-settings:'opsz' 24;font-size:17px}
+.jour .mini{opacity:.45;text-align:right}
+.jour .maxi{font-weight:600;text-align:right}
+.barre{display:flex;gap:2px;height:13px}
+.barre i{flex:1;background:var(--trait);opacity:.55}
+.barre i.on{opacity:1}
+.barre .curseur{flex:0 0 4px;background:var(--encre);outline:2px solid var(--papier);opacity:1}
+
+.astre{padding:0 22px}
+.arc{display:block;width:100%;height:auto}
+.pieds{display:flex;justify-content:space-between;margin-top:10px;font-size:13px}
+.pieds b{display:block;font-family:Fraunces,serif;font-variation-settings:'opsz' 24;
+  font-size:21px;font-weight:600;letter-spacing:-.01em}
+.pieds span{opacity:.55}
+.pieds > div:last-child{text-align:right}
+.lune-rang{display:flex;gap:22px;align-items:center;padding:0 22px}
+.lune-info h4{margin:0;font-size:17px;font-weight:700}
+.lune-info p{margin:3px 0 0;font-size:13.5px;opacity:.6}
+.phases{padding:18px 22px 0;display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+.phase{display:flex;gap:10px;align-items:center;font-size:13px}
+.phase b{display:block;font-weight:600;font-size:13.5px}
+.phase span{opacity:.55}
+
+.pied{display:flex;border-top:3px solid var(--encre);background:var(--papier)}
+.pied button{flex:1;font:inherit;background:transparent;border:0;border-right:2px solid var(--encre);
+  color:var(--encre);padding:13px 4px 16px;cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;gap:5px;font-size:11.5px;font-weight:600}
+.pied button:last-child{border-right:0;flex:0 0 74px}
+.pied button svg{width:22px;height:22px}
+.pied button[aria-current="page"]{background:var(--encre);color:var(--papier)}
+
+/* ── recherche ───────────────────────────────────────────── */
+.zone-recherche{background:var(--ciel);padding:0 18px 16px;display:flex;gap:10px;align-items:center}
+.champ{flex:1;display:flex;align-items:center;gap:10px;border:2px solid var(--encre);
+  background:var(--papier);color:var(--encre);padding:11px 13px}
+.champ svg{width:19px;height:19px;flex:0 0 auto;opacity:.6}
+.champ input{flex:1;font:inherit;font-size:16px;font-weight:600;border:0;background:transparent;
+  color:var(--encre);outline:none;min-width:0}
+.champ input::placeholder{color:var(--encre);opacity:.4;font-weight:500}
+.lien{font:inherit;font-size:14.5px;font-weight:600;background:transparent;border:0;
+  color:var(--ciel-txt);cursor:pointer;padding:4px}
+.resultats{padding:0 22px}
+.resultat{display:grid;grid-template-columns:1fr auto auto;gap:13px;align-items:center;
+  padding:14px 0;border-bottom:1px solid var(--trait);cursor:pointer}
+.resultat .nom{font-weight:700;font-size:16px}
+.resultat .region{font-size:12.5px;opacity:.55;margin-top:1px}
+.resultat .gl{width:24px;height:24px}
+.resultat .t{font-family:Fraunces,serif;font-variation-settings:'opsz' 24;font-size:20px;font-weight:600}
+.vide{padding:44px 26px;text-align:center}
+.vide svg{width:46px;height:46px;opacity:.35;margin-bottom:16px}
+.vide h4{margin:0 0 6px;font-size:17px;font-weight:700}
+.vide p{margin:0;font-size:14.5px;opacity:.6;line-height:1.45}
+
+/* ── lieux ───────────────────────────────────────────────── */
+.vignette{border-bottom:2px solid #000;padding:16px 22px 18px;display:grid;
+  grid-template-columns:1fr auto;gap:8px 16px;align-items:center}
+.vignette .nom{font-weight:700;font-size:18px;display:flex;align-items:center;gap:7px}
+.vignette .nom svg{width:15px;height:15px}
+.vignette .sous{font-size:12.5px;opacity:.65;margin-top:2px}
+.vignette .t{font-family:Fraunces,serif;font-variation-settings:'opsz' 48;
+  font-size:38px;font-weight:500;line-height:1;letter-spacing:-.03em;text-align:right}
+.vignette .bas{display:flex;align-items:center;gap:9px;font-size:13.5px;opacity:.85;font-weight:500}
+.vignette .bas svg{width:25px;height:25px}
+.vignette .mm{text-align:right;font-size:15px;opacity:.75;font-family:Fraunces,serif;
+  font-variation-settings:'opsz' 24;font-weight:600}
+.ajouter{display:flex;align-items:center;gap:12px;padding:18px 22px;font-weight:600;
+  font-size:15.5px;background:var(--papier);color:var(--encre);width:100%;
+  border:0;border-bottom:2px solid var(--encre);font-family:inherit;cursor:pointer}
+.ajouter svg{width:22px;height:22px}
+
+/* ── métriques ───────────────────────────────────────────── */
+.metriques{display:grid;grid-template-columns:1fr 1fr;gap:0;padding:0 22px;
+  border-top:1px solid var(--trait)}
+.metrique{padding:15px 0;border-bottom:1px solid var(--trait);display:flex;gap:12px;align-items:flex-start}
+.metrique:nth-child(odd){padding-right:14px;border-right:1px solid var(--trait)}
+.metrique:nth-child(even){padding-left:16px}
+.metrique svg{width:22px;height:22px;flex:0 0 auto;margin-top:2px}
+.metrique .lab{font-size:12.5px;opacity:.55;font-weight:600}
+.metrique .val{font-family:Fraunces,serif;font-variation-settings:'opsz' 36;
+  font-size:23px;font-weight:600;line-height:1.15;letter-spacing:-.01em}
+.metrique .val em{font-style:normal;font-size:14px;font-weight:500;opacity:.6}
+
+/* ── cartes ──────────────────────────────────────────────── */
+.carte-zone{position:relative;background:var(--ciel-b)}
+.carte-zone svg{display:block;width:100%;height:auto}
+.couches{display:flex;padding:14px 22px 0}
+.legende{display:flex;align-items:center;gap:0;padding:16px 22px 0}
+.legende i{flex:1;height:11px}
+.legende-txt{display:flex;justify-content:space-between;padding:5px 22px 0;
+  font-size:11.5px;opacity:.55;font-weight:600}
+.frise-temps{display:flex;gap:0;padding:16px 0 0 22px;overflow-x:auto;scrollbar-width:none}
+.frise-temps::-webkit-scrollbar{display:none}
+.frise-temps button{flex:0 0 auto;font:inherit;font-size:12.5px;font-weight:600;
+  padding:8px 12px;border:2px solid var(--encre);border-right-width:0;background:transparent;
+  color:var(--encre);cursor:pointer}
+.frise-temps button:last-child{border-right-width:2px;margin-right:22px}
+.frise-temps button[aria-current="true"]{background:var(--encre);color:var(--papier)}
+
+/* ── lexique ─────────────────────────────────────────────── */
+.filtres{display:flex;gap:0;padding:0 22px 18px;flex-wrap:wrap}
+.filtres button{font:inherit;font-size:13px;font-weight:600;padding:8px 13px;
+  border:2px solid var(--encre);border-right-width:0;background:transparent;
+  color:var(--encre);cursor:pointer}
+.filtres button:last-child{border-right-width:2px}
+.filtres button[aria-pressed="true"]{background:var(--encre);color:var(--papier)}
+.grille-signes{display:grid;grid-template-columns:repeat(3,1fr);background:var(--papier);
+  border-top:2px solid var(--encre);border-left:2px solid var(--encre)}
+.signe{padding:16px 6px 13px;text-align:center;border-right:2px solid var(--encre);
+  border-bottom:2px solid var(--encre);cursor:pointer}
+.signe svg{width:32px;height:32px;display:block;margin:0 auto 9px}
+.signe b{display:block;font-size:12.5px;font-weight:600;line-height:1.2}
+.signe span{font-size:10.5px;opacity:.5;letter-spacing:.04em}
+.fiche{padding:26px 22px 0;text-align:center}
+.fiche > svg{width:92px;height:92px}
+.fiche h3{font-family:Fraunces,serif;font-variation-settings:'opsz' 72;font-weight:600;
+  font-size:31px;margin:16px 0 2px;letter-spacing:-.01em}
+.fiche .translit{font-size:13px;opacity:.5;letter-spacing:.1em;font-weight:600}
+.fiche p{font-size:15px;line-height:1.5;margin:18px 0 0;text-align:left;opacity:.85}
+.decompo{display:flex;align-items:center;justify-content:center;gap:12px;margin:24px 0 0}
+.decompo svg{width:44px;height:44px}
+.decompo .op{font-family:Fraunces,serif;font-size:22px;opacity:.4}
+.seuils{margin:22px 0 0;padding:0;list-style:none;text-align:left}
+.seuils li{display:flex;justify-content:space-between;gap:14px;padding:10px 0;
+  border-bottom:1px solid var(--trait);font-size:14px}
+.seuils li span{opacity:.6}
+.seuils li b{font-family:Fraunces,serif;font-variation-settings:'opsz' 24;font-weight:600;font-size:16px}
+
+/* ── réglages ────────────────────────────────────────────── */
+.groupe-titre{padding:22px 22px 10px;font-size:12.5px;font-weight:700;opacity:.5}
+.reglage{display:flex;align-items:center;gap:14px;padding:14px 22px;
+  border-top:1px solid var(--trait);min-height:60px}
+.reglage svg.gl{width:22px;height:22px;flex:0 0 auto}
+.reglage .txt{flex:1;min-width:0}
+.reglage .txt b{display:block;font-weight:600;font-size:15.5px}
+.reglage .txt span{display:block;font-size:12.5px;opacity:.55;margin-top:1px;line-height:1.35}
+.reglage .val{font-family:Fraunces,serif;font-variation-settings:'opsz' 24;
+  font-size:19px;font-weight:600;white-space:nowrap}
+.interrupteur{width:54px;height:30px;flex:0 0 auto;border:2px solid var(--encre);
+  background:transparent;padding:0;cursor:pointer;display:flex;align-items:center}
+.interrupteur i{display:block;width:22px;height:22px;background:transparent;
+  border:2px solid var(--encre);margin:0 2px}
+.interrupteur[aria-checked="true"]{background:var(--encre);justify-content:flex-end}
+.interrupteur[aria-checked="true"] i{background:var(--papier);border-color:var(--papier)}
+.segment{display:flex;flex:0 0 auto}
+.segment button{font:inherit;font-size:13.5px;font-weight:600;padding:7px 13px;
+  border:2px solid var(--encre);border-right-width:0;background:transparent;
+  color:var(--encre);cursor:pointer}
+.segment button:last-child{border-right-width:2px}
+.segment button[aria-pressed="true"]{background:var(--encre);color:var(--papier)}
+
+/* ── feuilles / dialogues ────────────────────────────────── */
+.scene{position:relative}
+.voile{position:absolute;inset:0;background:rgba(0,0,0,.30)}
+.voile::after{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(45deg,rgba(0,0,0,.24) 0 1px,transparent 1px 3px)}
+/* trame : la marche d'ombre est hachurée, la face lumière reste pure */
+.trame{position:relative}
+.trame::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(45deg,
+    rgb(var(--trame-rgb) / var(--trame-op)) 0 1px, transparent 1px 4px)}
+.feuille{position:absolute;left:0;right:0;bottom:0;background:var(--papier);
+  border-top:3px solid #000;padding:22px 22px 26px}
+.feuille h4{margin:0 0 4px;font-size:19px;font-weight:700}
+.feuille > p{margin:0 0 18px;font-size:14.5px;opacity:.65;line-height:1.45}
+.menu-item{display:flex;align-items:center;gap:14px;padding:14px 0;
+  border-top:1px solid var(--trait);font-size:15.5px;font-weight:600}
+.menu-item svg{width:22px;height:22px}
+.menu-item .apres{margin-left:auto;font-size:13px;opacity:.5;font-weight:500}
+.bouton{display:block;width:100%;font:inherit;font-size:16px;font-weight:700;
+  padding:14px;background:var(--encre);color:var(--papier);border:2px solid var(--encre);
+  cursor:pointer;margin-top:20px}
+.bouton.creux{background:transparent;color:var(--encre);margin-top:10px}
+.etapes{list-style:none;margin:0;padding:0}
+.etapes li{display:flex;gap:14px;align-items:center;padding:13px 0;border-top:1px solid var(--trait)}
+.etapes li svg{width:24px;height:24px;flex:0 0 auto}
+.etapes li b{font-weight:600;font-size:15px}
+
+/* dialogue système iOS — hors design system, volontairement */
+.ios-dlg{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);width:270px;
+  background:#F2F2F2;color:#000;border-radius:14px;overflow:hidden;
+  font-family:-apple-system,'Helvetica Neue',sans-serif;text-align:center}
+.ios-dlg .corps{padding:19px 16px 16px}
+.ios-dlg h5{margin:0 0 4px;font-size:16px;font-weight:600;line-height:1.25}
+.ios-dlg p{margin:0;font-size:13px;line-height:1.3;color:#3C3C43}
+.ios-dlg .carte-mini{margin:12px auto 0;width:210px;height:78px;background:#D8E3D0;
+  border-radius:6px;position:relative;overflow:hidden}
+.ios-dlg .carte-mini .rue{position:absolute;background:#fff;opacity:.9}
+.ios-dlg .carte-mini .pt{position:absolute;left:50%;top:50%;width:14px;height:14px;
+  margin:-7px 0 0 -7px;border-radius:50%;background:#0A84FF;border:2px solid #fff}
+.ios-dlg .actions{display:flex;border-top:.5px solid #C6C6C8}
+.ios-dlg .actions button{flex:1;font:inherit;font-size:16px;padding:11px 2px;background:transparent;
+  border:0;border-right:.5px solid #C6C6C8;color:#007AFF;cursor:pointer}
+.ios-dlg .actions button:last-child{border-right:0;font-weight:600}
+.ios-dlg .actions.col{flex-direction:column}
+.ios-dlg .actions.col button{border-right:0;border-bottom:.5px solid #C6C6C8}
+
+/* écran verrouillé + notification */
+.verrou{background:#0E1622;color:#fff;padding:0;min-height:706px;position:relative;
+  display:flex;flex-direction:column}
+.verrou .fond{position:absolute;inset:0}
+.verrou .contenu{position:relative;padding:58px 20px 26px;flex:1;display:flex;flex-direction:column}
+.verrou .date{text-align:center;font-family:-apple-system,'Helvetica Neue',sans-serif;
+  font-size:15px;opacity:.85;letter-spacing:.02em}
+.verrou .heure{text-align:center;font-family:-apple-system,'Helvetica Neue',sans-serif;
+  font-size:78px;font-weight:300;line-height:1;letter-spacing:-.02em;margin:2px 0 0}
+.notif{margin-top:auto;background:rgba(255,255,255,.16);backdrop-filter:blur(18px);
+  border-radius:18px;padding:12px 14px;display:flex;gap:11px;
+  font-family:-apple-system,'Helvetica Neue',sans-serif}
+.notif .icone{width:38px;height:38px;flex:0 0 auto;border-radius:9px;overflow:hidden}
+.notif .corps{flex:1;min-width:0}
+.notif .ligne1{display:flex;align-items:baseline;gap:8px}
+.notif .ligne1 b{font-size:14px;font-weight:600;flex:1}
+.notif .ligne1 span{font-size:12px;opacity:.7}
+.notif .titre{font-size:14px;font-weight:600;margin-top:1px}
+.notif .texte{font-size:14px;line-height:1.3;opacity:.92;margin-top:1px}
+
+.icones-app{display:flex;gap:22px;align-items:flex-end;flex-wrap:wrap}
+.icone-app{border-radius:22%;overflow:hidden;display:block}
+
+/* ── planches ────────────────────────────────────────────── */
+.planche{background:#FBEBCB;color:#2B1409;border:2px solid #000;padding:26px 24px 30px}
+.grille-glyphes{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));
+  background:#FBEBCB;border:2px solid #2B1409;border-width:2px 0 0 2px}
+.case-glyphe{background:#FBEBCB;padding:16px 8px 12px;text-align:center;
+  border:0 solid #2B1409;border-width:0 2px 2px 0}
+.case-glyphe svg{width:34px;height:34px;display:block;margin:0 auto 10px}
+.case-glyphe b{display:block;font-size:12px;font-weight:600;line-height:1.25}
+.case-glyphe span{font-size:10.5px;opacity:.5;letter-spacing:.03em}
+
+.palettes{display:grid;gap:16px}
+.palette{border:2px solid var(--doc-trait)}
+.palette .bandeau{display:flex;align-items:baseline;gap:12px;padding:11px 15px;
+  border-bottom:2px solid var(--doc-trait);flex-wrap:wrap}
+.palette .bandeau b{font-size:16px;font-weight:700}
+.palette .bandeau span{font-size:13px;color:var(--doc-sourd)}
+.nuancier{display:flex}
+.nuancier div{flex:1;height:80px;display:flex;align-items:flex-end;padding:7px;
+  font-size:10px;font-weight:700;line-height:1.3}
+
+.echelle{border-top:2px solid var(--doc-trait)}
+.echelle .ligne{display:flex;align-items:baseline;gap:20px;padding:17px 0;
+  border-bottom:1px solid var(--doc-trait);flex-wrap:wrap}
+.echelle .ligne .ex{flex:1;min-width:200px}
+.echelle .ligne .meta{font-size:12.5px;color:var(--doc-sourd);white-space:nowrap}
+.ex.d1{font-family:Fraunces,serif;font-variation-settings:'opsz' 144;font-weight:500;
+  font-size:60px;line-height:.9;letter-spacing:-.04em}
+.ex.d2{font-family:Fraunces,serif;font-variation-settings:'opsz' 48;font-weight:600;font-size:29px}
+.ex.d3{font-family:Fraunces,serif;font-variation-settings:'opsz' 24;font-weight:600;font-size:20px}
+.ex.c1{font-size:19px;font-weight:500}
+.ex.c2{font-size:16px}
+.ex.c3{font-size:15px;font-weight:700}
+.ex.c4{font-size:12.5px;font-weight:600;opacity:.6}
+
+@media (max-width:860px){.piece{width:100%}.tel{width:100%}}
+</style>
+</head>
+<body>
+<div class="enveloppe">
+
+<header class="doc-tete">
+  <h1>AUGURE<span>.</span></h1>
+  <p><strong>Mockup complet.</strong> Application météo sans compte, installable, notification quotidienne. Cel shading d'après <em>Chants of Sennaar</em> ; découpage de l'information d'après CARROT Weather.</p>
+  <p>Quatorze écrans, six paliers, vingt-trois signes. Tout est en SVG plat : aucune ombre portée, aucun dégradé, un seul rayon d'angle dans toute l'application.</p>
+</header>
+
+<section class="bloc"><span class="num">01</span><h2>Premier lancement</h2>
+  <p class="chapo">L'ordre est la seule chose qui compte ici. L'application se peint d'abord avec la position déduite de l'IP, puis demande l'autorisation par-dessus un écran déjà rempli. Un dialogue posé sur un écran vide se fait refuser par réflexe, et sur iOS un refus est définitif.</p>
+  <div class="galerie" id="g-lancement"></div>
+</section>
+
+<section class="bloc"><span class="num">02</span><h2>Accueil</h2>
+  <p class="chapo">Héros, heure par heure, sept jours, course du soleil, lune. La séquence de la vidéo, posée en strates pleine largeur séparées d'un trait d'encre plutôt qu'en cartes flottantes.</p>
+  <div class="galerie" id="g-accueil"></div>
+</section>
+
+<section class="bloc"><span class="num">03</span><h2>Menu et installation</h2>
+  <p class="chapo">Le menu du coin supérieur droit, et la feuille d'installation iOS — le seul endroit où l'on doit expliquer un geste système, parce que Safari n'expose pas d'API d'installation.</p>
+  <div class="galerie" id="g-menu"></div>
+</section>
+
+<section class="bloc"><span class="num">04</span><h2>Recherche de ville</h2>
+  <p class="chapo">Le champ hérite du palier courant. Les résultats affichent déjà la température, parce qu'un nom de ville seul ne permet pas de choisir entre deux homonymes.</p>
+  <div class="galerie" id="g-recherche"></div>
+</section>
+
+<section class="bloc"><span class="num">05</span><h2>Lieux</h2>
+  <p class="chapo">L'écran qui démontre le système : chaque vignette est peinte dans le palier de sa météo réelle. Six villes côte à côte, six ambiances, aucune légende nécessaire.</p>
+  <div class="galerie" id="g-lieux"></div>
+</section>
+
+<section class="bloc"><span class="num">06</span><h2>Sélecteur de métriques</h2>
+  <p class="chapo">Six métriques, toutes remontées par Foreca. À six entrées le rail d'onglets déborde et tronque ; la grille de trois par deux les montre toutes sans défilement, et chaque entrée porte son signe. Températures en polyligne, indices en colonnes — deux formes seulement, jamais plus.</p>
+  <div class="galerie" id="g-metriques"></div>
+</section>
+
+<section class="bloc"><span class="num">07</span><h2>Détail d'un jour</h2>
+  <p class="chapo">Ouvert depuis une ligne des sept jours. La frise horaire du jour concerné, puis les métriques secondaires en grille de deux.</p>
+  <div class="galerie" id="g-detail"></div>
+</section>
+
+<section class="bloc"><span class="num">08</span><h2>Cartes</h2>
+  <p class="chapo">Précipitations quantifiées en cinq niveaux d'aplat, jamais en dégradé de nuance. Fond de carte réduit à deux valeurs, terre et eau. Pas d'étiquettes de rues.</p>
+  <div class="galerie" id="g-cartes"></div>
+</section>
+
+<section class="bloc"><span class="num">09</span><h2>Lexique</h2>
+  <p class="chapo">Le carnet du joueur. Un signe qu'on ne sait pas lire est un bug : chaque glyphe est cliquable partout dans l'application et mène à sa fiche, avec sa décomposition et ses seuils de déclenchement.</p>
+  <div class="galerie" id="g-lexique"></div>
+</section>
+
+<section class="bloc"><span class="num">10</span><h2>Réglages</h2>
+  <p class="chapo">Court par construction : sans compte, il n'y a ni profil, ni synchronisation, ni confidentialité à paramétrer. Les interrupteurs sont des carrés qui basculent en deux temps, pas des pastilles qui glissent.</p>
+  <div class="galerie" id="g-reglages"></div>
+</section>
+
+<section class="bloc"><span class="num">11</span><h2>Alerte quotidienne</h2>
+  <p class="chapo">Une notification par jour, à l'heure choisie, lisible sans ouvrir l'application. Elle donne l'écart avec aujourd'hui, parce que c'est l'information que l'on cherche réellement le matin.</p>
+  <div class="galerie" id="g-notif"></div>
+</section>
+
+<section class="bloc"><span class="num">12</span><h2>États limites</h2>
+  <p class="chapo">Trois écrans qu'on oublie de dessiner et qui sont pourtant les plus vus en usage réel. Une erreur explique ce qui s'est passé et propose l'action suivante ; elle ne s'excuse pas.</p>
+  <div class="galerie" id="g-limites"></div>
+</section>
+
+<section class="bloc"><span class="num">13</span><h2>Paliers</h2>
+  <p class="chapo">Six régimes, six palettes fermées de huit valeurs. L'interface ne se teinte pas, elle se repeint : ciel, plans du paysage, fond de contenu, encre et accent changent ensemble.</p>
+  <div class="galerie" id="g-paliers"></div>
+  <div style="margin-top:30px" class="palettes" id="p-palettes"></div>
+</section>
+
+<section class="bloc"><span class="num">14</span><h2>Lexique des signes</h2>
+  <p class="chapo">Seize signes météo et sept signes d'interface, tracés sur une grille de 24, composés de quatre primitives : le disque, la barre, le chevron, le point.</p>
+  <div class="planche"><div class="grille-glyphes" id="p-glyphes"></div></div>
+</section>
+
+<section class="bloc"><span class="num">15</span><h2>Typographie</h2>
+  <p class="chapo">Fraunces pour les chiffres et les titres, formes taillées et contraste fort. Karla pour l'interface, accentuation française bien dessinée et lisible à 12 px.</p>
+  <div class="echelle" id="p-typo"></div>
+</section>
+
+</div>
+
+<script>
+/* ═════ GLYPHES — disque · barre · chevron · point ═════ */
+const GL = {
+soleil:`<circle cx="12" cy="12" r="5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M19.4 4.6l-2.1 2.1M6.7 17.3l-2.1 2.1"/></g>`,
+lune:`<path d="M14.5 3.2A9 9 0 1 0 14.5 20.8 10.4 10.4 0 0 1 14.5 3.2Z" fill="currentColor"/><path d="M19 3.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8Z" fill="currentColor"/>`,
+voile:`<circle cx="6.5" cy="5.5" r="3.4" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="square"><path d="M6.5 0v1.8M0 5.5h1.8M1.9 .9l1.3 1.3M11.1 .9L9.8 2.2M12.4 5.5h-1.4"/></g><path d="M7.5 21h10a3.7 3.7 0 0 0 .3-7.4A5.4 5.4 0 0 0 8.8 12 3.6 3.6 0 0 0 7.5 21Z" fill="currentColor"/>`,
+couvert:`<path d="M6.5 19h11a3.7 3.7 0 0 0 .3-7.4A5.4 5.4 0 0 0 7.8 10 3.6 3.6 0 0 0 6.5 19Z" fill="currentColor"/><path d="M8 22h9" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>`,
+pluie:`<path d="M6.5 14h11a3.7 3.7 0 0 0 .3-7.4A5.4 5.4 0 0 0 7.8 5 3.6 3.6 0 0 0 6.5 14Z" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M8 17l-1.5 4M12 17l-1.5 4M16 17l-1.5 4"/></g>`,
+averse:`<circle cx="6" cy="4.8" r="3.1" fill="currentColor"/><g stroke="currentColor" stroke-width="1.5" stroke-linecap="square"><path d="M6 0v1.6M0 4.8h1.6M10.4 4.8H9M1.6 .4l1.2 1.2M10.4 .4L9.2 1.6"/></g><path d="M8 16h9.5a3.6 3.6 0 0 0 .3-7.2A5.2 5.2 0 0 0 9.2 7.4 3.5 3.5 0 0 0 8 16Z" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M11.5 18.5l-1.3 4M16 18.5l-1.3 4"/></g>`,
+orage:`<path d="M6.5 13h11a3.7 3.7 0 0 0 .3-7.4A5.4 5.4 0 0 0 7.8 4 3.6 3.6 0 0 0 6.5 13Z" fill="currentColor"/><path d="M13.5 15h-4l-2 4.5h3L9.5 24l6-6h-3Z" fill="currentColor"/>`,
+neige:`<path d="M6.5 13.5h11a3.7 3.7 0 0 0 .3-7.4A5.4 5.4 0 0 0 7.8 4.5 3.6 3.6 0 0 0 6.5 13.5Z" fill="currentColor"/><g stroke="currentColor" stroke-width="1.8" stroke-linecap="square"><path d="M8 17.5v4M6.2 18.5l3.6 2M9.8 18.5l-3.6 2M16 17.5v4M14.2 18.5l3.6 2M17.8 18.5l-3.6 2"/></g>`,
+grele:`<path d="M6.5 13.5h11a3.7 3.7 0 0 0 .3-7.4A5.4 5.4 0 0 0 7.8 4.5 3.6 3.6 0 0 0 6.5 13.5Z" fill="currentColor"/><g fill="currentColor"><circle cx="8" cy="19" r="1.9"/><circle cx="16" cy="19" r="1.9"/></g><path d="M12 17l-1.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>`,
+brume:`<g stroke="currentColor" stroke-width="2.4" stroke-linecap="square"><path d="M3 7h14M7 12h14M3 17h12M9 21.5h9"/></g>`,
+vent:`<g stroke="currentColor" stroke-width="2.2" stroke-linecap="square" fill="none"><path d="M2 8h12a3 3 0 1 0-3-3"/><path d="M2 14h15a3 3 0 1 1-3 3"/><path d="M2 20h9"/></g>`,
+rafale:`<g stroke="currentColor" stroke-width="2.2" stroke-linecap="square" fill="none"><path d="M2 8h13a3 3 0 1 0-3-3"/><path d="M2 15h16"/></g><path d="M17 11l5 4-5 4Z" fill="currentColor"/>`,
+canicule:`<circle cx="12" cy="9.5" r="5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M12 0v3M3.4 4.4l2.1 2.1M20.6 4.4l-2.1 2.1M1 9.5h2.5M20.5 9.5H23"/><path d="M3 18h18M6 22h12"/></g>`,
+gel:`<g stroke="currentColor" stroke-width="2.2" stroke-linecap="square"><path d="M12 2v20M3.3 7l17.4 10M20.7 7L3.3 17"/><path d="M8.5 4.5L12 7l3.5-2.5M8.5 19.5L12 17l3.5 2.5"/></g>`,
+lever:`<circle cx="12" cy="15" r="4.6" fill="currentColor"/><path d="M2 20h20" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"/><path d="M12 1l4.5 5h-9Z" fill="currentColor"/>`,
+coucher:`<circle cx="12" cy="15" r="4.6" fill="currentColor"/><path d="M2 20h20" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"/><path d="M12 7L7.5 2h9Z" fill="currentColor"/>`,
+thermo:`<rect x="9.8" y="2" width="4.4" height="13" fill="currentColor"/>
+  <circle cx="12" cy="18.4" r="4.4" fill="currentColor"/>
+  <g stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M16.5 5.5h4M16.5 9.5h3M16.5 13.5h4"/></g>`,
+ressenti:`<rect x="6.4" y="2.5" width="4" height="12" fill="currentColor"/>
+  <circle cx="8.4" cy="18" r="4.1" fill="currentColor"/>
+  <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">
+  <path d="M15 7.5c2.2 2.8 2.2 6.2 0 9"/><path d="M19.5 4c3.4 4.4 3.4 11.6 0 16"/></g>`,
+air:`<g stroke="currentColor" stroke-width="2.2" stroke-linecap="square"><path d="M2 6h12M2 12h15M2 18h9"/></g>
+  <g fill="currentColor"><circle cx="18.5" cy="6" r="1.9"/><circle cx="21" cy="12" r="1.9"/><circle cx="14" cy="18" r="1.9"/></g>`,
+horloge:`<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 6.5V12l4 2.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" fill="none"/>`,
+calendrier:`<rect x="3" y="5" width="18" height="16" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 2.5v4M16 2.5v4" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>`,
+partage:`<path d="M12 3v12M12 3L7.5 7.5M12 3l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="square" fill="none"/><path d="M4.5 12v8.5h15V12" stroke="currentColor" stroke-width="2" fill="none"/>`,
+plus:`<g fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></g>`,
+carte:`<path d="M2 5.5l7-2.5v15.5l-7 2.5Zm7-2.5l7 2.5v15.5l-7-2.5Zm7 2.5l6-2.5v15.5l-6 2.5Z" fill="none" stroke="currentColor" stroke-width="2"/>`,
+ciel:`<circle cx="12" cy="9" r="4" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M12 1v2.5M3.5 9H1M23 9h-2.5M5.2 2.2l1.8 1.8M18.8 2.2L17 4"/><path d="M1 16h22M4 20.5h16"/></g>`,
+lexique:`<rect x="2.5" y="2.5" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2"/><g fill="currentColor"><circle cx="8" cy="8" r="2.2"/><rect x="13" y="6.6" width="5" height="2.8"/><rect x="6" y="14" width="5" height="2.8"/></g><path d="M15.5 13.5l-2 5M18.5 13.5l-2 5" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>`,
+loupe:`<circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"/>`,
+retour:`<path d="M15 3L6 12l9 9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"/>`,
+croix:`<path d="M4 4l16 16M20 4L4 20" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"/>`,
+ajout:`<path d="M12 3v18M3 12h18" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"/>`,
+position:`<circle cx="12" cy="12" r="4" fill="currentColor"/><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><g stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M12 0v3M12 21v3M0 12h3M21 12h3"/></g>`,
+poignee:`<g stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M4 8h16M4 16h16"/></g>`,
+cloche:`<path d="M5.5 18V10a6.5 6.5 0 0 1 13 0v8Z" fill="currentColor"/><path d="M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="square"/><path d="M9.5 20.5a2.5 2.5 0 0 0 5 0" fill="none" stroke="currentColor" stroke-width="2"/>`,
+reglages:`<circle cx="12" cy="12" r="3.4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 1.5v4M12 18.5v4M1.5 12h4M18.5 12h4M4.4 4.4l2.9 2.9M16.7 16.7l2.9 2.9M19.6 4.4l-2.9 2.9M7.3 16.7l-2.9 2.9" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>`,
+unite:`<circle cx="7" cy="6" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 4L8 20" stroke="currentColor" stroke-width="2" stroke-linecap="square"/><circle cx="17" cy="18" r="3" fill="none" stroke="currentColor" stroke-width="2"/>`,
+info:`<circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 10.5v7" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"/><circle cx="12" cy="6.8" r="1.6" fill="currentColor"/>`,
+corbeille:`<path d="M4 6h16M9 6V3h6v3M6 6v15h12V6" fill="none" stroke="currentColor" stroke-width="2"/>`,
+humidite:`<path d="M12 1.5S4.5 11 4.5 15.5a7.5 7.5 0 0 0 15 0C19.5 11 12 1.5 12 1.5Z" fill="currentColor"/>`,
+pression:`<circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 12L17 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"/><circle cx="12" cy="12" r="2" fill="currentColor"/>`,
+uv:`<circle cx="12" cy="12" r="4.4" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M12 0.5v3.5M12 20v3.5M0.5 12h3.5M20 12h3.5"/></g><path d="M4 3l4 4M20 3l-4 4" stroke="currentColor" stroke-width="3.2" stroke-linecap="square"/>`,
+visibilite:`<path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12Z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3.2" fill="currentColor"/>`,
+rosee:`<path d="M9 3.5S3.5 10.5 3.5 13.6a5.5 5.5 0 0 0 11 0C14.5 10.5 9 3.5 9 3.5Z" fill="currentColor"/><path d="M18 12.5s-3.5 4.4-3.5 6.3a3.5 3.5 0 0 0 7 0c0-1.9-3.5-6.3-3.5-6.3Z" fill="currentColor"/>`,
+hors_ligne:`<path d="M3 3l18 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"/><path d="M6.5 15.5h9a3.3 3.3 0 0 0 1.2-6.4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13.5 7.2A5 5 0 0 0 7 9.4a3.3 3.3 0 0 0-.5 6.1" fill="none" stroke="currentColor" stroke-width="2"/>`,
+alerte:`<path d="M12 2L1.5 21h21Z" fill="currentColor"/><path d="M12 9v5.5" stroke="var(--papier)" stroke-width="2.2" stroke-linecap="square"/><circle cx="12" cy="18" r="1.4" fill="var(--papier)"/>`
+};
+const NOM = {soleil:['Dégagé','ŠAM'],lune:['Nuit claire','LIL'],voile:['Voilé','ŠAM·NUB'],
+couvert:['Couvert','NUB'],pluie:['Pluie','ZAL'],averse:['Averse','ŠAM·ZAL'],orage:['Orage','ZAL·GIR'],
+neige:['Neige','KUŠ'],grele:['Grêle','KUŠ·ZAL'],brume:['Brume','ḪAB'],vent:['Vent','IM'],
+rafale:['Rafale','IM·GIR'],canicule:['Canicule','ŠAM·GAL'],gel:['Gel','KUŠ·LIL'],
+lever:['Lever','É'],coucher:['Coucher','KI']};
+const svg = (k,cls='') => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${GL[k]}</svg>`;
+const bande = t => t <= 5 ? 't1' : t <= 13 ? 't2' : t <= 21 ? 't3' : t <= 29 ? 't4' : 't5';
+
+/* Chaque métrique garde le découpage officiel de son indice : cinq bandes
+   pour l'UV (OMS), six pour la qualité de l'air (EAQI). La doctrine est
+   « quantifier plutôt que dégrader », pas « toujours cinq ». */
+const ECH_UV = [[2,'#5C9E6E','faible'],[5,'#E0B93B','modéré'],[7,'#E08A2E','fort'],
+                [10,'#D2452F','très fort'],[99,'#8E3A9E','extrême']];
+const ECH_AIR = [[1,'#4E9E8F','bon'],[2,'#8FBF5C','moyen'],[3,'#E8C84A','dégradé'],
+                 [4,'#E08A4A','mauvais'],[5,'#D2452F','très mauvais'],[9,'#8E3A5E','extrême']];
+const ECH_PLUIE = [[0.2,'#BFD4E0','bruine'],[1,'#8FB4CC','faible'],[4,'#5B8FB8','modérée'],
+                   [8,'#3B5F96','forte'],[99,'#2B2A64','très forte']];
+const ECH_VENT = [[15,'#8FC0A6','calme'],[30,'#D9A93B','modéré'],[50,'#E08A2E','soutenu'],
+                  [80,'#D2452F','fort'],[199,'#8E3A9E','tempête']];
+const niveau = (v, ech) => (ech.find(([s]) => v <= s) || ech[ech.length-1]);
+
+const METRIQUES = {
+  temp: {lab:'Température', g:'thermo',   unite:'°C',    type:'ligne'},
+  ress: {lab:'Ressenti',    g:'ressenti', unite:'°C',    type:'ligne'},
+  pluie:{lab:'Pluie',       g:'pluie',    unite:'mm/h',  type:'colonne', ech:ECH_PLUIE, max:10, dec:1},
+  vent: {lab:'Vent',        g:'vent',     unite:'km/h',  type:'colonne', ech:ECH_VENT,  max:90},
+  uv:   {lab:'Indice UV',   g:'uv',       unite:'indice OMS',  type:'colonne', ech:ECH_UV,  max:11},
+  air:  {lab:'Qualité air', g:'air',      unite:'indice EAQI', type:'colonne', ech:ECH_AIR, max:6}
+};
+
+/* ═════ FRAGMENTS COMMUNS ═════ */
+const statut = (heure='7:02') => `<div class="statut"><span>${heure}</span>
+  <svg width="66" height="12" viewBox="0 0 66 12" aria-hidden="true" fill="currentColor">
+    <rect x="0" y="8" width="3" height="4"/><rect x="5" y="6" width="3" height="6"/>
+    <rect x="10" y="3" width="3" height="9"/><rect x="15" y="0" width="3" height="12"/>
+    <path d="M27 4.1a9 9 0 0 1 11 0l-1.8 2.1a6.2 6.2 0 0 0-7.4 0Zm2.9 3.3a4.6 4.6 0 0 1 5.2 0L32.5 10Z"/>
+    <rect x="46" y="1.5" width="17" height="9" fill="none" stroke="currentColor" stroke-width="1.4"/>
+    <rect x="48" y="3.5" width="9" height="5"/><rect x="64" y="4.5" width="2" height="3"/>
+  </svg></div>`;
+const chapeau = (g,titre,d) => `<div class="chapeau">${g}<span class="lieu">${titre}</span>${d}</div>`;
+const past = (k,lab,plein) => `<button class="pastille${plein?' plein':''}" aria-label="${lab}">${svg(k)}</button>`;
+const etiq = (g,t,n) => `<div class="etiquette"><span class="cartouche">${svg(g)}</span><h3>${t}</h3>${n?`<span class="note">${n}</span>`:''}</div>`;
+const nav = a => `<nav class="pied">
+  <button ${a==='ciel'?'aria-current="page"':''}>${svg('ciel')}Ciel</button>
+  <button ${a==='cartes'?'aria-current="page"':''}>${svg('carte')}Cartes</button>
+  <button ${a==='lexique'?'aria-current="page"':''}>${svg('lexique')}Lexique</button>
+  <button aria-label="Rechercher">${svg('loupe')}</button></nav>`;
+
+function tel(palier, dedans, cls=''){
+  return `<div class="tel ${cls}" data-palier="${palier}"><div class="defile">${dedans}</div></div>`;
+}
+function piece(inner, titre, desc){
+  return `<figure class="piece">${inner}<figcaption><b>${titre}</b>${desc?'— '+desc:''}</figcaption></figure>`;
+}
+
+/* ═════ TRAME ═════
+   Relevé sur les captures du jeu : hachures à 45° descendantes,
+   pas de 5 px sur l'axe x (3,54 px perpendiculaire), trait d'1 px
+   antialiasé, creux de 16 à 26 unités de luminance sur 255.
+   Appliquée à toute face ombrée, jamais à la face lumière. ═════ */
+let _tr = 0;
+function trameDefs(id, pas = 4){
+  return `<defs><pattern id="${id}" width="${pas}" height="${pas}"
+    patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+    <rect width="${pas}" height="1" style="fill:rgb(var(--trame-rgb) / var(--trame-op))"/>
+  </pattern></defs>`;
+}
+
+/* ═════ PAYSAGE ═════ */
+function paysage(){
+  const id = 'tr' + (++_tr), U = `url(#${id})`;
+  const S = {
+    cielb:`<rect y="46" width="390" height="144"/>`,
+    p1:`<path d="M258 190V92h18V74h16V58h22v16h16v18h18v98Z"/><path d="M0 190v-44l40-17 34 13 30-19 26 15v52Z"/>`,
+    p2:`<path d="M0 190v-50l64-18 58 20 52-26 60 18 56-24 40 16v64Z"/>`,
+    arc:`<path d="M206 190v-22a9 9 0 0 1 18 0v22Z"/><path d="M238 190v-22a9 9 0 0 1 18 0v22Z"/><path d="M270 190v-22a9 9 0 0 1 18 0v22Z"/>`,
+    corniche:`<path d="M0 190v-20l52 8 44-14 58 12 46-10 52 14 50-12 38 10v12Z"/>`,
+    cypA:`<path d="M40 170c0-17 5-32 8-32s8 15 8 32Z"/><path d="M96 174c0-14 4-26 6-26s6 12 6 26Z"/><path d="M158 168c0-18 5-33 8-33s8 15 8 33Z"/>`,
+    cypB:`<path d="M48 138c3 0 8 15 8 32h-8Z"/><path d="M102 148c2 0 6 12 6 26h-6Z"/><path d="M166 135c3 0 8 15 8 33h-8Z"/>`
+  };
+  /* chaque masse est peinte en aplat, puis recouverte de la trame */
+  const m = (k, f) => `<g fill="${f}">${S[k]}</g><g fill="${U}">${S[k]}</g>`;
+  return `<svg class="paysage" viewBox="0 0 390 190" preserveAspectRatio="none" aria-hidden="true">
+  ${trameDefs(id)}
+  <rect width="390" height="46" fill="var(--ciel)"/>
+  ${m('cielb','var(--ciel-b)')}
+  ${m('p1','var(--p1)')}
+  ${m('p2','var(--p2)')}
+  ${m('arc','var(--p3)')}
+  ${m('corniche','var(--p3)')}
+  ${m('cypA','var(--p3)')}
+  ${m('cypB','var(--p2)')}
+</svg>`;
+}
+
+/* ═════ FRISE HORAIRE ═════ */
+function horaires(heures, m='temp'){
+  const M = METRIQUES[m], L=58, HAUT=74, BAS=116, H=156;
+  const cx=[]; let off=0, seps='';
+  heures.forEach((h,i)=>{
+    if(h.sep){ const sx=off+i*L+2;
+      seps+=`<line x1="${sx}" y1="4" x2="${sx}" y2="${H-6}" stroke="var(--encre)" stroke-width="2" opacity=".28"/>`
+        +`<text x="${sx-7}" y="${H/2}" transform="rotate(-90 ${sx-7} ${H/2})" text-anchor="middle" font-family="Karla" font-size="10" font-weight="700" letter-spacing="1.6" fill="var(--encre)" opacity=".55">${h.sep.toUpperCase()}</text>`;
+      off+=26; }
+    cx[i]=off+i*L+L/2;
+  });
+
+  let tetes='', corps='', vals='';
+  heures.forEach((h,i)=>{
+    const X=cx[i];
+    tetes+=`<text x="${X}" y="16" text-anchor="middle" font-family="Karla" font-size="12.5" font-weight="600" fill="${h.jalon?'var(--signe)':'var(--encre)'}" opacity="${h.jalon?1:.55}">${h.h}</text>`
+      +`<g transform="translate(${X-11} 30) scale(.92)">${GL[h.g]}</g>`;
+  });
+
+  if(M.type==='ligne'){
+    const ts=heures.map(h=> m==='ress' ? (h.r ?? h.t) : h.t);
+    const mn=Math.min(...ts), mx=Math.max(...ts), amp=Math.max(mx-mn,1);
+    const y=t=>BAS-8-((t-mn)/amp)*(BAS-8-HAUT);
+    heures.forEach((h,i)=>{
+      const X=cx[i], v=ts[i], Y=y(v);
+      corps+=`<circle cx="${X}" cy="${Y}" r="3.4" fill="var(--encre)"/>`;
+      vals+=`<text x="${X}" y="${Y+23}" text-anchor="middle" font-family="Fraunces" font-size="19" font-weight="600" fill="var(--encre)">${v}</text>`;
+      if(i) corps=`<line x1="${cx[i-1]}" y1="${y(ts[i-1])}" x2="${X}" y2="${Y}" stroke="var(--${bande(Math.round((ts[i-1]+v)/2))})" stroke-width="5" stroke-linecap="butt"/>`+corps;
+    });
+  } else {
+    /* colonnes : hauteur proportionnelle, couleur prise dans la bande officielle */
+    const vs = heures.map(h => h[m] ?? 0);
+    /* le plafond de l'axe est la borne haute de la bande qui contient le
+       maximum de la série : l'échelle reste honnête et les colonnes lisibles */
+    const pic = Math.max(...vs);
+    const maxi = Math.max(niveau(pic, M.ech)[0], pic, M.ech[0][0]);
+    heures.forEach((h,i)=>{
+      const X=cx[i], v=vs[i];
+      const [,col] = niveau(v, M.ech);
+      const ht = Math.max(2, (v/maxi)*(BAS-HAUT));
+      corps+=`<rect x="${X-13}" y="${BAS-ht}" width="26" height="${ht}" fill="${col}"/>`;
+      const txt = M.dec ? v.toFixed(M.dec) : v;
+      vals+=`<text x="${X}" y="${BAS+21}" text-anchor="middle" font-family="Fraunces" font-size="18" font-weight="600" fill="var(--encre)" opacity="${v?1:.35}">${txt}</text>`;
+    });
+    corps+=`<line x1="6" y1="${BAS}" x2="${off+heures.length*L+10}" y2="${BAS}" stroke="var(--encre)" stroke-width="2"/>`;
+  }
+
+  const W=off+heures.length*L+22;
+  return `<div class="rail"><svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${M.lab} heure par heure">${seps}${corps}${tetes}${vals}</svg></div>`;
+}
+
+const onglets = (actif='temp') => `<div class="selecteur"><div class="grille" role="tablist">
+  ${Object.entries(METRIQUES).map(([k,v])=>`<button class="onglet" role="tab"
+    aria-selected="${k===actif}">${svg(v.g)}${v.lab}</button>`).join('')}
+</div></div>`;
+
+/* ═════ ARC SOLAIRE & LUNE ═════ */
+function arcSoleil(p){
+  /* arc elliptique : les deux extrémités tombent exactement sur la ligne
+     d'horizon et la corde occupe toute la largeur disponible */
+  const W=330, H=120, rx=W/2, ry=H-16, cx=W/2, cy=H;
+  const pt=f=>{const a=Math.PI*(1-f);return [cx+rx*Math.cos(a), cy-ry*Math.sin(a)];};
+  const [x0,y0]=pt(0), [x1,y1]=pt(1), [xc,yc]=pt(p);
+  const f2=n=>n.toFixed(1);
+  return `<svg class="arc" viewBox="0 0 ${W} ${H+6}" aria-hidden="true">
+    <path d="M${f2(x0)} ${f2(y0)}A${rx} ${ry} 0 0 1 ${f2(x1)} ${f2(y1)}" fill="none"
+      stroke="var(--encre)" stroke-width="2" stroke-dasharray="1 7" stroke-linecap="round" opacity=".45"/>
+    <path d="M${f2(x0)} ${f2(y0)}A${rx} ${ry} 0 0 1 ${f2(xc)} ${f2(yc)}" fill="none"
+      stroke="var(--signe)" stroke-width="5"/>
+    <line x1="0" y1="${H}" x2="${W}" y2="${H}" stroke="var(--encre)" stroke-width="2"/>
+    <circle cx="${f2(xc)}" cy="${f2(yc)}" r="11" fill="var(--signe)" stroke="var(--papier)" stroke-width="3"/>
+  </svg>`;
+}
+
+function disqueLune(f,taille){
+  const R=46, a=(1-2*f)*R, sens=a>0?0:1, tr=taille>40?3:2;
+  const id='tl'+(++_tr);
+  return `<svg viewBox="0 0 100 100" style="width:${taille}px;height:${taille}px;flex:0 0 auto" aria-hidden="true">
+  ${trameDefs(id, taille>40?4:3)}
+  <circle cx="50" cy="50" r="${R}" fill="var(--lune-b)"/>
+  <circle cx="50" cy="50" r="${R}" fill="url(#${id})"/>
+  <path d="M50 4A${R} ${R} 0 0 1 50 96A${Math.abs(a).toFixed(1)} ${R} 0 0 ${sens} 50 4Z" fill="var(--lune)"/>
+  <circle cx="50" cy="50" r="${R}" fill="none" stroke="var(--encre)" stroke-width="${tr}"/></svg>`;
+}
+
+/* ═════ DONNÉES ═════ */
+/* Les six métriques sont toutes remontées par Foreca. Valeurs de démonstration
+   dérivées de la condition et de l'heure, pour que la planche reste crédible. */
+const PLUIE_PAR_SIGNE={soleil:0,lune:0,voile:0,lever:0,coucher:0,canicule:0,gel:0,
+  brume:0,vent:0,rafale:0,couvert:0.1,averse:2.4,pluie:1.6,orage:7.2,grele:5.5,neige:1.2};
+function enrichir(heures){
+  return heures.map((h,i)=>{
+    const hh=parseInt(h.h,10);
+    const nuit=['lune','coucher','lever'].includes(h.g);
+    const voile={soleil:1,canicule:1,voile:.62,couvert:.3,averse:.28,pluie:.22,
+                 orage:.18,neige:.25,brume:.2,grele:.18}[h.g] ?? .5;
+    const arc=Math.sin(Math.PI*(hh-6.5)/13.5);
+    const uv = (nuit||arc<=0) ? 0 : Math.max(0, Math.round(10*arc*voile));
+    return {...h,
+      r: h.r ?? (h.t>=28 ? h.t+Math.min(4,Math.round((h.t-27)*1.2))
+                : h.t<=5 ? h.t-2 : h.t),
+      uv,
+      air: Math.max(1, Math.min(6, 2 + ((hh>=7&&hh<=9)||(hh>=17&&hh<=19) ? 2 : 0)
+             + (h.g==='brume'||h.g==='canicule' ? 1 : 0)
+             + (h.g==='pluie'||h.g==='averse'||h.g==='orage' ? -1 : 0)
+             + (i%6===0 ? 1 : 0))),
+      pluie: PLUIE_PAR_SIGNE[h.g] ?? 0,
+      vent: 8+((i*7+hh*3)%26)+(h.g==='orage'||h.g==='rafale' ? 28 : 0)
+    };
+  });
+}
+
+const _H_JOUR=[{h:'15',t:28,g:'soleil'},{h:'16',t:28,g:'soleil'},{h:'17',t:28,g:'soleil'},{h:'18',t:28,g:'soleil'},
+{h:'19',t:27,g:'soleil'},{h:'20:22',t:24,g:'coucher',jalon:1},{h:'21',t:22,g:'lune'},{h:'22',t:20,g:'lune'},
+{h:'23',t:18,g:'lune'},{h:'00',t:18,g:'lune',sep:'dim.'},{h:'01',t:17,g:'lune'},{h:'02',t:16,g:'lune'},
+{h:'03',t:16,g:'lune'},{h:'04',t:15,g:'lune'},{h:'05',t:14,g:'lune'},{h:'07:40',t:13,g:'lever',jalon:1},
+{h:'08',t:13,g:'soleil'},{h:'09',t:16,g:'soleil'},{h:'10',t:20,g:'soleil'},{h:'11',t:24,g:'voile'},
+{h:'12',t:26,g:'voile'},{h:'13',t:29,g:'soleil'}];
+const H_JOUR=enrichir(_H_JOUR);
+const _H_DEMAIN=[{h:'07:40',t:14,g:'lever',jalon:1},{h:'08',t:15,g:'soleil'},{h:'09',t:18,g:'soleil'},
+{h:'10',t:21,g:'soleil'},{h:'11',t:24,g:'voile'},{h:'12',t:26,g:'voile'},{h:'13',t:28,g:'voile'},
+{h:'14',t:30,g:'couvert'},{h:'15',t:31,g:'couvert'},{h:'16',t:29,g:'averse'},{h:'17',t:26,g:'pluie'},
+{h:'18',t:24,g:'pluie'},{h:'19',t:22,g:'couvert'},{h:'20:20',t:20,g:'coucher',jalon:1}];
+const H_DEMAIN=enrichir(_H_DEMAIN);
+const _H_PLUIE=[{h:'15',t:17,g:'pluie'},{h:'16',t:17,g:'pluie'},{h:'17',t:16,g:'averse'},{h:'18',t:16,g:'couvert'},
+{h:'19',t:15,g:'couvert'},{h:'20:08',t:14,g:'coucher',jalon:1},{h:'21',t:13,g:'pluie'},{h:'22',t:13,g:'pluie'}];
+const H_PLUIE=enrichir(_H_PLUIE);
+const _H_NUIT=[{h:'22',t:16,g:'lune'},{h:'23',t:15,g:'lune'},{h:'00',t:14,g:'lune',sep:'lun.'},{h:'01',t:14,g:'brume'},
+{h:'02',t:13,g:'brume'},{h:'03',t:12,g:'lune'},{h:'04',t:12,g:'lune'},{h:'05',t:11,g:'lune'}];
+const H_NUIT=enrichir(_H_NUIT);
+const _H_ORAGE=[{h:'16',t:31,g:'orage'},{h:'17',t:29,g:'orage'},{h:'18',t:26,g:'grele'},{h:'19',t:23,g:'pluie'},
+{h:'20',t:21,g:'couvert'},{h:'20:19',t:20,g:'coucher',jalon:1},{h:'21',t:19,g:'couvert'},{h:'22',t:18,g:'voile'}];
+const H_ORAGE=enrichir(_H_ORAGE);
+const SEPT=[{j:'sam.',g:'soleil',min:13,max:28,auj:1},{j:'dim.',g:'voile',min:14,max:31},
+{j:'lun.',g:'soleil',min:14,max:34},{j:'mar.',g:'soleil',min:16,max:33},{j:'mer.',g:'voile',min:14,max:24},
+{j:'jeu.',g:'voile',min:10,max:24},{j:'ven.',g:'pluie',min:12,max:24}];
+const PHASES=[['Premier quartier','18 sept.',.5],['Pleine lune','26 sept.',1],
+['Dernier quartier','3 oct.',.5],['Nouvelle lune','10 oct.',0]];
+
+const ECRANS={
+vigies:{nom:'Vigies',desc:'ciel dégagé · plein jour',lieu:'Cestas',temp:28,ress:28,g:'soleil',
+  phrase:'Ciel dégagé pendant la prochaine heure.',heures:H_JOUR,lever:'07:39',coucher:'20:22',course:.62,
+  lunePhase:'Croissant',luneFrac:.14,luneTxt:'Éclairée à 14 % · 09:10 → 20:45'},
+ondee:{nom:'Ondée',desc:'pluie continue · fin de journée',lieu:'Rennes',temp:17,ress:15,g:'pluie',
+  phrase:'Pluie faible pendant les deux prochaines heures.',heures:H_PLUIE,lever:'07:41',coucher:'20:08',course:.83,
+  lunePhase:'Gibbeuse',luneFrac:.71,luneTxt:'Éclairée à 71 % · 17:02 → 04:30'},
+veille:{nom:'Veille',desc:'nuit claire · brume ensuite',lieu:'Annecy',temp:16,ress:16,g:'lune',
+  phrase:'Brume au sol à partir de une heure.',heures:H_NUIT,lever:'07:42',coucher:'20:05',course:1,
+  lunePhase:'Pleine lune',luneFrac:.98,luneTxt:'Éclairée à 98 % · 20:12 → 06:44'},
+colere:{nom:'Colère',desc:'orage · grêle possible',lieu:'Toulouse',temp:31,ress:35,g:'orage',
+  phrase:'Orage dans les vingt minutes. Grêle possible.',heures:H_ORAGE,lever:'07:38',coucher:'20:19',course:.71,
+  lunePhase:'Dernier quartier',luneFrac:.5,luneTxt:'Éclairée à 50 % · 23:48 → 14:20'}
+};
+
+/* ═════ BLOCS D'ACCUEIL ═════ */
+function blocSept(){
+  return SEPT.map(j=>{
+    const n=15,B=-5,Ht=40,pos=t=>Math.round(((t-B)/(Ht-B))*n);
+    const lo=pos(j.min), hi=Math.max(pos(j.max),lo+1); let b='';
+    for(let i=0;i<n;i++){ const on=i>=lo&&i<hi;
+      const t=j.min+(j.max-j.min)*((i-lo)/Math.max(hi-lo,1));
+      b+=`<i class="${on?'on':''}" ${on?`style="background:var(--${bande(t)})"`:''}></i>`; }
+    if(j.auj) b+='<i class="curseur"></i>';
+    return `<div class="jour"><span class="j">${j.j}</span>${svg(j.g,'gl')}
+      <span class="mini">${j.min}°</span><div class="barre">${b}</div><span class="maxi">${j.max}°</span></div>`;
+  }).join('');
+}
+function heros(d){
+  return `<header class="heros"><div class="marque">${svg(d.g,'glyphe-grand')}
+    <div><p class="temp">${d.temp}<sup>°</sup></p><p class="ressenti">ressenti ${d.ress}°</p></div></div>
+    <p class="phrase">${d.phrase}</p></header>${paysage()}`;
+}
+function ecranAccueil(cle, complet=true, m='temp'){
+  const d=ECRANS[cle];
+  const suite = !complet ? '' : `
+  <section class="bande">${etiq('calendrier','Sept jours','min / max')}<div class="jours">${blocSept()}</div></section>
+  <section class="bande">${etiq('soleil','Course du soleil')}<div class="astre">${arcSoleil(d.course)}
+    <div class="pieds"><div><b>${d.lever}</b><span>lever</span></div><div><b>${d.coucher}</b><span>coucher</span></div></div></div></section>
+  <section class="bande">${etiq('lune','Lune')}<div class="lune-rang">${disqueLune(d.luneFrac,104)}
+    <div class="lune-info"><h4>${d.lunePhase}</h4><p>${d.luneTxt}</p></div></div>
+    <div class="phases">${PHASES.map(([n,dt,f])=>`<div class="phase">${disqueLune(f,22)}<div><b>${n}</b><span>${dt}</span></div></div>`).join('')}</div></section>
+  ${nav('ciel')}`;
+  return statut()+chapeau(past('partage','Partager'), d.lieu, past('plus','Menu'))+heros(d)
+    +`<section class="bande">${etiq('horloge','Heure par heure',
+        m==='temp' ? '48 h' : METRIQUES[m].unite+' · 48 h')}${horaires(d.heures,m)}${onglets(m)}</section>`+suite;
+}
+
+/* ═════ ÉCRANS ═════ */
+function ecranLancement(dialogue){
+  const d=ECRANS.vigies;
+  const base = statut()+chapeau(past('partage','Partager'),
+    `Bordeaux<small>position approximative</small>`, past('plus','Menu'))+heros(d)
+    +`<section class="bande">${etiq('horloge','Heure par heure','48 h')}${horaires(d.heures)}${onglets('temp')}</section>`+nav('ciel');
+  if(!dialogue) return tel('vigies', base, 'court');
+  return `<div class="tel court scene" data-palier="vigies"><div class="defile">${base}</div>
+    <div class="voile"></div>
+    <div class="ios-dlg"><div class="corps">
+      <h5>« Augure » souhaite utiliser votre position</h5>
+      <p>Pour afficher la météo là où vous êtes.</p>
+      <div class="carte-mini">
+        <span class="rue" style="left:0;top:28px;width:210px;height:5px"></span>
+        <span class="rue" style="left:64px;top:0;width:5px;height:78px"></span>
+        <span class="rue" style="left:140px;top:0;width:4px;height:78px"></span>
+        <span class="rue" style="left:0;top:56px;width:210px;height:4px"></span>
+        <span class="pt"></span></div>
+    </div>
+    <div class="actions col"><button>Autoriser une seule fois</button>
+      <button>Lorsque l'app est active</button><button>Ne pas autoriser</button></div></div></div>`;
+}
+
+function ecranMenu(){
+  const d=ECRANS.vigies;
+  const base = statut()+chapeau(past('partage','Partager'), d.lieu, past('plus','Menu',true))+heros(d)
+    +`<section class="bande">${etiq('horloge','Heure par heure','48 h')}${horaires(d.heures)}</section>`;
+  return `<div class="tel court scene" data-palier="vigies"><div class="defile">${base}</div>
+  <div class="voile"></div>
+  <div class="feuille"><h4>Cestas</h4><p>44,74 · −0,68</p>
+    <div class="menu-item">${svg('ajout')}Ajouter à mes lieux</div>
+    <div class="menu-item">${svg('partage')}Partager ce lieu</div>
+    <div class="menu-item">${svg('unite')}Unités<span class="apres">°C · km/h</span></div>
+    <div class="menu-item">${svg('cloche')}Alerte quotidienne<span class="apres">7:00</span></div>
+    <div class="menu-item">${svg('reglages')}Réglages</div>
+    <button class="bouton creux">Fermer</button></div></div>`;
+}
+
+function feuilleInstall(){
+  const d=ECRANS.vigies;
+  const base = statut()+chapeau(past('partage','Partager'), d.lieu, past('plus','Menu'))+heros(d)
+    +`<section class="bande">${etiq('horloge','Heure par heure','48 h')}${horaires(d.heures)}</section>`;
+  return `<div class="tel court scene" data-palier="vigies"><div class="defile">${base}</div>
+  <div class="voile"></div>
+  <div class="feuille"><h4>Installer Augure</h4>
+    <p>Deux gestes, et Augure s'ouvre depuis votre écran d'accueil, hors ligne et sans barre de navigateur.</p>
+    <ul class="etapes">
+      <li>${svg('partage')}<div><b>Touchez Partager</b></div></li>
+      <li>${svg('ajout')}<div><b>Puis « Sur l'écran d'accueil »</b></div></li>
+    </ul>
+    <button class="bouton">J'ai compris</button>
+    <button class="bouton creux">Plus tard</button></div></div>`;
+}
+
+const VILLES=[['Bordeaux','Gironde, Nouvelle-Aquitaine',26,'soleil'],
+['Bordeaux-Lac','Gironde, Nouvelle-Aquitaine',26,'soleil'],
+['Bordeaux','Comté de Jefferson, Ohio',19,'couvert'],
+['Bordères','Hautes-Pyrénées, Occitanie',21,'voile'],
+['Bordeaux-Saint-Clair','Seine-Maritime, Normandie',18,'pluie']];
+function ecranRecherche(){
+  return tel('vigies', statut()+
+  `<div class="zone-recherche"><div class="champ">${svg('loupe')}
+    <input value="Bordeaux" aria-label="Rechercher une ville"></div>
+    <button class="lien">Annuler</button></div>
+  <section class="bande" style="border-top-width:3px">
+    ${etiq('loupe','Résultats','5')}
+    <div class="resultats">${VILLES.map(([n,r,t,g])=>`<div class="resultat">
+      <div><div class="nom">${n}</div><div class="region">${r}</div></div>
+      ${svg(g,'gl')}<span class="t">${t}°</span></div>`).join('')}</div>
+  </section>`+nav(''), 'court');
+}
+function rechercheVide(){
+  return tel('vigies', statut()+
+  `<div class="zone-recherche"><div class="champ">${svg('loupe')}
+    <input value="Bordoo" aria-label="Rechercher une ville"></div>
+    <button class="lien">Annuler</button></div>
+  <section class="bande" style="border-top-width:3px">
+    <div class="vide">${svg('loupe')}<h4>Aucun lieu ne correspond</h4>
+    <p>Vérifiez l'orthographe, ou cherchez la commune la plus proche.</p></div>
+  </section>`+nav(''), 'court');
+}
+
+const LIEUX=[
+['Cestas','Votre position','vigies',28,13,28,'soleil',1],
+['Rennes','','ondee',17,12,18,'pluie',0],
+['Annecy','','veille',16,11,24,'lune',0],
+['Toulouse','Vigilance orange','colere',31,20,34,'orage',0],
+['Chamonix','','cendre',2,-3,4,'neige',0],
+['Séville','','fournaise',39,24,41,'canicule',0]];
+function ecranLieux(){
+  const vignettes = LIEUX.map(([n,s,p,t,mn,mx,g,pos])=>
+  `<div class="tel" data-palier="${p}" style="border:0;border-radius:0;width:100%">
+    <div class="vignette" style="background:var(--ciel);color:var(--ciel-txt)">
+      <div><div class="nom">${pos?svg('position'):''}${n}</div>${s?`<div class="sous">${s}</div>`:''}</div>
+      <div class="t">${t}°</div>
+      <div class="bas">${svg(g)}<span>${NOM[g][0]}</span></div>
+      <div class="mm">${mn}° / ${mx}°</div>
+    </div></div>`).join('');
+  return tel('vigies', statut()+chapeau(past('poignee','Réorganiser'),'Mes lieux',past('ajout','Ajouter'))
+    +`<div style="border-top:3px solid var(--encre)">${vignettes}</div>`
+    +`<button class="ajouter">${svg('ajout')}Ajouter un lieu</button>`+nav('ciel'));
+}
+
+function ecranDetail(){
+  const M=[['vent','Vent','18 <em>km/h</em>'],['rafale','Rafales','42 <em>km/h</em>'],
+  ['humidite','Humidité','64 <em>%</em>'],['rosee','Point de rosée','17°'],
+  ['pression','Pression','1014 <em>hPa</em>'],['uv','Indice UV','7 <em>fort</em>'],
+  ['visibilite','Visibilité','12 <em>km</em>'],['pluie','Cumul','8 <em>mm</em>'],
+  ['air','Qualité de l\'air','2 <em>moyen</em>'],['thermo','Amplitude','17 <em>°C</em>']];
+  return tel('vigies', statut()
+  +chapeau(past('retour','Retour'),`Dimanche<small>13 septembre</small>`,past('partage','Partager'))
+  +`<header class="heros" style="padding-bottom:22px"><div class="marque">${svg('voile','glyphe-grand')}
+    <div><p class="temp">31<sup>°</sup></p><p class="ressenti">minimum 14°</p></div></div>
+    <p class="phrase">Beau le matin, averses orageuses après 16 h.</p></header>${paysage()}
+  <section class="bande">${etiq('horloge','Heure par heure','dimanche')}${horaires(H_DEMAIN)}${onglets('temp')}</section>
+  <section class="bande">${etiq('reglages','Conditions')}
+    <div class="metriques">${M.map(([g,l,v])=>`<div class="metrique">${svg(g)}
+      <div><div class="lab">${l}</div><div class="val">${v}</div></div></div>`).join('')}</div></section>
+  <section class="bande">${etiq('soleil','Course du soleil')}<div class="astre">${arcSoleil(.5)}
+    <div class="pieds"><div><b>07:40</b><span>lever</span></div><div><b>20:20</b><span>coucher</span></div></div></div></section>`
+  +nav('ciel'));
+}
+
+const PLUIE_HEX=['#BFD4E0','#8FB4CC','#5B8FB8','#3B5F96','#2B2A64'];
+function carteSVG(){
+  let cells='';
+  const grille=[[2,0,0,1,1,0,0,0],[3,2,1,1,2,1,0,0],[4,3,2,1,2,2,1,0],[3,4,3,2,1,2,1,0],
+  [1,3,4,3,2,1,1,0],[0,1,3,3,2,1,0,0],[0,0,1,2,1,1,0,0],[0,0,0,1,1,0,0,0]];
+  grille.forEach((ligne,r)=>ligne.forEach((v,c)=>{
+    if(v>0) cells+=`<rect x="${c*48.75}" y="${40+r*30}" width="48.75" height="30" fill="${PLUIE_HEX[v-1]}" opacity=".85"/>`;
+  }));
+  const id='tc'+(++_tr), U=`url(#${id})`;
+  const T1='M0 90 L70 72 L130 96 L190 78 L250 104 L310 88 L390 110 L390 300 L0 300Z';
+  const T2='M0 168 L60 156 L120 180 L200 164 L280 188 L390 172 L390 300 L0 300Z';
+  return `<svg viewBox="0 0 390 300" aria-label="Carte des précipitations">
+  ${trameDefs(id)}
+  <rect width="390" height="300" fill="var(--ciel-b)"/><rect width="390" height="300" fill="${U}"/>
+  <path d="${T1}" fill="var(--p1)"/><path d="${T1}" fill="${U}"/>
+  <path d="${T2}" fill="var(--p2)"/><path d="${T2}" fill="${U}"/>
+  ${cells}
+  <circle cx="176" cy="182" r="7" fill="var(--signe)" stroke="var(--papier)" stroke-width="3"/></svg>`;
+}
+function ecranCartes(){
+  return tel('ondee', statut()+chapeau(past('retour','Retour'),'Nouvelle-Aquitaine',past('position','Me localiser'))
+  +`<div class="carte-zone">${carteSVG()}</div>
+  <section class="bande" style="border-top-width:3px">
+    <div class="couches"><div class="segment">
+      <button aria-pressed="true">Pluie</button><button aria-pressed="false">Vent</button>
+      <button aria-pressed="false">Température</button></div></div>
+    <div class="frise-temps">${['maintenant','16 h','17 h','18 h','19 h','20 h','21 h','22 h']
+      .map((h,i)=>`<button aria-current="${i===0}">${h}</button>`).join('')}</div>
+    <div class="legende">${PLUIE_HEX.map(c=>`<i style="background:${c}"></i>`).join('')}</div>
+    <div class="legende-txt"><span>bruine</span><span>forte</span></div>
+  </section>`+nav('cartes'));
+}
+
+function ecranLexique(){
+  const cles=Object.keys(NOM);
+  return tel('vigies', statut()+chapeau(past('retour','Retour'),'Lexique',past('info','À propos'))
+  +`<section class="bande" style="border-top-width:3px">
+    ${etiq('lexique','Signes météo','16')}
+    <div class="filtres"><button aria-pressed="true">Tous</button><button aria-pressed="false">Disque</button>
+      <button aria-pressed="false">Barre</button><button aria-pressed="false">Chevron</button>
+      <button aria-pressed="false">Point</button></div>
+    <div class="grille-signes">${cles.map(k=>`<div class="signe">${svg(k)}
+      <b>${NOM[k][0]}</b><span>${NOM[k][1]}</span></div>`).join('')}</div>
+  </section>`+nav('lexique'), 'court');
+}
+function ficheSigne(){
+  return tel('vigies', statut()+chapeau(past('retour','Retour'),'Signe',past('partage','Partager'))
+  +`<section class="bande" style="border-top-width:3px"><div class="fiche">
+    ${svg('orage')}
+    <h3>Orage</h3><div class="translit">ZAL · GIR</div>
+    <div class="decompo">${svg('couvert')}<span class="op">+</span>
+      <svg viewBox="0 0 24 24"><path d="M13.5 4h-4l-2 8h3L9.5 21l6-11h-3Z" fill="currentColor"/></svg>
+      <span class="op">=</span>${svg('orage')}</div>
+    <p>La barre-nuage porte l'éclair. Le signe apparaît dès qu'une activité électrique est détectée ou prévue dans l'heure, que la pluie tombe ou non.</p>
+    <ul class="seuils">
+      <li><span>Activité électrique</span><b>détectée</b></li>
+      <li><span>Rafales associées</span><b>≥ 60 km/h</b></li>
+      <li><span>Palier déclenché</span><b>Colère</b></li>
+      <li><span>Grêle possible si</span><b>≥ 35 dBZ</b></li>
+    </ul></div></section>`, 'court');
+}
+
+function ecranReglages(){
+  return tel('vigies', statut()+chapeau(past('retour','Retour'),'Réglages','<span style="width:38px"></span>')
+  +`<section class="bande" style="border-top-width:3px;padding-top:0">
+    <div class="groupe-titre">Affichage</div>
+    <div class="reglage">${svg('unite','gl')}<div class="txt"><b>Température</b></div>
+      <div class="segment"><button aria-pressed="true">°C</button><button aria-pressed="false">°F</button></div></div>
+    <div class="reglage">${svg('vent','gl')}<div class="txt"><b>Vent</b></div>
+      <div class="segment"><button aria-pressed="true">km/h</button><button aria-pressed="false">m/s</button>
+      <button aria-pressed="false">mph</button></div></div>
+    <div class="reglage">${svg('lexique','gl')}<div class="txt"><b>Signes seuls</b>
+      <span>Masque les libellés des conditions</span></div>
+      <button class="interrupteur" role="switch" aria-checked="false"><i></i></button></div>
+
+    <div class="groupe-titre">Notifications</div>
+    <div class="reglage">${svg('cloche','gl')}<div class="txt"><b>Résumé du lendemain</b>
+      <span>Une notification par jour</span></div>
+      <button class="interrupteur" role="switch" aria-checked="true"><i></i></button></div>
+    <div class="reglage">${svg('horloge','gl')}<div class="txt"><b>Heure d'envoi</b></div>
+      <span class="val">7:00</span></div>
+    <div class="reglage">${svg('alerte','gl')}<div class="txt"><b>Vigilance</b>
+      <span>Orage, canicule, neige</span></div>
+      <button class="interrupteur" role="switch" aria-checked="true"><i></i></button></div>
+
+    <div class="groupe-titre">Position</div>
+    <div class="reglage">${svg('position','gl')}<div class="txt"><b>Position en direct</b>
+      <span>Autorisée</span></div>
+      <button class="interrupteur" role="switch" aria-checked="true"><i></i></button></div>
+
+    <div class="groupe-titre">Données</div>
+    <div class="reglage">${svg('info','gl')}<div class="txt"><b>Source</b><span>Foreca</span></div></div>
+    <div class="reglage">${svg('partage','gl')}<div class="txt"><b>Exporter mes lieux</b>
+      <span>Un lien à ouvrir sur un autre appareil</span></div></div>
+    <div class="reglage">${svg('corbeille','gl')}<div class="txt"><b>Effacer les données locales</b></div></div>
+  </section>`, 'court');
+}
+
+function iconeApp(taille){
+  return `<svg class="icone-app" width="${taille}" height="${taille}" viewBox="0 0 100 100" aria-label="Icône Augure">
+  <rect width="100" height="100" fill="#F5C044"/><rect y="54" width="100" height="46" fill="#EBA229"/>
+  <path d="M0 100V76l24-8 22 9 20-11 18 8v26Z" fill="#BC4626"/>
+  <path d="M0 100v-12l26 5 22-7 26 6 26-6v14Z" fill="#8A2A1C"/>
+  <g transform="translate(50 40)"><circle r="13" fill="#2B1409"/>
+  <g stroke="#2B1409" stroke-width="5" stroke-linecap="square">
+  <path d="M0-27v7M0 20v7M-27 0h7M20 0h7M-19.1-19.1l5 5M14.1 14.1l5 5M19.1-19.1l-5 5M-14.1 14.1l-5 5"/></g></g></svg>`;
+}
+function ecranVerrou(){
+  return `<div class="tel" data-palier="vigies"><div class="verrou">
+    <svg class="fond" viewBox="0 0 390 706" preserveAspectRatio="none" aria-hidden="true">
+      <rect width="390" height="706" fill="#0E1622"/>
+      <path d="M0 706V506l70-26 62 30 66-34 70 26 60-30 62 24v210Z" fill="#152234"/>
+      <path d="M0 706V586l80-20 66 26 70-22 72 24 102-18v130Z" fill="#1D2E44"/></svg>
+    <div class="contenu">
+      <div class="date">samedi 12 septembre</div>
+      <div class="heure">7:00</div>
+      <div class="notif">
+        <span class="icone">${iconeApp(38)}</span>
+        <div class="corps">
+          <div class="ligne1"><b>AUGURE</b><span>maintenant</span></div>
+          <div class="titre">Demain à Cestas</div>
+          <div class="texte">Soleil le matin, averses orageuses après 16 h. 14° → 31°, trois de plus qu'aujourd'hui.</div>
+        </div>
+      </div>
+    </div></div></div>`;
+}
+
+function ecranHorsLigne(){
+  const d=ECRANS.vigies;
+  return tel('vigies', statut()+chapeau(past('partage','Partager'),
+    `Cestas<small>données d'il y a 2 h</small>`, past('plus','Menu'))
+  +`<div style="background:var(--encre);color:var(--papier);display:flex;gap:11px;align-items:center;padding:11px 22px;font-size:13.5px;font-weight:600">
+    <span style="width:20px;height:20px;display:block">${svg('hors_ligne')}</span>Hors ligne. Dernier relevé à 5:02.</div>`
+  +heros(d)+`<section class="bande">${etiq('horloge','Heure par heure','48 h')}${horaires(d.heures)}</section>`
+  +nav('ciel'), 'mi');
+}
+function ecranErreur(){
+  return tel('vigies', statut()+chapeau(past('retour','Retour'),'Cestas',past('plus','Menu'))
+  +`<section class="bande" style="border-top-width:3px"><div class="vide">
+    ${svg('alerte')}<h4>Les prévisions n'ont pas pu être chargées</h4>
+    <p>Le service météo n'a pas répondu. Les données affichées datent de 5:02.</p>
+    <button class="bouton" style="max-width:220px;margin:22px auto 0">Réessayer</button></div></section>`
+  +nav('ciel'), 'mi');
+}
+function ecranPermissionRefusee(){
+  return tel('vigies', statut()+chapeau(past('retour','Retour'),'Réglages','<span style="width:38px"></span>')
+  +`<section class="bande" style="border-top-width:3px;padding-top:0">
+    <div class="groupe-titre">Position</div>
+    <div class="reglage">${svg('position','gl')}<div class="txt"><b>Position en direct</b>
+      <span>Refusée. Augure affiche la météo de Bordeaux, déduite de votre connexion.</span></div></div>
+    <div class="reglage" style="border-top:0;padding-top:0">
+      <div class="txt" style="font-size:14px;line-height:1.5;opacity:.75">
+        Pour l'activer : Réglages iOS → Augure → Position → Lorsque l'app est active.</div></div>
+  </section>`, 'mi');
+}
+
+/* ═════ MONTAGE ═════ */
+const G = (id,html) => document.getElementById(id).innerHTML = html;
+
+G('g-lancement',
+  piece(ecranLancement(false),'Peinture immédiate','position déduite de l\'IP, aucune permission')
++ piece(ecranLancement(true),'Puis la demande','le dialogue système se pose sur une app déjà remplie'));
+
+G('g-accueil', piece(tel('vigies', ecranAccueil('vigies')),'Accueil','390 × 2 070 px, palier Vigies'));
+
+G('g-menu', piece(ecranMenu(),'Menu du lieu','feuille basse, pas de menu déroulant')
++ piece(feuilleInstall(),'Installation iOS','affichée à la deuxième visite, jamais la première'));
+
+G('g-recherche', piece(ecranRecherche(),'Recherche','la température lève l\'ambiguïté des homonymes')
++ piece(rechercheVide(),'Aucun résultat','dit quoi faire, ne s\'excuse pas'));
+
+G('g-lieux', piece(ecranLieux(),'Mes lieux','six villes, six paliers, aucune légende'));
+
+G('g-metriques',
+  piece(tel('vigies', ecranAccueil('vigies', false, 'uv'), 'haut'),'Indice UV','cinq bandes OMS, du faible à l\'extrême')
++ piece(tel('vigies', ecranAccueil('vigies', false, 'air'), 'haut'),'Qualité de l\'air','six bandes EAQI, échelle européenne')
++ piece(tel('ondee', ecranAccueil('ondee', false, 'pluie'), 'haut'),'Pluie','millimètres par heure, palier Ondée'));
+
+G('g-detail', piece(ecranDetail(),'Détail du dimanche','frise du jour puis métriques secondaires'));
+
+G('g-cartes', piece(ecranCartes(),'Cartes','précipitations en cinq aplats, palier Ondée'));
+
+G('g-lexique', piece(ecranLexique(),'Lexique','filtrable par primitive de tracé')
++ piece(ficheSigne(),'Fiche d\'un signe','décomposition et seuils de déclenchement'));
+
+G('g-reglages', piece(ecranReglages(),'Réglages','ni compte, ni synchronisation, ni profil'));
+
+G('g-notif', piece(ecranVerrou(),'Notification de 7:00','lisible sans ouvrir l\'application')
++ `<figure class="piece" style="width:auto"><div class="planche"><div class="icones-app">
+    ${iconeApp(180)}${iconeApp(120)}${iconeApp(80)}${iconeApp(60)}${iconeApp(40)}</div></div>
+  <figcaption><b>Icône</b>— la marche de ciel et le signe ŠAM, lisibles jusqu'à 40 px</figcaption></figure>`);
+
+G('g-limites', piece(ecranHorsLigne(),'Hors ligne','l\'âge de la donnée remplace le sous-titre du lieu')
++ piece(ecranErreur(),'Échec de chargement','explique et propose l\'action suivante')
++ piece(ecranPermissionRefusee(),'Position refusée','sur iOS, seul le chemin Réglages reste'));
+
+G('g-paliers', ['ondee','veille','colere'].map(k=>
+  piece(tel(k, ecranAccueil(k,false), 'court'), 'Palier '+ECRANS[k].nom, ECRANS[k].desc)).join('')
++ piece(tel('cendre', statut()+chapeau(past('partage','Partager'),'Chamonix',past('plus','Menu'))
+  +heros({g:'neige',temp:2,ress:-2,phrase:'Neige faible jusqu\'en fin de journée.'})
+  +`<section class="bande">${etiq('horloge','Heure par heure','48 h')}${horaires(
+    [{h:'15',t:2,g:'neige'},{h:'16',t:2,g:'neige'},{h:'17',t:1,g:'neige'},{h:'18',t:0,g:'brume'},
+     {h:'19',t:0,g:'brume'},{h:'20',t:-1,g:'gel'},{h:'21',t:-2,g:'gel'}])}</section>`, 'mi'),
+  'Palier Cendre','neige, brouillard, plafond bas')
++ piece(tel('fournaise', statut()+chapeau(past('partage','Partager'),'Séville',past('plus','Menu'))
+  +heros({g:'canicule',temp:39,ress:43,phrase:'Chaleur extrême jusqu\'à 21 h. Restez à l\'ombre.'})
+  +`<section class="bande">${etiq('horloge','Heure par heure','48 h')}${horaires(
+    [{h:'15',t:39,g:'canicule'},{h:'16',t:41,g:'canicule'},{h:'17',t:40,g:'canicule'},
+     {h:'18',t:38,g:'soleil'},{h:'19',t:35,g:'soleil'},{h:'20',t:32,g:'soleil'},{h:'21',t:29,g:'coucher'}])}</section>`, 'mi'),
+  'Palier Fournaise','canicule, indice UV extrême'));
+
+const PAL={
+Vigies:['#F5C044','#EBA229','#D9743A','#BC4626','#8A2A1C','#2B1409','#FBEBCB','#C2411F'],
+Ondée:['#5C87AC','#44688A','#35566F','#26445C','#16293A','#101E29','#D9E4EA','#D96E35'],
+Veille:['#2B2A64','#1C1B47','#3C3A7C','#272455','#15133A','#EDE8F7','#191835','#F0C24A'],
+Colère:['#6B3A78','#4C2657','#5A2F66','#3E1E49','#26102E','#F4E9F0','#241028','#F2D14B'],
+Cendre:['#C6D4DC','#AFC1CC','#9FB2BE','#7E93A1','#5E7180','#1E2A32','#EDF2F5','#3E6E86'],
+Fournaise:['#E8552F','#C93A22','#B83A22','#8E2318','#5C1310','#2A0C07','#FBD9A8','#FFE08A']};
+const ROLES=['ciel','ciel-b','plan 1','plan 2','plan 3','encre','papier','signe'];
+const DECL={Vigies:'ciel dégagé, de l\'aube à la nuit tombante',Ondée:'pluie, bruine, averse',
+Veille:'nuit claire et brumeuse — mode sombre natif',Colère:'orage, grêle, vigilance',
+Cendre:'neige, brouillard, plafond bas',Fournaise:'canicule, indice UV extrême'};
+G('p-palettes', Object.entries(PAL).map(([nom,cs])=>`<div class="palette">
+  <div class="bandeau"><b>${nom}</b><span>${DECL[nom]}</span></div>
+  <div class="nuancier">${cs.map((c,i)=>{
+    const L=[1,3,5].map(k=>{const v=parseInt(c.substr(k,2),16)/255;
+      return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4);});
+    const lum=.2126*L[0]+.7152*L[1]+.0722*L[2];
+    return `<div style="background:${c};color:${lum>.32?'#1A1208':'#FFF'}">${ROLES[i]}<br>${c}</div>`;
+  }).join('')}</div></div>`).join(''));
+
+G('p-glyphes', Object.keys(NOM).map(k=>`<div class="case-glyphe">${svg(k)}
+  <b>${NOM[k][0]}</b><span>${NOM[k][1]}</span></div>`).join(''));
+
+G('p-typo', [['d1','28°','Fraunces 500 · opsz 144 · 108/89','Température du héros'],
+['d2','Course du soleil','Fraunces 600 · opsz 48 · 30/36','Titres'],
+['d3','20:22','Fraunces 600 · opsz 24 · 21/26','Chiffres de données'],
+['c1','Orage dans les vingt minutes.','Karla 500 · 19/26','Phrase d\'accroche'],
+['c2','Brume au sol à partir de une heure.','Karla 400 · 16/25','Texte courant'],
+['c3','Heure par heure','Karla 700 · 15/20','Étiquette de bande'],
+['c4','48 h','Karla 600 · 12,5/17 · 60 %','Annotation']]
+.map(([c,t,m,r])=>`<div class="ligne"><div class="ex ${c}">${t}</div>
+  <div class="meta">${m}<br><span style="opacity:.6">${r}</span></div></div>`).join(''));
+
+document.querySelectorAll('.onglets').forEach(g=>g.addEventListener('click',e=>{
+  const b=e.target.closest('.onglet'); if(!b) return;
+  g.querySelectorAll('.onglet').forEach(o=>o.setAttribute('aria-selected',o===b));
+}));
+document.querySelectorAll('.interrupteur').forEach(b=>b.addEventListener('click',()=>{
+  b.setAttribute('aria-checked', b.getAttribute('aria-checked')==='true'?'false':'true');
+}));
+document.querySelectorAll('.segment, .filtres, .couches .segment').forEach(g=>g.addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  g.querySelectorAll('button').forEach(o=>o.setAttribute('aria-pressed',o===b));
+}));
+</script>
+</body>
+</html>

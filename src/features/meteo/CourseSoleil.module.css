@@ -1,0 +1,27 @@
+.astre {
+  padding: 0 var(--e5);
+}
+
+.pieds {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 13px;
+}
+.pieds b {
+  display: block;
+  font-family: var(--police-titre), serif;
+  font-variation-settings: 'opsz' 24;
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.pieds span {
+  /* §11, DECISIONS.md : couleur pleine plutôt qu'une opacité posée sur
+     --encre — une opacité dérive vers --papier et finit sous 4,5:1 sur
+     plusieurs paliers (mesuré). */
+  color: var(--encre-attenuee);
+}
+.pieds > div:last-child {
+  text-align: right;
+}

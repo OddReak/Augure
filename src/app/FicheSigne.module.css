@@ -1,0 +1,81 @@
+.fiche {
+  padding: 26px var(--e5) 30px;
+  text-align: center;
+  border-top: var(--trait-structure) solid var(--encre);
+}
+
+.fiche > svg {
+  width: 92px;
+  height: 92px;
+}
+
+.fiche h3 {
+  font-family: var(--police-titre);
+  font-variation-settings: 'opsz' 72;
+  font-weight: 600;
+  font-size: 31px;
+  margin: 16px 0 2px;
+  letter-spacing: -0.01em;
+}
+
+.translit {
+  font-size: 13px;
+  color: var(--encre-attenuee);
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+.fiche p {
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 18px 0 0;
+  text-align: left;
+  opacity: 0.85;
+}
+
+.decompo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 24px 0 0;
+}
+
+.decompo svg {
+  width: 44px;
+  height: 44px;
+}
+
+.decompo .op {
+  font-family: var(--police-titre);
+  font-size: 22px;
+  color: var(--encre-attenuee);
+}
+
+.seuils {
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.seuils li {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: var(--trait-filet) solid var(--trait);
+  font-size: 14px;
+}
+
+.seuils li span {
+  color: var(--encre-attenuee);
+}
+
+.seuils li b {
+  font-family: var(--police-titre);
+  font-variation-settings: 'opsz' 24;
+  font-weight: 600;
+  font-size: 16px;
+  text-align: right;
+}

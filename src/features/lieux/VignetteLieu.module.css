@@ -1,0 +1,107 @@
+.enveloppe {
+  border-bottom: var(--trait-structure) solid var(--encre);
+}
+
+.vignette {
+  background: var(--ciel);
+  /* §11, DECISIONS.md : --ciel-txt seul tombe sous 4,5:1 sur ondee/fournaise
+     y compris à pleine opacité — voir Chapeau.module.css, même correctif. */
+  color: var(--ciel-txt-lisible);
+  padding: 16px var(--e5) 18px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 16px;
+  align-items: center;
+  cursor: pointer;
+  border: 0;
+  width: 100%;
+  font: inherit;
+  text-align: left;
+}
+
+.nom {
+  font-weight: 700;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.nom svg {
+  width: 15px;
+  height: 15px;
+}
+
+.sous {
+  font-size: 12.5px;
+  /* §11, DECISIONS.md : couleur pleine calibrée par palier plutôt qu'une
+     opacité posée sur --ciel-txt (échoue sur ondee/fournaise dès le plein,
+     voir jetons.css). */
+  color: var(--ciel-txt-attenuee);
+  margin-top: 2px;
+}
+
+.temp {
+  font-family: var(--police-titre);
+  font-variation-settings: 'opsz' 48;
+  font-size: 38px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.bas {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13.5px;
+  color: var(--ciel-txt-attenuee);
+  font-weight: 500;
+}
+
+.bas svg {
+  width: 25px;
+  height: 25px;
+}
+
+.mm {
+  text-align: right;
+  font-size: 15px;
+  color: var(--ciel-txt-attenuee);
+  font-family: var(--police-titre);
+  font-variation-settings: 'opsz' 24;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.actions {
+  display: flex;
+  gap: 0;
+  background: var(--ciel);
+  color: var(--ciel-txt-lisible);
+  border-top: var(--trait-filet) solid currentColor;
+}
+
+.actions button {
+  flex: 1;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 4px;
+  background: transparent;
+  color: inherit;
+  border: 0;
+  border-right: var(--trait-filet) solid currentColor;
+  cursor: pointer;
+}
+
+.actions button:last-child {
+  border-right: 0;
+}
+
+.actions button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}

@@ -1,0 +1,32 @@
+.bandeau {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  background: var(--encre);
+  color: var(--papier);
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  padding: 11px var(--e5);
+  padding-bottom: calc(11px + env(safe-area-inset-bottom));
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.bandeau span {
+  flex: 1;
+}
+
+.bouton {
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  background: var(--papier);
+  color: var(--encre);
+  border: 0;
+  padding: 8px var(--e3);
+  cursor: pointer;
+  flex: 0 0 auto;
+}

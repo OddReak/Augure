@@ -1,0 +1,253 @@
+/* Système de design AUGURE — jetons.
+   Valeurs recopiées telles quelles depuis design/mockup.html (§6 du document maître) :
+   ne pas réinterpréter les couleurs, les reprendre au caractère près. */
+
+/* ── Typographie auto-hébergée ───────────────────────────────
+   Fraunces (chiffres, titres) et Karla (interface), variables, sous-ensemblées
+   au latin étendu. Aucune requête vers Google Fonts en production. */
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url('/fonts/Fraunces-latin.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Fraunces';
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url('/fonts/Fraunces-latin-ext.woff2') format('woff2');
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Karla';
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url('/fonts/Karla-latin.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Karla';
+  font-style: normal;
+  font-weight: 300 800;
+  font-display: swap;
+  src: url('/fonts/Karla-latin-ext.woff2') format('woff2');
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+:root {
+  --police-titre: 'Fraunces', Georgia, serif;
+  --police-texte: 'Karla', system-ui, sans-serif;
+
+  /* Échelle d'espacement (§8bis) : tout multiple de 4, hauteurs de bloc en 8 */
+  --e1: 4px;
+  --e2: 8px;
+  --e3: 12px;
+  --e4: 16px;
+  --e5: 22px; /* marge intérieure horizontale, constante dans toute l'app */
+  --e6: 24px;
+  --e7: 32px;
+  --e8: 40px;
+
+  /* Traits : trois épaisseurs, jamais une quatrième (§8bis) */
+  --trait-majeur: 3px;
+  --trait-structure: 2px;
+  --trait-filet: 1px;
+
+  /* Échelle de température — exclue de la bascule de palier (§5.2) */
+  --t1: #5182a8;
+  --t2: #6e9e86;
+  --t3: #d9a93b;
+  --t4: #d2582f;
+  --t5: #9a2418;
+}
+
+/* ── Les six paliers ──────────────────────────────────────────
+   Un seul attribut data-palier sur la racine pilote tout : ciel, plans du
+   paysage, fond de contenu, encre et accent changent ensemble. Quatorze
+   jetons par palier, --trame-rgb et --trame-op compris. */
+[data-palier='vigies'] {
+  --trame-rgb: 43 20 9;
+  --trame-op: 0.075;
+  --ciel: #f5c044;
+  --ciel-b: #eba229;
+  --ciel-txt: #2b1409;
+  --p1: #d9743a;
+  --p2: #bc4626;
+  --p3: #8a2a1c;
+  --encre: #2b1409;
+  --papier: #fbebcb;
+  --trait: #e3cb9e;
+  --signe: #c2411f;
+  --lune: #f5c044;
+  --lune-b: #8a2a1c;
+  /* §11, DECISIONS.md : texte secondaire toujours ≥4,5:1, jamais une
+     opacité posée sur --encre/--ciel-txt (qui dérive vers le fond et finit
+     par y échouer, voir la même note sur le palier ondee). */
+  --encre-attenuee: #7a6653;
+  --ciel-txt-lisible: #2b1409;
+  --ciel-txt-attenuee: #6c4b1c;
+}
+[data-palier='ondee'] {
+  --trame-rgb: 10 20 28;
+  --trame-op: 0.09;
+  --ciel: #5c87ac;
+  --ciel-b: #44688a;
+  --ciel-txt: #f4f9fc;
+  --p1: #35566f;
+  --p2: #26445c;
+  --p3: #16293a;
+  --encre: #101e29;
+  --papier: #d9e4ea;
+  --trait: #aec1cd;
+  --signe: #d96e35;
+  --lune: #e8a268;
+  --lune-b: #16293a;
+  --encre-attenuee: #58656e;
+  /* --ciel-txt (#F4F9FC, quasi blanc) du mockup ne tient que 3,59:1 sur
+     --ciel ici, texte plein compris — en dessous du seuil AA même sans
+     aucune atténuation (DECISIONS.md, phase 11). Le noir, contre-intuitif
+     sur cette teinte, est le seul choix qui dégage une vraie marge (5,52:1). */
+  --ciel-txt-lisible: #000000;
+  --ciel-txt-attenuee: #111a21;
+}
+[data-palier='veille'] {
+  --trame-rgb: 0 0 0;
+  --trame-op: 0.24;
+  --ciel: #2b2a64;
+  --ciel-b: #1c1b47;
+  --ciel-txt: #ede8f7;
+  --p1: #3c3a7c;
+  --p2: #272455;
+  --p3: #15133a;
+  --encre: #ede8f7;
+  --papier: #191835;
+  --trait: #393772;
+  --signe: #f0c24a;
+  --lune: #f0c24a;
+  --lune-b: #0b0a22;
+  --encre-attenuee: #858298;
+  --ciel-txt-lisible: #ede8f7;
+  --ciel-txt-attenuee: #9c98b9;
+}
+[data-palier='colere'] {
+  --trame-rgb: 0 0 0;
+  --trame-op: 0.24;
+  --ciel: #6b3a78;
+  --ciel-b: #4c2657;
+  --ciel-txt: #f4e9f0;
+  --p1: #5a2f66;
+  --p2: #3e1e49;
+  --p3: #26102e;
+  --encre: #f4e9f0;
+  --papier: #241028;
+  --trait: #4b2456;
+  --signe: #f2d14b;
+  --lune: #f2d14b;
+  --lune-b: #1e0d25;
+  --encre-attenuee: #8e7f8e;
+  --ciel-txt-lisible: #f4e9f0;
+  --ciel-txt-attenuee: #cfbad0;
+}
+[data-palier='cendre'] {
+  --trame-rgb: 30 42 50;
+  --trame-op: 0.075;
+  --ciel: #c6d4dc;
+  --ciel-b: #afc1cc;
+  --ciel-txt: #1e2a32;
+  --p1: #9fb2be;
+  --p2: #7e93a1;
+  --p3: #5e7180;
+  --encre: #1e2a32;
+  --papier: #edf2f5;
+  --trait: #c7d4db;
+  --signe: #3e6e86;
+  --lune: #edf2f5;
+  --lune-b: #5e7180;
+  --encre-attenuee: #646e74;
+  --ciel-txt-lisible: #1e2a32;
+  --ciel-txt-attenuee: #4d5a62;
+}
+[data-palier='fournaise'] {
+  --trame-rgb: 42 12 7;
+  --trame-op: 0.09;
+  --ciel: #e8552f;
+  --ciel-b: #c93a22;
+  --ciel-txt: #ffebd0;
+  --p1: #b83a22;
+  --p2: #8e2318;
+  --p3: #5c1310;
+  --encre: #2a0c07;
+  --papier: #fbd9a8;
+  --trait: #eabb86;
+  --signe: #b02616;
+  --lune: #ffe08a;
+  --lune-b: #5c1310;
+  --encre-attenuee: #795a44;
+  /* Même défaut que ondee (voir plus haut) : --ciel-txt (#FFEBD0) ne tient
+     que 3,13:1 sur --ciel, sous le seuil même sans atténuation. */
+  --ciel-txt-lisible: #000000;
+  --ciel-txt-attenuee: #33130a;
+}
+
+/* La version sombre de l'échelle de température s'applique uniquement
+   sous les paliers veille et colere — l'échelle reste par ailleurs identique. */
+[data-palier='veille'],
+[data-palier='colere'] {
+  --t1: #7fa9cb;
+  --t2: #8fc0a6;
+  --t3: #ebc25c;
+  --t4: #e87a4c;
+  --t5: #d9503c;
+}
+
+/* Bascule entre paliers : la couleur avance par marches, jamais en fondu. */
+html {
+  transition:
+    background-color 420ms steps(3),
+    color 420ms steps(3);
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    transition: none;
+  }
+}
+
+html,
+body {
+  background: var(--papier);
+  color: var(--encre);
+  font-family: var(--police-texte);
+}
+
+/* ── La trame (§5.5) ──────────────────────────────────────────
+   Hachures à 45°, un pas de 4px CSS. Ne s'applique jamais sur une face
+   lumière (--ciel, --papier) ni derrière un chiffre : seule la marche
+   d'ombre porte la trame. */
+.trame {
+  position: relative;
+}
+.trame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    45deg,
+    rgb(var(--trame-rgb) / var(--trame-op)) 0 1px,
+    transparent 1px 4px
+  );
+}

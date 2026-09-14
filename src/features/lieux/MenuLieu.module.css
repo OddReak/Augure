@@ -1,0 +1,45 @@
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  width: 100%;
+  padding: var(--e3) 0;
+  border-top: var(--trait-filet) solid var(--trait);
+  font: inherit;
+  font-size: 15.5px;
+  font-weight: 600;
+  background: transparent;
+  color: inherit;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.item svg {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+}
+
+.apres {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--encre-attenuee);
+  font-weight: 500;
+}
+
+.bouton {
+  display: block;
+  width: 100%;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 14px;
+  background: transparent;
+  color: var(--encre);
+  border: var(--trait-structure) solid var(--encre);
+  cursor: pointer;
+  margin-top: var(--e5);
+}

@@ -1,0 +1,37 @@
+.luneRang {
+  display: flex;
+  gap: var(--e5);
+  align-items: center;
+  padding: 0 var(--e5);
+}
+.luneInfo h4 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+}
+.luneInfo p {
+  margin: 3px 0 0;
+  font-size: 13.5px;
+  color: var(--encre-attenuee);
+}
+
+.phases {
+  padding: var(--e4) var(--e5) 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+}
+.phase {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 13px;
+}
+.phase b {
+  display: block;
+  font-weight: 600;
+  font-size: 13.5px;
+}
+.phase span {
+  color: var(--encre-attenuee);
+}
