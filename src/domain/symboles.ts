@@ -38,7 +38,9 @@ export interface DecodageSymboleForeca {
 
 const MOTIF_CODE = /^([dn])([0-6])([0-4])([0-2])$/;
 
-export function decoderSymboleForeca(code: string): DecodageSymboleForeca | null {
+// §11 : n'est plus exporté — aucun consommateur en dehors de ce fichier (signeDuSymboleForeca,
+// palierDuSymboleForeca, ci-dessous), pas même un test (knip).
+function decoderSymboleForeca(code: string): DecodageSymboleForeca | null {
   const trouve = MOTIF_CODE.exec(code);
   if (!trouve) return null;
   const [, prefixe, nebulosite, tauxPrecipitation, typePrecipitation] = trouve;

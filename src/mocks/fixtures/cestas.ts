@@ -6,7 +6,6 @@ import type {
   ForecaReponseHoraire,
   ForecaReponseQualiteAir,
   ForecaReponseQuotidienne,
-  ForecaReponseRecherche,
 } from '../../api/foreca-types';
 
 /**
@@ -131,12 +130,4 @@ export const CESTAS_AIR: ForecaReponseQualiteAir = {
 // Scénario « vigies » : aucune vigilance active.
 export const CESTAS_ALERTES: ForecaReponseAvertissements = { warnings: [] };
 
-export const CESTAS_RECHERCHE: ForecaReponseRecherche = {
-  locations: [
-    { id: 'cestas-fr', name: 'Cestas', country: 'France', adminArea: 'Nouvelle-Aquitaine', lat: 44.74, lon: -0.68 },
-  ],
-};
-
 export const CESTAS_PHRASE = 'Ciel dégagé pendant la prochaine heure.';
-export const CESTAS_LEVER = '07:39';
-export const CESTAS_COUCHER = '20:22';
