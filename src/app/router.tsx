@@ -1,5 +1,5 @@
 import { lazy } from 'react';
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { Layout } from './Layout';
 import { Accueil } from './Accueil';
 
@@ -39,6 +39,10 @@ export const routeur = createBrowserRouter([
       { path: '/reglages', element: <Reglages /> },
       { path: '/qualite-air', element: <QualiteAir /> },
       { path: '/styleguide', element: <Styleguide /> },
+      // §11, post-livraison : /cartes menait quelque part avant son retrait (DECISIONS.md) —
+      // un vieux lien ou signet ne doit jamais tomber sur une erreur de routeur non gérée,
+      // seulement revenir à l'accueil (§0 : tous les états existent, y compris celui-ci).
+      { path: '*', element: <Navigate to="/" replace /> },
     ],
   },
 ]);
