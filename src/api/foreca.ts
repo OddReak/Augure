@@ -7,6 +7,7 @@ import type {
   Lieu,
   NiveauVigilance,
   PointHoraire,
+  PointQualiteAir,
 } from '../domain/types';
 import type {
   ForecaLieu,
@@ -47,6 +48,8 @@ export function adapterConditionCourante(
     humiditePourcent: p.relHumidity,
     pressionHpa: p.pressure,
     indiceUv: p.uvIndex,
+    pointDeRoseeC: p.dewPoint,
+    visibiliteM: p.visibility,
   };
 }
 
@@ -72,6 +75,31 @@ export function adapterQuotidien(reponse: ForecaReponseQuotidienne): JourPrevisi
     temperatureMaxC: p.maxTemp,
     pluieAccumuleeMm: p.precipAccum,
     ventMaxKmh: p.maxWindSpeed,
+  }));
+}
+
+/**
+ * Détail par polluant (§11, post-livraison — vue détaillée de la qualité de
+ * l'air, `src/app/QualiteAir.tsx`) : au-delà du seul indice EAQI que
+ * `fusionnerQualiteAir` pose sur la frise, le polluant dominant et les six
+ * sous-indices. Un point par heure, dans le même ordre que la réponse
+ * Foreca — le premier est la donnée la plus proche de maintenant, comme
+ * pour `horaire[0]`.
+ */
+export function adapterQualiteAirDetail(reponse: ForecaReponseQualiteAir): PointQualiteAir[] {
+  return reponse.forecast.map((p) => ({
+    horodatage: p.time,
+    aqi: p.AQI,
+    eaqi: eaqiDepuisAqiUs(p.AQI),
+    polluantDominant: p.pollutantPhrase,
+    sousIndices: {
+      o3: p.AQI_O3,
+      no2: p.AQI_NO2,
+      so2: p.AQI_SO2,
+      co: p.AQI_CO,
+      pm10: p.AQI_PM10,
+      pm25: p.AQI_PM2P5,
+    },
   }));
 }
 

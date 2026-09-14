@@ -45,6 +45,8 @@ export const LIEUX_DEMO: LieuDemo[] = [
         uvIndex: 1,
         precipRate: 0.6,
         precipProb: 80,
+        dewPoint: 14,
+        visibility: 8000,
       },
     },
     quotidien: {
@@ -70,6 +72,8 @@ export const LIEUX_DEMO: LieuDemo[] = [
         uvIndex: 0,
         precipRate: 0,
         precipProb: 0,
+        dewPoint: 11,
+        visibility: 30000,
       },
     },
     quotidien: {
@@ -95,6 +99,8 @@ export const LIEUX_DEMO: LieuDemo[] = [
         uvIndex: 5,
         precipRate: 3,
         precipProb: 90,
+        dewPoint: 21,
+        visibility: 5000,
       },
     },
     quotidien: {
@@ -131,6 +137,8 @@ export const LIEUX_DEMO: LieuDemo[] = [
         uvIndex: 1,
         precipRate: 0.4,
         precipProb: 70,
+        dewPoint: 0,
+        visibility: 2000,
       },
     },
     quotidien: {
@@ -156,6 +164,8 @@ export const LIEUX_DEMO: LieuDemo[] = [
         uvIndex: 9,
         precipRate: 0,
         precipProb: 0,
+        dewPoint: 12,
+        visibility: 40000,
       },
     },
     quotidien: {

@@ -55,6 +55,8 @@ const ECRANS: Ecran[] = [
   // maître (DECISIONS.md) — un identifiant de domaine fixe, jamais dépendant d'une donnée.
   { nom: 'Fiche de signe', ouvrir: async (page) => void (await page.goto('/lexique/orage')) },
   { nom: 'Réglages', ouvrir: async (page) => void (await page.goto('/reglages')) },
+  // §11, post-livraison : nouvel écran, ajouté à l'audit comme les huit autres.
+  { nom: 'Qualité de l’air', ouvrir: async (page) => void (await page.goto('/qualite-air')) },
 ];
 
 test.describe('Accessibilité — axe-core (§11)', () => {

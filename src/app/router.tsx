@@ -24,6 +24,7 @@ const Cartes = lazy(() => import('./Cartes').then((m) => ({ default: m.Cartes })
 const Lexique = lazy(() => import('./Lexique').then((m) => ({ default: m.Lexique })));
 const FicheSigne = lazy(() => import('./FicheSigne').then((m) => ({ default: m.FicheSigne })));
 const Reglages = lazy(() => import('./Reglages').then((m) => ({ default: m.Reglages })));
+const QualiteAir = lazy(() => import('./QualiteAir').then((m) => ({ default: m.QualiteAir })));
 const Styleguide = lazy(() => import('./Styleguide').then((m) => ({ default: m.Styleguide })));
 
 export const routeur = createBrowserRouter([
@@ -38,6 +39,7 @@ export const routeur = createBrowserRouter([
       { path: '/lexique', element: <Lexique /> },
       { path: '/lexique/:signe', element: <FicheSigne /> },
       { path: '/reglages', element: <Reglages /> },
+      { path: '/qualite-air', element: <QualiteAir /> },
       { path: '/styleguide', element: <Styleguide /> },
     ],
   },

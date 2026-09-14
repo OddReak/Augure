@@ -4,7 +4,8 @@ import styles from './Etiquette.module.css';
 interface EtiquetteProps {
   glyphe: ReactNode;
   titre: string;
-  note?: string;
+  /** Le plus souvent un texte simple ; un lien est toléré (§11, frise horaire → détail qualité de l'air). */
+  note?: ReactNode;
 }
 
 /** Étiquette de bande (§6, `.etiquette`) : cartouche plein + titre casse de phrase. */

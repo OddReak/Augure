@@ -3,6 +3,7 @@ import {
   adapterAvertissements,
   adapterConditionCourante,
   adapterHoraire,
+  adapterQualiteAirDetail,
   adapterQuotidien,
   fusionnerQualiteAir,
   vigilanceMax,
@@ -70,8 +71,10 @@ export function usePrevisionLieu({ latitude, longitude, nomLieu }: OptionsPrevis
       const coordonnees = { latitude, longitude };
 
       let pointsHoraires = adapterHoraire(horaire);
+      let qualiteAirDetail: ReturnType<typeof adapterQualiteAirDetail> | undefined;
       if (airEtabli.status === 'fulfilled') {
         pointsHoraires = fusionnerQualiteAir(pointsHoraires, airEtabli.value);
+        qualiteAirDetail = adapterQualiteAirDetail(airEtabli.value);
       }
 
       // Lever/coucher réels du jour courant (§6, phase 6 : calcul Meeus — `domain/soleil.ts`),
@@ -92,6 +95,7 @@ export function usePrevisionLieu({ latitude, longitude, nomLieu }: OptionsPrevis
         leverSoleil,
         coucherSoleil,
         avertissements,
+        ...(qualiteAirDetail ? { qualiteAirDetail } : {}),
       };
     },
   });

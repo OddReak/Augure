@@ -15,11 +15,20 @@
  *
  * Restent des hypothèses non confirmées par un exemple de réponse réel
  * (marqué dans JOURNAL.md, à corriger dès qu'une clé et une vraie réponse
- * sont disponibles) : les noms de champs eux-mêmes (`temperature`,
- * `feelsLikeTemp`…), la forme exacte de `warning/{location}` (l'existence
+ * sont disponibles) : la forme exacte de `warning/{location}` (l'existence
  * des champs `significance`/`type`/`from`/`to` est déduite de la description
  * textuelle de corporate.foreca.com/en/weather-data/weather-warnings-details,
- * pas d'un JSON observé), et la forme de `air-quality/forecast/hourly`.
+ * pas d'un JSON observé).
+ *
+ * `current`/`forecast`/`air-quality` en revanche sont désormais vérifiés
+ * contre de vraies réponses (§11, post-livraison, une clé Foreca étant
+ * devenue disponible) : les noms de champs ci-dessous sont recopiés
+ * verbatim d'appels réels, pas déduits. Point notable, qui a produit un bug
+ * réel avant sa découverte (JOURNAL.md) : `forecast/hourly` et
+ * `forecast/daily` ne renvoient `uvIndex`/`relHumidity`/`pressure`/`dewPoint`/
+ * `visibility` (et une dizaine d'autres champs) que si la requête porte
+ * `dataset=full` (`api/hourly.ts`, `api/daily.ts`) — `current` les renvoie
+ * par défaut, sans ce paramètre.
  */
 
 export interface ForecaPeriodeCourante {
@@ -34,6 +43,10 @@ export interface ForecaPeriodeCourante {
   uvIndex: number;
   precipRate: number;
   precipProb: number;
+  /** Point de rosée (§11, post-livraison — vérifié en réel, présent sans paramètre supplémentaire). */
+  dewPoint: number;
+  /** Visibilité en mètres (§11, idem). */
+  visibility: number;
 }
 
 export interface ForecaReponseCourante {
@@ -83,16 +96,29 @@ export interface ForecaReponseRecherche {
 }
 
 /**
- * Qualité de l'air (`air-quality/forecast/hourly|daily/{location}`).
- * D'après corporate.foreca.com : Foreca calcule un `AQI` selon le barème
- * **américain EPA** (0-500), pas l'EAQI européen que le document maître
- * impose à l'affichage (§5.2) — un écart réel entre méthodologies, pas une
- * hypothèse de forme. `src/domain/qualiteAir.ts` fait la conversion
- * ordinale ; voir DECISIONS.md.
+ * Qualité de l'air (`air-quality/forecast/hourly/{location}`), vérifiée en
+ * réel (§11, post-livraison) : `AQI` est bien le barème **américain EPA**
+ * (0-500), confirmé par corporate.foreca.com et par une vraie réponse — pas
+ * l'EAQI européen que le document maître impose à l'affichage (§5.2), un
+ * écart réel entre méthodologies. `src/domain/qualiteAir.ts` fait la
+ * conversion ordinale ; voir DECISIONS.md.
+ *
+ * `AQI` est le maximum des six sous-indices par polluant ci-dessous (aussi
+ * sur le barème EPA 0-500 chacun) — `pollutant`/`pollutantPhrase` nomment
+ * celui qui domine. Alimente la vue détaillée de la qualité de l'air
+ * (`src/app/QualiteAir.tsx`, §11).
  */
 export interface ForecaPeriodeQualiteAir {
   time: string;
   AQI: number;
+  pollutant: string;
+  pollutantPhrase: string;
+  AQI_CO: number;
+  AQI_NO2: number;
+  AQI_O3: number;
+  AQI_SO2: number;
+  AQI_PM10: number;
+  AQI_PM2P5: number;
 }
 
 export interface ForecaReponseQualiteAir {

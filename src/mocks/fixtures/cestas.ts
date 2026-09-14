@@ -35,6 +35,8 @@ export const CESTAS_COURANT: ForecaReponseCourante = {
     uvIndex: 6,
     precipRate: 0,
     precipProb: 0,
+    dewPoint: 15,
+    visibility: 25000,
   },
 };
 
@@ -90,6 +92,8 @@ export const CESTAS_HORAIRE: ForecaReponseHoraire = {
       precipProb: 0,
       precipAccum: 0,
       snowAccum: 0,
+      dewPoint: estNuit ? 13 : 15,
+      visibility: 25000,
     };
   }),
 };
@@ -119,12 +123,27 @@ export const CESTAS_QUOTIDIEN: ForecaReponseQuotidienne = {
 
 // Qualité de l'air (phase 7, endpoint séparé, §4.1) : valeurs d'auteur plausibles
 // (AQI américain, converties par `eaqiDepuisAqiUs`) — le mockup ne documente pas
-// cette métrique, absente de ses fixtures d'origine.
+// cette métrique, absente de ses fixtures d'origine. Polluant dominant alterné
+// jour/nuit (ozone le jour, particules la nuit — schéma réel courant) pour que
+// la vue détaillée (§11, post-livraison) ait quelque chose à distinguer entre
+// les points plutôt qu'un unique polluant répété partout.
 export const CESTAS_AIR: ForecaReponseQualiteAir = {
-  forecast: HORAIRE_BRUT.map(([heure], index) => ({
-    time: construireHeureIso(index, heure),
-    AQI: 30 + ((index * 5) % 40),
-  })),
+  forecast: HORAIRE_BRUT.map(([heure, , symbole], index) => {
+    const aqi = 30 + ((index * 5) % 40);
+    const estNuit = symbole.startsWith('n');
+    return {
+      time: construireHeureIso(index, heure),
+      AQI: aqi,
+      pollutant: estNuit ? 'Fine Particulate Matter' : 'Ozone',
+      pollutantPhrase: estNuit ? 'particules fines' : 'ozone',
+      AQI_O3: estNuit ? Math.round(aqi * 0.4) : aqi,
+      AQI_NO2: Math.round(aqi * 0.3),
+      AQI_SO2: Math.round(aqi * 0.1),
+      AQI_CO: Math.round(aqi * 0.2),
+      AQI_PM10: Math.round(aqi * 0.5),
+      AQI_PM2P5: estNuit ? aqi : Math.round(aqi * 0.6),
+    };
+  }),
 };
 
 // Scénario « vigies » : aucune vigilance active.

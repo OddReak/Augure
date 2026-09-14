@@ -151,6 +151,31 @@ export function DetailJour() {
               </div>
             </div>
           ) : null}
+          {/* §11, post-livraison : point de rosée et visibilité, disponibles depuis /api/current
+              sans paramètre supplémentaire — même réserve que Humidité/Pression/Indice UV
+              ci-dessus, jour courant seulement (DECISIONS.md, phase 8). */}
+          {estAujourdhui ? (
+            <div className={styles.metrique}>
+              <Signe nom="rosee" />
+              <div>
+                <div className={styles.lab}>Point de rosée</div>
+                <div className={styles.val}>
+                  {Math.round(requete.data.courant.pointDeRoseeC)} <em>°C</em>
+                </div>
+              </div>
+            </div>
+          ) : null}
+          {estAujourdhui ? (
+            <div className={styles.metrique}>
+              <Signe nom="visibilite" />
+              <div>
+                <div className={styles.lab}>Visibilité</div>
+                <div className={styles.val}>
+                  {(requete.data.courant.visibiliteM / 1000).toFixed(1)} <em>km</em>
+                </div>
+              </div>
+            </div>
+          ) : null}
           <div className={styles.metrique}>
             <Signe nom="thermo" />
             <div>

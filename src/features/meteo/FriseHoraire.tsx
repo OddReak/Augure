@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import { Signe } from '../../design/Signe';
 import {
   BAS_TRACE,
@@ -204,10 +205,21 @@ export function FriseHoraire({ points }: FriseHoraireProps) {
   }
 
   const note = idActif === 'temp' ? '48 h' : `${metrique.unite} · 48 h`;
+  // §11, post-livraison : la qualité de l'air est la seule métrique dont la lecture brute (une
+  // bande 1-6) ne dit rien du pourquoi — sa vue détaillée (polluant dominant, détail par
+  // polluant) mérite un accès direct, jamais offert aux cinq autres métriques.
+  const noteAffichee =
+    idActif === 'air' ? (
+      <Link to="/qualite-air" className={styles.lienDetail}>
+        {note} · détail
+      </Link>
+    ) : (
+      note
+    );
 
   return (
     <Bande>
-      <Etiquette glyphe={<Signe nom="horloge" taille={17} />} titre="Heure par heure" note={note} />
+      <Etiquette glyphe={<Signe nom="horloge" taille={17} />} titre="Heure par heure" note={noteAffichee} />
       {/* §7, §11 : région défilante atteignable au clavier (axe « scrollable-region-focusable »)
           — `tabIndex` la rend focusable ; le SVG qu'elle contient porte déjà son propre nom
           (role="img" + aria-label juste en dessous), pas besoin de le répéter ici. */}
