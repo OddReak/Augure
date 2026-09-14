@@ -1,6 +1,6 @@
-import { enteteAutorisationForeca, HOTE_RAPIDAPI } from './foreca-auth';
-import type { EndpointCache } from './cache';
-import { derniereReponseConnue, enregistrerAppel, memoriserDerniereReponse, quotaDegrade } from './quota';
+import { enteteAutorisationForeca, HOTE_RAPIDAPI } from './foreca-auth.js';
+import type { EndpointCache } from './cache.js';
+import { derniereReponseConnue, enregistrerAppel, memoriserDerniereReponse, quotaDegrade } from './quota.js';
 
 /**
  * Appelant Foreca partagé par les fonctions `/api/*` (§4.1). Deux bases

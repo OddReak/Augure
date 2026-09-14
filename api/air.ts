@@ -1,4 +1,4 @@
-import { creerGestionnaireCoordonnees } from './_lib/route';
+import { creerGestionnaireCoordonnees } from './_lib/route.js';
 
 /**
  * Qualité de l'air (§4, §4.1) : `s-maxage=3600`, endpoint distinct de la

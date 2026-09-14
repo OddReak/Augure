@@ -1,7 +1,7 @@
-import { enteteCacheControl } from './_lib/cache';
-import { appellerForeca } from './_lib/foreca-client';
-import { autoriser } from './_lib/limite';
-import { ipDe, reponseErreur } from './_lib/route';
+import { enteteCacheControl } from './_lib/cache.js';
+import { appellerForeca } from './_lib/foreca-client.js';
+import { autoriser } from './_lib/limite.js';
+import { ipDe, reponseErreur } from './_lib/route.js';
 
 /**
  * Recherche de lieux (§4, §4.1) : `s-maxage=604800` — « une commune ne bouge
