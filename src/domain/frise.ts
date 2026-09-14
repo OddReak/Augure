@@ -52,11 +52,11 @@ function inserisJalon(
     const duree = Date.parse(apres.horodatage) - Date.parse(avant.horodatage);
     const fraction = duree > 0 ? (Date.parse(cible) - Date.parse(avant.horodatage)) / duree : 0;
 
-    // `exactOptionalPropertyTypes` (tsconfig.app.json) refuse `qualiteAirEaqi: undefined` :
+    // `exactOptionalPropertyTypes` (tsconfig.app.json) refuse `qualiteAirIndice: undefined` :
     // la propriété n'est ajoutée que lorsqu'elle est effectivement calculable.
-    const qualiteAirEaqi =
-      avant.qualiteAirEaqi !== undefined && apres.qualiteAirEaqi !== undefined
-        ? Math.round(interpole(avant.qualiteAirEaqi, apres.qualiteAirEaqi, fraction))
+    const qualiteAirIndice =
+      avant.qualiteAirIndice !== undefined && apres.qualiteAirIndice !== undefined
+        ? Math.round(interpole(avant.qualiteAirIndice, apres.qualiteAirIndice, fraction))
         : undefined;
 
     const jalon: PointHoraire = {
@@ -69,7 +69,7 @@ function inserisJalon(
       ventKmh: Math.round(interpole(avant.ventKmh, apres.ventKmh, fraction)),
       pluieMm: Number(interpole(avant.pluieMm, apres.pluieMm, fraction).toFixed(1)),
       jalon: type,
-      ...(qualiteAirEaqi !== undefined ? { qualiteAirEaqi } : {}),
+      ...(qualiteAirIndice !== undefined ? { qualiteAirIndice } : {}),
     };
     resultat.splice(indexApres, 0, jalon);
   }

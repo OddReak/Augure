@@ -11,7 +11,6 @@ import { useMagasinUi } from '../lib/magasin';
 import { useEnLigne } from '../lib/useEnLigne';
 import { ApresPremierRendu } from '../ui/ApresPremierRendu';
 import { Bande } from '../ui/Bande';
-import { Pied } from '../ui/Pied';
 
 /*
  * §11 : budget de performance (premier rendu utile sous 1,2 s). Le Héros
@@ -29,11 +28,15 @@ const CourseSoleil = lazy(() =>
   import('../features/meteo/CourseSoleil').then((m) => ({ default: m.CourseSoleil })),
 );
 const Lune = lazy(() => import('../features/meteo/Lune').then((m) => ({ default: m.Lune })));
+// §11, post-livraison : détail d'un jour en feuille plutôt qu'un écran séparé (demandé par
+// l'utilisateur, « comme le menu de l'app ») — chargé à la demande comme le reste de l'accueil.
+const DetailJour = lazy(() => import('./DetailJour').then((m) => ({ default: m.DetailJour })));
 
 /** Écran d'accueil (§6) : barre collante, héros, paysage. */
 export function Accueil() {
   const navigate = useNavigate();
   const [menuOuvert, setMenuOuvert] = useState(false);
+  const [jourOuvert, setJourOuvert] = useState<string | null>(null);
 
   const { latitude, longitude, nomLieu } = useCoordonneesActuelles();
   const requete = usePrevisionLieu({ latitude, longitude, nomLieu });
@@ -75,7 +78,7 @@ export function Accueil() {
         condition={requete.data.courant}
         leverSoleil={requete.data.leverSoleil}
         coucherSoleil={requete.data.coucherSoleil}
-        onTitreClick={() => navigate('/mes-lieux')}
+        onTitreClick={() => void navigate('/mes-lieux', { viewTransition: true })}
         onOuvrirMenu={() => setMenuOuvert(true)}
         horsLigne={!enLigne}
       />
@@ -85,7 +88,7 @@ export function Accueil() {
           <SeptJours
             jours={requete.data.quotidien}
             aujourdhui={requete.data.quotidien[0]?.date ?? ''}
-            onJourClick={(date) => navigate(`/jour/${date}`)}
+            onJourClick={setJourOuvert}
           />
           <CourseSoleil
             leverSoleil={requete.data.leverSoleil}
@@ -95,8 +98,12 @@ export function Accueil() {
           <Lune />
         </Suspense>
       </ApresPremierRendu>
-      <Pied actif="ciel" />
       {menuOuvert ? <MenuLieu lieu={requete.data.lieu} onFermer={() => setMenuOuvert(false)} /> : null}
+      {jourOuvert ? (
+        <Suspense fallback={null}>
+          <DetailJour date={jourOuvert} onFermer={() => setJourOuvert(null)} />
+        </Suspense>
+      ) : null}
     </main>
   );
 }

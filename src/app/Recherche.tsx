@@ -8,7 +8,6 @@ import type { Lieu } from '../domain/types';
 import { ResultatRecherche } from '../features/lieux/ResultatRecherche';
 import { useMagasinUi } from '../lib/magasin';
 import { Etiquette } from '../ui/Etiquette';
-import { Pied } from '../ui/Pied';
 import styles from './Recherche.module.css';
 
 const DELAI_DEBOUNCE_MS = 300;
@@ -40,7 +39,7 @@ export function Recherche() {
   function choisir(lieu: Lieu): void {
     ajouterLieu(lieu);
     definirLieuActif(lieu);
-    navigate('/mes-lieux');
+    void navigate('/mes-lieux', { viewTransition: true });
   }
 
   return (
@@ -55,7 +54,14 @@ export function Recherche() {
             autoFocus
           />
         </div>
-        <button type="button" className={styles.lien} onClick={() => navigate(-1)}>
+        {/* §11, post-livraison : Recherche n'est atteinte que depuis Mes lieux — équivalent à
+            `navigate(-1)`, qui n'accepte pas `viewTransition` (React Router ne le supporte que
+            sur les navigations push/replace). `replace` reproduit la même pile qu'un vrai retour. */}
+        <button
+          type="button"
+          className={styles.lien}
+          onClick={() => void navigate('/mes-lieux', { replace: true, viewTransition: true })}
+        >
           Annuler
         </button>
       </div>
@@ -82,7 +88,6 @@ export function Recherche() {
           </div>
         </section>
       ) : null}
-      <Pied actif="" />
     </main>
   );
 }

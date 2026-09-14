@@ -11,7 +11,14 @@ import styles from './FicheSigne.module.css';
 /**
  * Fiche d'un signe (§6, `ficheSigne()`) : décomposition et seuils de
  * déclenchement, ouverte depuis le Lexique (§5.4, règle d'accessibilité :
- * « un signe qu'on ne sait pas lire est un bug »).
+ * « un signe qu'on ne sait pas lire est un bug ») ou par appui long sur un
+ * glyphe porteur de sens ailleurs dans l'application (`SigneLexique.tsx`).
+ *
+ * §11, post-livraison : `navigate(-1)` reste un vrai retour d'historique,
+ * pas remplacé par `navigate('/lexique', { viewTransition: true })` comme
+ * pour les autres écrans (DECISIONS.md) — contrairement à eux, cette fiche
+ * a deux origines possibles (le Lexique, ou un appui long depuis l'accueil)
+ * et un chemin fixe serait faux pour l'une des deux à chaque fois.
  */
 export function FicheSigne() {
   const navigate = useNavigate();

@@ -47,6 +47,10 @@ export interface ConditionCourante {
   humiditePourcent: number;
   pressionHpa: number;
   indiceUv: number;
+  /** Point de rosée (§11, post-livraison — écran Détail d'un jour, jour courant seulement). */
+  pointDeRoseeC: number;
+  /** Visibilité en mètres (§11, idem). */
+  visibiliteM: number;
 }
 
 export interface PointHoraire {
@@ -58,8 +62,13 @@ export interface PointHoraire {
   indiceUv: number;
   ventKmh: number;
   pluieMm: number;
-  /** Qualité de l'air (indice EAQI), absente tant que l'endpoint `/air` n'est pas câblé (phase 7). */
-  qualiteAirEaqi?: number;
+  /**
+   * Qualité de l'air (AQI américain, barème EPA — Foreca ne fournit pas
+   * l'EAQI européen, DECISIONS.md), absente tant que l'endpoint `/air` n'est
+   * pas câblé (phase 7). Affiché tel quel dans la frise (§11, post-livraison :
+   * plus parlant qu'une bande 1-6 sans contexte), coloré via `niveau(v, ECH_AIR)`.
+   */
+  qualiteAirIndice?: number;
   /** Un jalon lever/coucher inséré à son heure exacte (phase 5) — jamais fourni par Foreca. */
   jalon?: 'lever' | 'coucher';
   /** Libellé du jour (« dim. ») posé sur le premier point d'une nouvelle date (phase 5, frise horaire). */
@@ -88,6 +97,31 @@ export interface Avertissement {
   description?: string;
 }
 
+/** Sous-indices par polluant (§11, post-livraison), tous sur le barème EPA 0-500 comme `aqi`. */
+export interface SousIndicesPollution {
+  o3: number;
+  no2: number;
+  so2: number;
+  co: number;
+  pm10: number;
+  pm25: number;
+}
+
+/**
+ * Qualité de l'air détaillée par heure (§11, post-livraison — vue détaillée,
+ * `src/app/QualiteAir.tsx`) : au-delà du seul `qualiteAirIndice` déjà porté
+ * par `PointHoraire` pour la frise, le polluant dominant et le détail par
+ * polluant. La bande (bon/moyen/…) se déduit de `aqi` via `niveau(aqi,
+ * ECH_AIR)`, jamais stockée à part — un seul calcul, jamais deux valeurs qui
+ * pourraient diverger.
+ */
+export interface PointQualiteAir {
+  horodatage: string;
+  aqi: number;
+  polluantDominant: string;
+  sousIndices: SousIndicesPollution;
+}
+
 export interface PrevisionLieu {
   lieu: Lieu;
   courant: ConditionCourante;
@@ -97,4 +131,6 @@ export interface PrevisionLieu {
   coucherSoleil: string;
   /** Avertissements officiels actifs (§4.1) — [] tant qu'aucune vigilance n'est déclarée. */
   avertissements: Avertissement[];
+  /** Absent si `/api/air` a échoué (§7, Promise.allSettled) — jamais une valeur inventée. */
+  qualiteAirDetail?: PointQualiteAir[];
 }

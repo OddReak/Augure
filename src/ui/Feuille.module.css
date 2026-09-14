@@ -27,6 +27,51 @@
   background: var(--papier);
   border-top: var(--trait-majeur) solid var(--encre);
   padding: var(--e5) var(--e5) 26px;
+  /* Contenu plus riche qu'une simple liste d'actions (§11, post-livraison —
+     détail d'un jour) : la feuille ne dépasse jamais l'écran, elle défile. */
+  max-height: min(600px, 88dvh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* §11, post-livraison : « fluidifier la navigation » — la feuille glisse depuis le bas à
+   l'apparition, le voile s'éclaircit avec elle ; `.fermeture` rejoue l'un et l'autre à
+   l'envers avant la disparition réelle (`Feuille.tsx`, `fermerAnime`). */
+@keyframes glisserFeuille {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes eclaircirVoile {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.feuille {
+  animation: glisserFeuille 260ms cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+.voile {
+  animation: eclaircirVoile 220ms ease-out both;
+}
+.feuille.fermeture {
+  animation: glisserFeuille 220ms cubic-bezier(0.3, 0, 0.7, 0.15) reverse both;
+}
+.voile.fermeture {
+  animation: eclaircirVoile 220ms ease-out reverse both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .feuille,
+  .voile,
+  .feuille.fermeture,
+  .voile.fermeture {
+    animation: none;
+  }
 }
 
 .feuille h4 {

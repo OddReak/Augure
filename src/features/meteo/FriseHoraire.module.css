@@ -18,6 +18,18 @@
   height: auto;
 }
 
+/* §11, post-livraison : lien vers la vue détaillée de la qualité de l'air, posé dans
+   l'annotation de l'étiquette (`Etiquette.module.css` porte déjà la couleur/taille). */
+.lienDetail {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.lienDetail:focus-visible {
+  outline: 3px solid var(--signe);
+  outline-offset: 2px;
+}
+
 .selecteur {
   padding: var(--e4) var(--e5) 0;
   border-top: var(--trait-filet) solid var(--trait);

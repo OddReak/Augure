@@ -8,7 +8,6 @@ import { POSITION_PAR_DEFAUT } from '../lib/position';
 import { usePosition } from '../lib/usePosition';
 import { Chapeau } from '../ui/Chapeau';
 import { Pastille } from '../ui/Pastille';
-import { Pied } from '../ui/Pied';
 import styles from './MesLieux.module.css';
 
 /**
@@ -19,6 +18,12 @@ import styles from './MesLieux.module.css';
  * Réorganisation sans glisser-déposer (§8, décision, voir DECISIONS.md) :
  * la pastille « Réorganiser » du chapeau bascule un mode dans lequel chaque
  * vignette expose Monter / Descendre / Retirer plutôt que de naviguer.
+ *
+ * Chapeau réagencé (§11, post-livraison — retrait de la barre de navigation
+ * basse, DECISIONS.md) : « Retour » prend la place gauche qu'occupait
+ * « Réorganiser » (déplacée à droite), la pastille « Ajouter » est retirée —
+ * le bouton « Ajouter un lieu » en bas de liste reste l'unique entrée,
+ * comme demandé par l'utilisateur pour la recherche.
  */
 export function MesLieux() {
   const navigate = useNavigate();
@@ -36,13 +41,23 @@ export function MesLieux() {
 
   function choisir(lieu: Lieu | null): void {
     definirLieuActif(lieu);
-    navigate('/');
+    void navigate('/', { viewTransition: true });
+  }
+
+  // §11, post-livraison : Mes lieux n'est atteint que depuis le titre du chapeau de l'accueil
+  // (DECISIONS.md) — équivalent à `navigate(-1)`, mais celui-ci n'accepte pas `viewTransition`
+  // (limite de React Router, uniquement les navigations push/replace). `replace` reproduit la
+  // même forme de pile d'historique qu'un vrai retour, sans laisser d'entrée supplémentaire.
+  function retour(): void {
+    void navigate('/', { replace: true, viewTransition: true });
   }
 
   return (
     <main>
       <Chapeau
-        gauche={
+        gauche={<Pastille icone="retour" libelle="Retour" onClick={retour} />}
+        titre="Mes lieux"
+        droite={
           <Pastille
             icone="poignee"
             libelle={enReorganisation ? 'Terminer la réorganisation' : 'Réorganiser'}
@@ -50,8 +65,6 @@ export function MesLieux() {
             onClick={() => setEnReorganisation((v) => !v)}
           />
         }
-        titre="Mes lieux"
-        droite={<Pastille icone="ajout" libelle="Ajouter" onClick={() => navigate('/recherche')} />}
       />
       <div className={styles.liste}>
         <VignetteLieu
@@ -78,11 +91,14 @@ export function MesLieux() {
           />
         ))}
       </div>
-      <button type="button" className={styles.ajouter} onClick={() => navigate('/recherche')}>
+      <button
+        type="button"
+        className={styles.ajouter}
+        onClick={() => void navigate('/recherche', { viewTransition: true })}
+      >
         <Signe nom="ajout" />
         Ajouter un lieu
       </button>
-      <Pied actif="ciel" />
     </main>
   );
 }

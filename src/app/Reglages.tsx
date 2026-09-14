@@ -59,8 +59,18 @@ export function Reglages() {
 
   return (
     <main>
+      {/* §11, post-livraison : Réglages n'est atteint que depuis le menu du lieu (donc l'accueil)
+          — équivalent à `navigate(-1)`, qui n'accepte pas `viewTransition` (React Router ne le
+          supporte que sur les navigations push/replace). `replace` reproduit la même pile
+          qu'un vrai retour. */}
       <Chapeau
-        gauche={<Pastille icone="retour" libelle="Retour" onClick={() => navigate(-1)} />}
+        gauche={
+          <Pastille
+            icone="retour"
+            libelle="Retour"
+            onClick={() => void navigate('/', { replace: true, viewTransition: true })}
+          />
+        }
         titre="Réglages"
       />
       <div className={styles.corps}>

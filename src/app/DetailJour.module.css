@@ -1,3 +1,11 @@
+/* §11, post-livraison : la feuille (`Feuille.module.css`) pose déjà 22 px de marge
+   intérieure de chaque côté — ce conteneur les annule pour que `.heros`/le paysage/la
+   frise/les bandes retrouvent leur propre marge (§8bis, 22 px partout, sans exception)
+   plutôt que de la cumuler avec celle de la feuille. */
+.plein {
+  margin: 18px calc(-1 * var(--e5)) 0;
+}
+
 .heros {
   background: var(--ciel);
   /* §11, DECISIONS.md : --ciel-txt seul tombe sous 4,5:1 sur ondee/fournaise
@@ -115,4 +123,21 @@
   font-size: 14px;
   font-weight: 500;
   color: var(--encre-attenuee);
+}
+
+/* §11, post-livraison : même traitement que le bouton « Fermer » du menu du lieu
+   (MenuLieu.module.css) — la feuille se referme sur une action explicite, pas
+   seulement sur le voile. */
+.fermer {
+  display: block;
+  width: calc(100% - 2 * var(--e5));
+  margin: var(--e5) var(--e5) 0;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 14px;
+  background: transparent;
+  color: var(--encre);
+  border: var(--trait-structure) solid var(--encre);
+  cursor: pointer;
 }

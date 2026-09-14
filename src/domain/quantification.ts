@@ -37,14 +37,18 @@ export const ECH_UV = echelle([
   [99, '#8E3A9E', 'extrême'],
 ]);
 
-// Barème EAQI européen (§5.2), six bandes — la seule métrique à ne pas en compter cinq.
+// Barème officiel EPA (§5.2 : « le découpage officiel de son indice ») — Foreca fournit l'AQI
+// américain, pas l'EAQI européen que le document maître nomme (écart réel de méthodologie,
+// DECISIONS.md) ; six bandes sur les seuils EPA eux-mêmes (0-50 Good … 301-500 Hazardous), la
+// seule métrique à ne pas en compter cinq. Reprend `niveau()` directement sur l'AQI brut, plus
+// parlant qu'une bande 1-6 sans contexte (§11, post-livraison — signalé par l'utilisateur).
 export const ECH_AIR = echelle([
-  [1, '#4E9E8F', 'bon'],
-  [2, '#8FBF5C', 'moyen'],
-  [3, '#E8C84A', 'dégradé'],
-  [4, '#E08A4A', 'mauvais'],
-  [5, '#D2452F', 'très mauvais'],
-  [9, '#8E3A5E', 'extrême'],
+  [50, '#4E9E8F', 'bon'],
+  [100, '#8FBF5C', 'moyen'],
+  [150, '#E8C84A', 'dégradé'],
+  [200, '#E08A4A', 'mauvais'],
+  [300, '#D2452F', 'très mauvais'],
+  [500, '#8E3A5E', 'extrême'],
 ]);
 
 export const ECH_PLUIE = echelle([
@@ -125,7 +129,7 @@ export const METRIQUES: Record<IdMetrique, Metrique> = {
     type: 'colonne',
     libelle: 'Qualité air',
     glyphe: 'air',
-    unite: 'indice EAQI',
+    unite: 'indice AQI',
     echelle: ECH_AIR,
   },
 };

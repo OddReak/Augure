@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { adapterConditionCourante, adapterHoraire, adapterQuotidien } from '../../src/api/foreca';
 import {
+  adapterConditionCourante,
+  adapterHoraire,
+  adapterQualiteAirDetail,
+  adapterQuotidien,
+} from '../../src/api/foreca';
+import {
+  CESTAS_AIR,
   CESTAS_COURANT,
   CESTAS_HORAIRE,
   CESTAS_PHRASE,
@@ -17,6 +23,8 @@ describe('adaptateur Foreca → domaine (contrat, fixture Cestas enregistrée)',
       symboleBrut: 'd000',
       palier: 'vigies',
       phrase: CESTAS_PHRASE,
+      pointDeRoseeC: 15,
+      visibiliteM: 25000,
     });
   });
 
@@ -32,5 +40,22 @@ describe('adaptateur Foreca → domaine (contrat, fixture Cestas enregistrée)',
     const quotidien = adapterQuotidien(CESTAS_QUOTIDIEN);
     expect(quotidien).toHaveLength(7);
     expect(quotidien[0]).toMatchObject({ temperatureMinC: 13, temperatureMaxC: 28, signe: 'soleil' });
+  });
+
+  it('adapte le détail de qualité de l’air (§11, post-livraison — vue détaillée)', () => {
+    const detail = adapterQualiteAirDetail(CESTAS_AIR);
+    expect(detail).toHaveLength(22);
+    // Premier point : jour (14h), polluant dominant = ozone, AQI = 30.
+    expect(detail[0]).toMatchObject({
+      aqi: 30,
+      polluantDominant: 'ozone',
+      sousIndices: { o3: 30 },
+    });
+    // AQI composite toujours égal au maximum des six sous-indices — jamais une valeur incohérente
+    // avec son propre détail (ce que l'écran affiche côte à côte, `src/app/QualiteAir.tsx`).
+    for (const point of detail) {
+      const maxSousIndice = Math.max(...Object.values(point.sousIndices));
+      expect(point.aqi).toBe(maxSousIndice);
+    }
   });
 });

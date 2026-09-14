@@ -34,7 +34,10 @@ export function SigneLexique({ nom, taille = 24, titre, className }: SigneLexiqu
   }
 
   function demarrer(): void {
-    minuteur.current = setTimeout(() => navigate(`/lexique/${nom}`), DUREE_APPUI_LONG_MS);
+    minuteur.current = setTimeout(
+      () => void navigate(`/lexique/${nom}`, { viewTransition: true }),
+      DUREE_APPUI_LONG_MS,
+    );
   }
 
   function annuler(): void {

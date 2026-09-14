@@ -1,9 +1,9 @@
-import type { EndpointCache } from './cache';
-import { enteteCacheControl } from './cache';
-import { appellerForeca, ErreurForeca, type RequeteForeca } from './foreca-client';
-import { formaterCibleForeca } from './foreca-location';
-import { coordonneesSurGrille } from './grille';
-import { autoriser } from './limite';
+import type { EndpointCache } from './cache.js';
+import { enteteCacheControl } from './cache.js';
+import { appellerForeca, ErreurForeca, type RequeteForeca } from './foreca-client.js';
+import { formaterCibleForeca } from './foreca-location.js';
+import { coordonneesSurGrille } from './grille.js';
+import { autoriser } from './limite.js';
 
 /**
  * Squelette commun aux fonctions `/api/*` centrées sur des coordonnées

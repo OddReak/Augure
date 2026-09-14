@@ -17,7 +17,7 @@ test.describe('Mes lieux (§8)', () => {
     await expect(page).toHaveURL('/mes-lieux');
 
     for (const ville of VILLES_DEMO) {
-      await page.getByRole('button', { name: 'Ajouter', exact: true }).click();
+      await page.getByRole('button', { name: 'Ajouter un lieu' }).click();
       await expect(page).toHaveURL('/recherche');
       await page.getByLabel('Rechercher une ville').fill(ville);
       const resultat = page.getByRole('button', { name: new RegExp(`^${ville}`) });

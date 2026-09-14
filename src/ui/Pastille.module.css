@@ -9,6 +9,15 @@
   color: inherit;
   cursor: pointer;
   padding: 0;
+  /* §11, post-livraison : « fluidifier chaque interaction » — la pastille « Réorganiser »
+     bascule sans à-coup entre son état creux et son état plein. */
+  transition: background-color 150ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pastille {
+    transition: none;
+  }
 }
 
 .pastille svg {

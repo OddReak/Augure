@@ -20,6 +20,11 @@
   border-width: 0 var(--trait-structure) var(--trait-structure) 0;
   background: transparent;
   color: var(--encre);
+  /* §11, post-livraison : « fluidifier chaque interaction » — le changement de métrique
+     active bascule sans à-coup plutôt que de sauter directement à la couleur pleine. */
+  transition:
+    background-color 150ms ease-out,
+    color 150ms ease-out;
 }
 
 .onglet svg {
@@ -38,4 +43,10 @@
   outline-offset: -4px;
   position: relative;
   z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .onglet {
+    transition: none;
+  }
 }

@@ -1,5 +1,5 @@
 import { lazy } from 'react';
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { Layout } from './Layout';
 import { Accueil } from './Accueil';
 
@@ -19,11 +19,10 @@ import { Accueil } from './Accueil';
  */
 const MesLieux = lazy(() => import('./MesLieux').then((m) => ({ default: m.MesLieux })));
 const Recherche = lazy(() => import('./Recherche').then((m) => ({ default: m.Recherche })));
-const DetailJour = lazy(() => import('./DetailJour').then((m) => ({ default: m.DetailJour })));
-const Cartes = lazy(() => import('./Cartes').then((m) => ({ default: m.Cartes })));
 const Lexique = lazy(() => import('./Lexique').then((m) => ({ default: m.Lexique })));
 const FicheSigne = lazy(() => import('./FicheSigne').then((m) => ({ default: m.FicheSigne })));
 const Reglages = lazy(() => import('./Reglages').then((m) => ({ default: m.Reglages })));
+const QualiteAir = lazy(() => import('./QualiteAir').then((m) => ({ default: m.QualiteAir })));
 const Styleguide = lazy(() => import('./Styleguide').then((m) => ({ default: m.Styleguide })));
 
 export const routeur = createBrowserRouter([
@@ -33,12 +32,15 @@ export const routeur = createBrowserRouter([
       { path: '/', element: <Accueil /> },
       { path: '/mes-lieux', element: <MesLieux /> },
       { path: '/recherche', element: <Recherche /> },
-      { path: '/jour/:date', element: <DetailJour /> },
-      { path: '/cartes', element: <Cartes /> },
       { path: '/lexique', element: <Lexique /> },
       { path: '/lexique/:signe', element: <FicheSigne /> },
       { path: '/reglages', element: <Reglages /> },
+      { path: '/qualite-air', element: <QualiteAir /> },
       { path: '/styleguide', element: <Styleguide /> },
+      // §11, post-livraison : /cartes menait quelque part avant son retrait (DECISIONS.md) —
+      // un vieux lien ou signet ne doit jamais tomber sur une erreur de routeur non gérée,
+      // seulement revenir à l'accueil (§0 : tous les états existent, y compris celui-ci).
+      { path: '*', element: <Navigate to="/" replace /> },
     ],
   },
 ]);
