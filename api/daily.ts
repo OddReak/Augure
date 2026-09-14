@@ -5,4 +5,5 @@ export const config = { runtime: 'edge' };
 
 export default creerGestionnaireCoordonnees('daily', (location) => `forecast/daily/${location}`, {
   periods: '7',
+  dataset: 'full',
 });

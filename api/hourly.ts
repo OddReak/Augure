@@ -10,4 +10,8 @@ export const config = { runtime: 'edge' };
 
 export default creerGestionnaireCoordonnees('hourly', (location) => `forecast/hourly/${location}`, {
   periods: '48',
+  // `dataset=full` (§ vérifié en réel, phase 11 post-livraison, voir DECISIONS.md) : sans lui,
+  // l'endpoint horaire ne renvoie qu'un sous-ensemble de champs — ni indice UV, ni humidité, ni
+  // pression, alors que `current/{location}` les renvoie déjà par défaut.
+  dataset: 'full',
 });
