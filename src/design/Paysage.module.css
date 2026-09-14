@@ -4,3 +4,67 @@
   height: auto;
   margin-top: -2px;
 }
+
+/*
+ * Mouvement orchestré du lancement (§7) : « la marche de ciel se peint de
+ * haut en bas en steps(2) (180 ms), les trois plans du paysage entrent par
+ * décalage de 8 px (120 ms, décalés de 40 ms) ». Le glyphe de condition
+ * (troisième temps) est animé séparément dans Hero.module.css. Rien ne joue
+ * tant que `.animerLancement` n'est pas posé par `Paysage.tsx` (une seule
+ * fois par lancement réel, voir `lib/lancement.ts`) — un remontage du Héros
+ * en cours de session ne rejoue jamais ce mouvement.
+ */
+.marcheOmbre {
+  transform-box: fill-box;
+  transform-origin: top;
+}
+
+.animerLancement .marcheOmbre {
+  animation: peindreMarcheOmbre 180ms steps(2) both;
+}
+
+.animerLancement .plan1,
+.animerLancement .plan2,
+.animerLancement .plan3 {
+  animation: entreePlan 120ms cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+
+.animerLancement .plan1 {
+  animation-delay: 0ms;
+}
+.animerLancement .plan2 {
+  animation-delay: 40ms;
+}
+.animerLancement .plan3 {
+  animation-delay: 80ms;
+}
+
+@keyframes peindreMarcheOmbre {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes entreePlan {
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* §7 : « prefers-reduced-motion: reduce supprime les trois temps. » */
+@media (prefers-reduced-motion: reduce) {
+  .animerLancement .marcheOmbre,
+  .animerLancement .plan1,
+  .animerLancement .plan2,
+  .animerLancement .plan3 {
+    animation: none;
+  }
+}

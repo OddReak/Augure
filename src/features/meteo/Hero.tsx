@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { Paysage } from '../../design/Paysage';
 import { SigneLexique } from '../../design/SigneLexique';
 import { hauteurMarcheCiel, courseSolaire } from '../../design/marche-ciel';
 import { ageEnTexte, decalageDe, versHeureLocale } from '../../domain/fuseau';
 import { SIGNES_METEO } from '../../domain/signes';
 import type { ConditionCourante } from '../../domain/types';
+import { lancementAJouer } from '../../lib/lancement';
 import { partagerLieu } from '../../lib/partager';
 import { BandeauHorsLigne } from '../../ui/BandeauHorsLigne';
 import { Chapeau } from '../../ui/Chapeau';
@@ -44,6 +46,11 @@ export function Hero({
   const course = courseSolaire(maintenant, leverSoleil, coucherSoleil, decalage);
   const hauteurCiel = hauteurMarcheCiel(course);
   const titreSigne = SIGNES_METEO[condition.signe].nom;
+  // §7 : le mouvement orchestré ne joue qu'une fois, au vrai lancement de
+  // l'application — jamais à un remontage du Héros en cours de session
+  // (retour d'un écran secondaire, changement de palier). `lancementAJouer()`
+  // ne répond `true` qu'à son tout premier appel dans la vie du module.
+  const [animerLancement] = useState(lancementAJouer);
 
   return (
     <>
@@ -60,7 +67,14 @@ export function Hero({
       ) : null}
       <header className={styles.heros}>
         <div className={styles.marque}>
-          <SigneLexique nom={condition.signe} taille={96} titre={titreSigne} className={styles.grandSigne} />
+          <SigneLexique
+            nom={condition.signe}
+            taille={96}
+            titre={titreSigne}
+            className={
+              animerLancement ? `${styles.grandSigne} ${styles.frapperSigne}` : styles.grandSigne
+            }
+          />
           <div>
             <p className={styles.temp}>
               {Math.round(condition.temperatureC)}
@@ -71,7 +85,7 @@ export function Hero({
         </div>
         <p className={styles.phrase}>{condition.phrase}</p>
       </header>
-      <Paysage hauteurCiel={hauteurCiel} />
+      <Paysage hauteurCiel={hauteurCiel} animerLancement={animerLancement} />
     </>
   );
 }

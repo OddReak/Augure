@@ -49,9 +49,16 @@ const HAUTEUR_VIEWBOX = 190;
 interface PaysageProps {
   /** Hauteur (depuis le haut, en unités du viewBox) où commence la marche d'ombre du ciel (§5.1, §5.3). */
   hauteurCiel?: number;
+  /**
+   * Joue le mouvement orchestré du lancement (§7) : la marche d'ombre se
+   * peint de haut en bas en `steps(2)`, les trois plans entrent par
+   * décalage. `false` par défaut — seul le premier Héros monté dans la vie
+   * de l'application (voir `lib/lancement.ts`) le met à `true`.
+   */
+  animerLancement?: boolean;
 }
 
-export function Paysage({ hauteurCiel = 46 }: PaysageProps) {
+export function Paysage({ hauteurCiel = 46, animerLancement = false }: PaysageProps) {
   const id = useId();
   const idMotif = `trame-paysage-${id}`;
 
@@ -66,21 +73,30 @@ export function Paysage({ hauteurCiel = 46 }: PaysageProps) {
 
   return (
     <svg
-      className={styles.paysage}
+      className={[styles.paysage, animerLancement ? styles.animerLancement : ''].join(' ').trim()}
       viewBox="0 0 390 190"
       preserveAspectRatio="none"
       aria-hidden="true"
     >
       <TrameDefs id={idMotif} pas={PAS_TRAME} />
       <rect width={390} height={hauteurCiel} fill="var(--ciel)" />
-      <g fill="var(--ciel-b)">{cielB}</g>
-      <g fill={`url(#${idMotif})`}>{cielB}</g>
-      {masse('p1', 'var(--p1)')}
-      {masse('p2', 'var(--p2)')}
-      {masse('arc', 'var(--p3)')}
-      {masse('corniche', 'var(--p3)')}
-      {masse('cypA', 'var(--p3)')}
-      {masse('cypB', 'var(--p2)')}
+      {/* Marche d'ombre : les deux couches (aplat + trame) dans un même groupe pour
+          qu'elles se peignent ensemble de haut en bas au lancement (§7). */}
+      <g className={styles.marcheOmbre}>
+        <g fill="var(--ciel-b)">{cielB}</g>
+        <g fill={`url(#${idMotif})`}>{cielB}</g>
+      </g>
+      {/* Trois plans (§5.1, règle 6), chacun son propre groupe pour l'entrée décalée du lancement. */}
+      <g className={styles.plan1}>{masse('p1', 'var(--p1)')}</g>
+      <g className={styles.plan2}>
+        {masse('p2', 'var(--p2)')}
+        {masse('cypB', 'var(--p2)')}
+      </g>
+      <g className={styles.plan3}>
+        {masse('arc', 'var(--p3)')}
+        {masse('corniche', 'var(--p3)')}
+        {masse('cypA', 'var(--p3)')}
+      </g>
     </svg>
   );
 }

@@ -18,6 +18,36 @@
   margin-top: 6px;
 }
 
+/*
+ * Troisième temps du mouvement orchestré du lancement (§7) : « le glyphe de
+ * condition frappe (opacité 0 → 1, échelle 0,94 → 1, 500 ms,
+ * cubic-bezier(.2,.9,.3,1)) ». Délai de 100 ms pour clore l'ensemble des
+ * trois temps à 600 ms — la marche de ciel (180 ms) et les trois plans du
+ * paysage (jusqu'à 200 ms, voir Paysage.module.css) ont déjà jailli.
+ * `Hero.tsx` ne pose cette classe qu'au tout premier Héros monté dans la vie
+ * de l'application (`lib/lancement.ts`).
+ */
+.frapperSigne {
+  animation: frapperSigne 500ms cubic-bezier(0.2, 0.9, 0.3, 1) 100ms both;
+}
+
+@keyframes frapperSigne {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .frapperSigne {
+    animation: none;
+  }
+}
+
 .temp {
   font-family: var(--police-titre);
   font-variation-settings: 'opsz' 144, 'SOFT' 0, 'WONK' 0;

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { vigilanceMax } from '../api/foreca';
 import { decalageDe } from '../domain/fuseau';
 import { CourseSoleil } from '../features/meteo/CourseSoleil';
 import { FriseHoraire } from '../features/meteo/FriseHoraire';
@@ -9,6 +10,7 @@ import { SeptJours } from '../features/meteo/SeptJours';
 import { useCoordonneesActuelles } from '../features/meteo/useCoordonneesActuelles';
 import { usePrevisionLieu } from '../features/meteo/usePrevisionLieu';
 import { MenuLieu } from '../features/lieux/MenuLieu';
+import { definirBadgeVigilance } from '../lib/badge';
 import { useMagasinUi } from '../lib/magasin';
 import { useEnLigne } from '../lib/useEnLigne';
 import { Bande } from '../ui/Bande';
@@ -27,6 +29,10 @@ export function Accueil() {
   useEffect(() => {
     if (requete.data) {
       definirPalierMeteo(requete.data.courant.palier);
+      // §11 : badge d'application sur vigilance — visible même l'application
+      // fermée, contrairement à la notification quotidienne qui ne part
+      // qu'une fois par jour (§10).
+      definirBadgeVigilance(vigilanceMax(requete.data.avertissements));
     }
   }, [requete.data, definirPalierMeteo]);
 
