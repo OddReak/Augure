@@ -24,7 +24,19 @@ export function Lexique() {
 
   return (
     <main>
-      <Chapeau gauche={<Pastille icone="retour" libelle="Retour" onClick={() => navigate(-1)} />} titre="Lexique" />
+      {/* §11, post-livraison : n'est atteint que depuis le menu du lieu — équivalent à
+          `navigate(-1)`, qui n'accepte pas `viewTransition` (React Router ne le supporte que
+          sur les navigations push/replace). `replace` reproduit la même pile qu'un vrai retour. */}
+      <Chapeau
+        gauche={
+          <Pastille
+            icone="retour"
+            libelle="Retour"
+            onClick={() => void navigate('/', { replace: true, viewTransition: true })}
+          />
+        }
+        titre="Lexique"
+      />
       <div>
         <Etiquette
           glyphe={<Signe nom="lexique" taille={17} />}
@@ -35,7 +47,12 @@ export function Lexique() {
           {IDS_SIGNES_METEO.map((id) => {
             const signe = SIGNES_METEO[id];
             return (
-              <button type="button" key={id} className={styles.signe} onClick={() => navigate(`/lexique/${id}`)}>
+              <button
+                type="button"
+                key={id}
+                className={styles.signe}
+                onClick={() => void navigate(`/lexique/${id}`, { viewTransition: true })}
+              >
                 <Signe nom={id} />
                 <b>{signe.nom}</b>
                 <span>{signe.translit}</span>

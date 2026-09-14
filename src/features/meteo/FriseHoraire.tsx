@@ -210,7 +210,7 @@ export function FriseHoraire({ points }: FriseHoraireProps) {
   // polluant) mérite un accès direct, jamais offert aux cinq autres métriques.
   const noteAffichee =
     idActif === 'air' ? (
-      <Link to="/qualite-air" className={styles.lienDetail}>
+      <Link to="/qualite-air" viewTransition className={styles.lienDetail}>
         {note} · détail
       </Link>
     ) : (

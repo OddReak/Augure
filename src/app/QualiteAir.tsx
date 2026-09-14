@@ -50,8 +50,18 @@ export function QualiteAir() {
 
   return (
     <main>
+      {/* §11, post-livraison : n'est atteint que depuis la frise horaire de l'accueil —
+          équivalent à `navigate(-1)`, qui n'accepte pas `viewTransition` (React Router ne le
+          supporte que sur les navigations push/replace). `replace` reproduit la même pile
+          qu'un vrai retour. */}
       <Chapeau
-        gauche={<Pastille icone="retour" libelle="Retour" onClick={() => navigate(-1)} />}
+        gauche={
+          <Pastille
+            icone="retour"
+            libelle="Retour"
+            onClick={() => void navigate('/', { replace: true, viewTransition: true })}
+          />
+        }
         titre="Qualité de l’air"
         sousTitre={nomLieu}
       />

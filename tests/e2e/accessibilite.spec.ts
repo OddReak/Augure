@@ -42,11 +42,12 @@ const ECRANS: Ecran[] = [
   { nom: 'Recherche', ouvrir: async (page) => void (await page.goto('/recherche')) },
   { nom: 'Mes lieux', ouvrir: async (page) => void (await page.goto('/mes-lieux')) },
   {
+    // §11, post-livraison : une feuille sur l'accueil, plus une route (DECISIONS.md).
     nom: 'Détail d’un jour',
     ouvrir: async (page) => {
       await page.goto('/');
       await page.getByRole('button').filter({ hasText: 'sam.' }).first().click();
-      await expect(page).toHaveURL(/\/jour\//);
+      await expect(page.getByRole('dialog', { name: 'Samedi' })).toBeVisible();
     },
   },
   { nom: 'Lexique', ouvrir: async (page) => void (await page.goto('/lexique')) },

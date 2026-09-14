@@ -41,13 +41,21 @@ export function MesLieux() {
 
   function choisir(lieu: Lieu | null): void {
     definirLieuActif(lieu);
-    navigate('/');
+    void navigate('/', { viewTransition: true });
+  }
+
+  // §11, post-livraison : Mes lieux n'est atteint que depuis le titre du chapeau de l'accueil
+  // (DECISIONS.md) — équivalent à `navigate(-1)`, mais celui-ci n'accepte pas `viewTransition`
+  // (limite de React Router, uniquement les navigations push/replace). `replace` reproduit la
+  // même forme de pile d'historique qu'un vrai retour, sans laisser d'entrée supplémentaire.
+  function retour(): void {
+    void navigate('/', { replace: true, viewTransition: true });
   }
 
   return (
     <main>
       <Chapeau
-        gauche={<Pastille icone="retour" libelle="Retour" onClick={() => navigate(-1)} />}
+        gauche={<Pastille icone="retour" libelle="Retour" onClick={retour} />}
         titre="Mes lieux"
         droite={
           <Pastille
@@ -83,7 +91,11 @@ export function MesLieux() {
           />
         ))}
       </div>
-      <button type="button" className={styles.ajouter} onClick={() => navigate('/recherche')}>
+      <button
+        type="button"
+        className={styles.ajouter}
+        onClick={() => void navigate('/recherche', { viewTransition: true })}
+      >
         <Signe nom="ajout" />
         Ajouter un lieu
       </button>

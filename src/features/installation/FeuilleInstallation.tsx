@@ -28,41 +28,45 @@ export function FeuilleInstallation() {
       description="Deux gestes, et Augure s’ouvre depuis votre écran d’accueil, hors ligne et sans barre de navigateur."
       onFermer={() => fermerEtMasquer(false)}
     >
-      {plateforme === 'ios' ? (
-        <ul className={styles.etapes}>
-          <li>
-            <Signe nom="partage" />
-            <div>
-              <b>Touchez Partager</b>
-            </div>
-          </li>
-          <li>
-            <Signe nom="ajout" />
-            <div>
-              <b>Puis « Sur l&rsquo;écran d&rsquo;accueil »</b>
-            </div>
-          </li>
-        </ul>
-      ) : null}
+      {(fermerAnime) => (
+        <>
+          {plateforme === 'ios' ? (
+            <ul className={styles.etapes}>
+              <li>
+                <Signe nom="partage" />
+                <div>
+                  <b>Touchez Partager</b>
+                </div>
+              </li>
+              <li>
+                <Signe nom="ajout" />
+                <div>
+                  <b>Puis « Sur l&rsquo;écran d&rsquo;accueil »</b>
+                </div>
+              </li>
+            </ul>
+          ) : null}
 
-      {plateforme === 'android' ? (
-        <button
-          type="button"
-          className={styles.principal}
-          onClick={() => {
-            void installer().then(() => fermerEtMasquer(false));
-          }}
-        >
-          Installer
-        </button>
-      ) : (
-        <button type="button" className={styles.principal} onClick={() => fermerEtMasquer(true)}>
-          J&rsquo;ai compris
-        </button>
+          {plateforme === 'android' ? (
+            <button
+              type="button"
+              className={styles.principal}
+              onClick={() => {
+                void installer().then(() => fermerAnime(() => fermerEtMasquer(false)));
+              }}
+            >
+              Installer
+            </button>
+          ) : (
+            <button type="button" className={styles.principal} onClick={() => fermerAnime(() => fermerEtMasquer(true))}>
+              J&rsquo;ai compris
+            </button>
+          )}
+          <button type="button" className={styles.secondaire} onClick={() => fermerAnime(() => fermerEtMasquer(false))}>
+            Plus tard
+          </button>
+        </>
       )}
-      <button type="button" className={styles.secondaire} onClick={() => fermerEtMasquer(false)}>
-        Plus tard
-      </button>
     </Feuille>
   );
 }

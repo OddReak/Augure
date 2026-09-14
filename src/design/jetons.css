@@ -251,3 +251,24 @@ body {
     transparent 1px 4px
   );
 }
+
+/* ── Transitions de vue entre écrans (§11, post-livraison) ────
+   « Fluidifier la navigation » : activées au cas par cas par les appels
+   navigate(..., { viewTransition: true }) et <Link viewTransition> — jamais
+   globalement, React Router bascule sinon instantanément (aucune régression
+   sur un navigateur qui ne supporte pas l'API, la bascule instantanée reste
+   le repli naturel). Une durée alignée sur celle déjà utilisée ailleurs
+   (§7, la feuille par exemple) plutôt que le fondu par défaut du navigateur. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 220ms;
+  animation-timing-function: ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
