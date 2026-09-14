@@ -1,6 +1,10 @@
 .chapeau {
   background: var(--ciel);
-  color: var(--ciel-txt);
+  /* §11, DECISIONS.md : --ciel-txt seul tombe sous 4,5:1 sur ondee/fournaise
+     y compris à pleine opacité (titre du lieu compris) — --ciel-txt-lisible
+     vaut --ciel-txt inchangé ailleurs, corrigé seulement pour ces deux
+     paliers. */
+  color: var(--ciel-txt-lisible);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -26,7 +30,7 @@
   display: block;
   font-size: 11.5px;
   font-weight: 600;
-  opacity: 0.6;
+  color: var(--ciel-txt-attenuee);
   letter-spacing: 0.02em;
 }
 

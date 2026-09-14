@@ -94,6 +94,12 @@
   --signe: #c2411f;
   --lune: #f5c044;
   --lune-b: #8a2a1c;
+  /* §11, DECISIONS.md : texte secondaire toujours ≥4,5:1, jamais une
+     opacité posée sur --encre/--ciel-txt (qui dérive vers le fond et finit
+     par y échouer, voir la même note sur le palier ondee). */
+  --encre-attenuee: #7a6653;
+  --ciel-txt-lisible: #2b1409;
+  --ciel-txt-attenuee: #6c4b1c;
 }
 [data-palier='ondee'] {
   --trame-rgb: 10 20 28;
@@ -110,6 +116,13 @@
   --signe: #d96e35;
   --lune: #e8a268;
   --lune-b: #16293a;
+  --encre-attenuee: #58656e;
+  /* --ciel-txt (#F4F9FC, quasi blanc) du mockup ne tient que 3,59:1 sur
+     --ciel ici, texte plein compris — en dessous du seuil AA même sans
+     aucune atténuation (DECISIONS.md, phase 11). Le noir, contre-intuitif
+     sur cette teinte, est le seul choix qui dégage une vraie marge (5,52:1). */
+  --ciel-txt-lisible: #000000;
+  --ciel-txt-attenuee: #111a21;
 }
 [data-palier='veille'] {
   --trame-rgb: 0 0 0;
@@ -126,6 +139,9 @@
   --signe: #f0c24a;
   --lune: #f0c24a;
   --lune-b: #0b0a22;
+  --encre-attenuee: #858298;
+  --ciel-txt-lisible: #ede8f7;
+  --ciel-txt-attenuee: #9c98b9;
 }
 [data-palier='colere'] {
   --trame-rgb: 0 0 0;
@@ -142,6 +158,9 @@
   --signe: #f2d14b;
   --lune: #f2d14b;
   --lune-b: #1e0d25;
+  --encre-attenuee: #8e7f8e;
+  --ciel-txt-lisible: #f4e9f0;
+  --ciel-txt-attenuee: #cfbad0;
 }
 [data-palier='cendre'] {
   --trame-rgb: 30 42 50;
@@ -158,6 +177,9 @@
   --signe: #3e6e86;
   --lune: #edf2f5;
   --lune-b: #5e7180;
+  --encre-attenuee: #646e74;
+  --ciel-txt-lisible: #1e2a32;
+  --ciel-txt-attenuee: #4d5a62;
 }
 [data-palier='fournaise'] {
   --trame-rgb: 42 12 7;
@@ -174,6 +196,11 @@
   --signe: #b02616;
   --lune: #ffe08a;
   --lune-b: #5c1310;
+  --encre-attenuee: #795a44;
+  /* Même défaut que ondee (voir plus haut) : --ciel-txt (#FFEBD0) ne tient
+     que 3,13:1 sur --ciel, sous le seuil même sans atténuation. */
+  --ciel-txt-lisible: #000000;
+  --ciel-txt-attenuee: #33130a;
 }
 
 /* La version sombre de l'échelle de température s'applique uniquement

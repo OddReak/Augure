@@ -40,7 +40,7 @@ div.jour {
   font-size: 17px;
 }
 .mini {
-  opacity: 0.45;
+  color: var(--encre-attenuee);
   text-align: right;
 }
 .maxi {

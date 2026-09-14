@@ -208,7 +208,10 @@ export function FriseHoraire({ points }: FriseHoraireProps) {
   return (
     <Bande>
       <Etiquette glyphe={<Signe nom="horloge" taille={17} />} titre="Heure par heure" note={note} />
-      <div className={styles.rail}>
+      {/* §7, §11 : région défilante atteignable au clavier (axe « scrollable-region-focusable »)
+          — `tabIndex` la rend focusable ; le SVG qu'elle contient porte déjà son propre nom
+          (role="img" + aria-label juste en dessous), pas besoin de le répéter ici. */}
+      <div className={styles.rail} tabIndex={0}>
         <svg
           width={largeur}
           height={HAUTEUR}

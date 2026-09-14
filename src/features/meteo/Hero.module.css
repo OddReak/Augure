@@ -1,6 +1,8 @@
 .heros {
   background: var(--ciel);
-  color: var(--ciel-txt);
+  /* §11, DECISIONS.md : --ciel-txt seul tombe sous 4,5:1 sur ondee/fournaise
+     y compris à pleine opacité — voir Chapeau.module.css, même correctif. */
+  color: var(--ciel-txt-lisible);
   padding: 4px var(--e5) 0;
 }
 
@@ -70,7 +72,7 @@
 .ressenti {
   text-align: right;
   font-size: 15px;
-  opacity: 0.72;
+  color: var(--ciel-txt-attenuee);
   margin: var(--e2) 0 0;
   font-weight: 500;
   font-variant-numeric: tabular-nums;

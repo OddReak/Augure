@@ -5,6 +5,11 @@
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
+/* §7 : « Focus visible de 3 px en --signe, décalé de 2 px, jamais supprimé. » */
+.rail:focus-visible {
+  outline: 3px solid var(--signe);
+  outline-offset: 2px;
+}
 .rail::-webkit-scrollbar {
   display: none;
 }
