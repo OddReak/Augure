@@ -13,12 +13,19 @@ export default defineConfig({
     // service worker est déclenché nous-mêmes, depuis React (`RegistreurPwa.tsx`),
     // après le démarrage de MSW en mode `VITE_MOCK` — jamais avant (voir DECISIONS.md,
     // « deux service workers, un seul actif »).
+    // `injectManifest` (pas `generateSW`, le défaut) : la notification quotidienne
+    // (§10) a besoin d'un vrai gestionnaire `push` dans le service worker pour
+    // afficher la notification reçue, du code personnalisé que `generateSW`
+    // n'autorise pas — voir `src/sw.ts` (JOURNAL.md, absence de notification à
+    // l'heure prévue).
     VitePWA({
       registerType: 'prompt',
       injectRegister: false,
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
       includeAssets: ['fonts/*.woff2'],
-      workbox: {
-        navigateFallback: '/index.html',
+      injectManifest: {
         globPatterns: ['**/*.{js,css,html,svg,woff2,png}'],
         globIgnores: ['mockServiceWorker.js'],
       },
