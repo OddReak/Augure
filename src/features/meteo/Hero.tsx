@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Paysage } from '../../design/Paysage';
+import { Signe } from '../../design/Signe';
 import { SigneLexique } from '../../design/SigneLexique';
 import { hauteurMarcheCiel, courseSolaire } from '../../design/marche-ciel';
 import { ageEnTexte, decalageDe, versHeureLocale } from '../../domain/fuseau';
@@ -52,21 +53,69 @@ export function Hero({
   // ne répond `true` qu'à son tout premier appel dans la vie du module.
   const [animerLancement] = useState(lancementAJouer);
 
+  // §11, demandé : signe + température réapparaissent dans le bandeau une fois
+  // ceux du Héros scrollés sous lui, en fondu continu — pas un basculement au
+  // seuil, un `avancement` recalculé à chaque frame de défilement (0 tant que
+  // le bloc d'origine est visible, 1 une fois entièrement passé dessous).
+  const chapeauRef = useRef<HTMLDivElement>(null);
+  const marqueRef = useRef<HTMLDivElement>(null);
+  const [avancement, setAvancement] = useState(0);
+
+  useEffect(() => {
+    let planifie = false;
+
+    function mesurer(): void {
+      planifie = false;
+      const chapeau = chapeauRef.current;
+      const marque = marqueRef.current;
+      if (!chapeau || !marque) return;
+      const basChapeau = chapeau.getBoundingClientRect().bottom;
+      const rectMarque = marque.getBoundingClientRect();
+      const brut = rectMarque.height > 0 ? (basChapeau - rectMarque.bottom) / rectMarque.height : 0;
+      setAvancement(Math.min(1, Math.max(0, brut)));
+    }
+
+    function surDefilement(): void {
+      if (planifie) return;
+      planifie = true;
+      requestAnimationFrame(mesurer);
+    }
+
+    mesurer();
+    window.addEventListener('scroll', surDefilement, { passive: true });
+    window.addEventListener('resize', surDefilement);
+    return () => {
+      window.removeEventListener('scroll', surDefilement);
+      window.removeEventListener('resize', surDefilement);
+    };
+  }, []);
+
   return (
     <>
       <Chapeau
+        ref={chapeauRef}
         collant
         gauche={<Pastille icone="partage" libelle="Partager" onClick={() => void partagerLieu(nomLieu)} />}
+        avantTitre={
+          <span className={styles.miniSigne} style={{ opacity: avancement }} aria-hidden="true">
+            <Signe nom={condition.signe} taille={22} />
+          </span>
+        }
         titre={nomLieu}
         {...(horsLigne ? { sousTitre: `données d’il y a ${ageEnTexte(condition.horodatage, maintenant)}` } : {})}
         onTitreClick={onTitreClick}
+        apresTitre={
+          <span className={styles.miniTemp} style={{ opacity: avancement }} aria-hidden="true">
+            {Math.round(condition.temperatureC)}°
+          </span>
+        }
         droite={<Pastille icone="plus" libelle="Menu" onClick={onOuvrirMenu} />}
       />
       {horsLigne ? (
         <BandeauHorsLigne dernierReleveHeure={versHeureLocale(new Date(condition.horodatage), decalage)} />
       ) : null}
       <header className={styles.heros}>
-        <div className={styles.marque}>
+        <div className={styles.marque} ref={marqueRef}>
           <SigneLexique
             nom={condition.signe}
             taille={96}

@@ -85,3 +85,19 @@
   max-width: 22ch;
   font-weight: 500;
 }
+
+/* §11, demandé : copies compactes du signe et de la température dans le
+   bandeau, fondu piloté par `avancement` (Hero.tsx) — jamais une durée de
+   transition CSS propre, qui retarderait le fondu par rapport au doigt. */
+.miniSigne {
+  display: inline-flex;
+  flex: 0 0 auto;
+}
+
+.miniTemp {
+  flex: 0 0 auto;
+  font-weight: 700;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
