@@ -85,7 +85,7 @@ export async function abonnerNotifications(lieu: LieuAbonnement): Promise<void> 
     p_lat: lieu.latitude,
     p_lon: lieu.longitude,
     p_label: lieu.nomLieu,
-    p_heure_locale: '07:00',
+    p_heure_locale: '10:30',
     p_fuseau: Intl.DateTimeFormat().resolvedOptions().timeZone,
   });
   if (error) {
