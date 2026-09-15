@@ -1,5 +1,5 @@
 import { Suspense, useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { useMagasinUi } from '../lib/magasin';
 import { Sprite } from '../design/Sprite';
 import { FeuilleInstallation } from '../features/installation/FeuilleInstallation';
@@ -11,14 +11,26 @@ import { RegistreurPwa } from '../pwa/RegistreurPwa';
  * le styleguide, puis le dernier palier météo connu (persisté, peint
  * immédiatement au démarrage sans attendre le réseau — §7), puis `vigies`
  * par défaut.
+ *
+ * Pose aussi `data-accueil` (§11, post-livraison, demandé — captures) :
+ * seul l'accueil doit s'arrêter après sa dernière section (Lune) plutôt que
+ * de réserver un plein écran de fond quand le contenu est plus court que
+ * l'appareil — voir `chassis.css`. Les autres écrans gardent le
+ * remplissage plein écran (nécessaire en PWA installée, pas de barre de
+ * navigateur pour masquer un bord blanc en dessous).
  */
 export function Layout() {
   const palierForce = useMagasinUi((etat) => etat.palierForce);
   const palierMeteo = useMagasinUi((etat) => etat.palierMeteo);
+  const { pathname } = useLocation();
 
   useEffect(() => {
     document.documentElement.dataset.palier = palierForce ?? palierMeteo ?? 'vigies';
   }, [palierForce, palierMeteo]);
+
+  useEffect(() => {
+    document.documentElement.toggleAttribute('data-accueil', pathname === '/');
+  }, [pathname]);
 
   return (
     <>

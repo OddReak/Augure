@@ -18,6 +18,18 @@ body,
   min-height: 100dvh;
 }
 
+/* Accueil (`Layout.tsx`, `data-accueil`) : seule exception au remplissage plein
+   écran ci-dessus — la page s'arrête après sa dernière section plutôt que de
+   réserver un aplat vide en dessous quand le contenu est plus court que
+   l'appareil (demandé, captures). Spécificité : `#root` porte un sélecteur
+   d'ID (1,0,0), la règle ci-dessus ne suffit à le passer outre que combinée à
+   l'attribut sur `html` (1,1,1). */
+html[data-accueil],
+html[data-accueil] body,
+html[data-accueil] #root {
+  min-height: 0;
+}
+
 html {
   overscroll-behavior: none;
   -webkit-tap-highlight-color: transparent;
