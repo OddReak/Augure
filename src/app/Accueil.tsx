@@ -30,6 +30,13 @@ const CourseSoleil = lazy(() =>
 const Lune = lazy(() => import('../features/meteo/Lune').then((m) => ({ default: m.Lune })));
 // §11, post-livraison : détail d'un jour en feuille plutôt qu'un écran séparé (demandé par
 // l'utilisateur, « comme le menu de l'app ») — chargé à la demande comme le reste de l'accueil.
+/**
+ * Durée minimale de l'état « actualisation en cours » : un tour complet du glyphe
+ * (`Pastille.module.css`, 720 ms). Une réponse servie en 80 ms ferait sinon clignoter
+ * la pastille — l'utilisateur ne saurait pas si son geste a été pris en compte.
+ */
+const DUREE_MIN_ACTUALISATION_MS = 720;
+
 const DetailJour = lazy(() => import('./DetailJour').then((m) => ({ default: m.DetailJour })));
 
 /** Écran d'accueil (§6) : barre collante, héros, paysage. */
@@ -37,6 +44,7 @@ export function Accueil() {
   const navigate = useNavigate();
   const [menuOuvert, setMenuOuvert] = useState(false);
   const [jourOuvert, setJourOuvert] = useState<string | null>(null);
+  const [actualisationEnCours, setActualisationEnCours] = useState(false);
 
   const { latitude, longitude, nomLieu } = useCoordonneesActuelles();
   const requete = usePrevisionLieu({ latitude, longitude, nomLieu });
@@ -53,7 +61,24 @@ export function Accueil() {
     }
   }, [requete.data, definirPalierMeteo]);
 
-  if (requete.isError) {
+  async function actualiser(): Promise<void> {
+    setActualisationEnCours(true);
+    try {
+      // `refetch` ignore `staleTime` : une vraie requête réseau, même dans les cinq
+      // minutes qui suivent la précédente (§7).
+      await Promise.all([
+        requete.refetch(),
+        new Promise((resoudre) => setTimeout(resoudre, DUREE_MIN_ACTUALISATION_MS)),
+      ]);
+    } finally {
+      setActualisationEnCours(false);
+    }
+  }
+
+  // Écran d'erreur seulement sans aucune donnée à montrer : une actualisation (manuelle
+  // ou au retour au premier plan) qui échoue ne doit jamais effacer la météo déjà
+  // affichée — TanStack Query garde `data` et passe pourtant `isError` à vrai.
+  if (requete.isError && !requete.data) {
     return (
       <main>
         <Bande>
@@ -80,6 +105,8 @@ export function Accueil() {
         coucherSoleil={requete.data.coucherSoleil}
         onTitreClick={() => void navigate('/mes-lieux', { viewTransition: true })}
         onOuvrirMenu={() => setMenuOuvert(true)}
+        onActualiser={() => void actualiser()}
+        actualisationEnCours={actualisationEnCours}
         horsLigne={!enLigne}
       />
       <ApresPremierRendu>

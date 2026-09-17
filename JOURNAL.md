@@ -275,3 +275,22 @@ Non vérifié en réel : le mouvement de lancement et son annulation sous `prefe
 Non vérifié en réel : les transitions de vue dépendent du support de `document.startViewTransition` par le navigateur (Chrome/Edge, Safari 18+ ; dégrade silencieusement en bascule instantanée ailleurs, jamais testé sur un navigateur qui ne la supporte pas) — jamais observées sur un vrai appareil, seulement en Chromium (Playwright) où l'API est disponible.
 
 Commande pour relancer les tests : `pnpm verify`
+
+---
+
+## Post-livraison — actualisation manuelle de l'accueil
+
+État : fait, lint (`src`, `tests`), typecheck, tests unitaires et e2e au vert.
+
+Demandé : remplacer la pastille de partage (en haut à gauche de l'accueil) par un bouton qui force l'actualisation des données météo.
+
+- **Pastille « Actualiser la météo »** (`Hero.tsx`) à la place du partage, qui reste accessible depuis le menu du lieu (« Partager ce lieu », pastille de droite). `refetch()` ignore `staleTime` : une vraie requête, même dans les cinq minutes du seuil du §7.
+- **Nouvelle icône `actualiser`** dans `signes.svg` — absente du mockup, dessinée dans la grammaire de ses voisines (trait de 2, extrémités carrées, un arc et un chevron), vérifiée au rendu à côté de `partage`, `horloge` et `position`. Catalogue (`icones.ts`), test du sprite (45 symboles) et capture de référence du styleguide mis à jour ; le diff de la capture ne portait que sur la grille d'icônes.
+- **État en cours** (`Pastille`, nouvelles props `occupe`/`desactive`) : bouton inerte, `aria-busy`, nom accessible « Actualisation en cours », glyphe qui tourne en `steps(8)` (supprimé sous `prefers-reduced-motion`). Tenu au moins 720 ms, un tour complet : une réponse rapide ferait sinon clignoter la pastille.
+- **Inerte hors ligne** : TanStack Query y met la requête en pause, la promesse ne se résoudrait jamais et le glyphe tournerait sans fin.
+- **`Accueil.tsx` : l'écran d'erreur ne s'affiche plus que s'il n'y a aucune donnée.** Une actualisation qui échoue passe `isError` à vrai tout en gardant `data` ; jusqu'ici, cela remplaçait toute la météo affichée par le message d'erreur. Le cas existait déjà au retour au premier plan, le bouton le rendait simplement à portée de doigt.
+- Testé : `tests/e2e/actualiser.spec.ts` (nouvelle requête `/api/current` déclenchée, état en cours puis retour, donnée toujours affichée ; partage toujours présent dans le menu ; bouton désactivé hors ligne puis réactivé).
+
+Non vérifié en réel : jamais essayé sur un appareil physique, seulement en Chromium émulé.
+
+Commande pour relancer les tests : `pnpm verify`

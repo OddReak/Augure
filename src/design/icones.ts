@@ -4,6 +4,7 @@
  * distinction est celle du §5.4 : « les glyphes décoratifs sont aria-hidden ».
  */
 export const ID_ICONES_INTERFACE = [
+  'actualiser',
   'thermo',
   'ressenti',
   'air',

@@ -1,5 +1,7 @@
 <!-- Sprite de signes AUGURE, extrait tel quel de design/mockup.html (objet GL). Ne pas redessiner (§5.4). -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <!-- Ajout post-livraison (demandé), absent du mockup : actualisation manuelle de l'accueil. Même grammaire que ses voisines — trait de 2, extrémités carrées, un arc et un chevron. -->
+  <symbol id="signe-actualiser" viewBox="0 0 24 24"><path d="M21 12A9 9 0 1 1 18.4 5.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"/><path d="M19 1.4v5.2h-5.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"/></symbol>
   <symbol id="signe-air" viewBox="0 0 24 24"><g stroke="currentColor" stroke-width="2.2" stroke-linecap="square"><path d="M2 6h12M2 12h15M2 18h9"/></g>
   <g fill="currentColor"><circle cx="18.5" cy="6" r="1.9"/><circle cx="21" cy="12" r="1.9"/><circle cx="14" cy="18" r="1.9"/></g></symbol>
   <symbol id="signe-ajout" viewBox="0 0 24 24"><path d="M12 3v18M3 12h18" stroke="currentColor" stroke-width="2.4" stroke-linecap="square"/></symbol>

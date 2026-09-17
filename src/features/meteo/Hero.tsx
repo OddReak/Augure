@@ -7,7 +7,6 @@ import { ageEnTexte, decalageDe, versHeureLocale } from '../../domain/fuseau';
 import { SIGNES_METEO } from '../../domain/signes';
 import type { ConditionCourante } from '../../domain/types';
 import { lancementAJouer } from '../../lib/lancement';
-import { partagerLieu } from '../../lib/partager';
 import { BandeauHorsLigne } from '../../ui/BandeauHorsLigne';
 import { Chapeau } from '../../ui/Chapeau';
 import { Pastille } from '../../ui/Pastille';
@@ -20,6 +19,9 @@ interface HeroProps {
   coucherSoleil: string;
   onTitreClick: () => void;
   onOuvrirMenu: () => void;
+  /** Force une nouvelle requête de la prévision, sans attendre le seuil de cinq minutes (§7). */
+  onActualiser: () => void;
+  actualisationEnCours?: boolean;
   maintenant?: Date;
   /** §8bis : bandeau plein écran remplaçant le sous-titre du chapeau, navigateur hors ligne. */
   horsLigne?: boolean;
@@ -40,6 +42,8 @@ export function Hero({
   coucherSoleil,
   onTitreClick,
   onOuvrirMenu,
+  onActualiser,
+  actualisationEnCours = false,
   maintenant = new Date(),
   horsLigne = false,
 }: HeroProps) {
@@ -95,7 +99,18 @@ export function Hero({
       <Chapeau
         ref={chapeauRef}
         collant
-        gauche={<Pastille icone="partage" libelle="Partager" onClick={() => void partagerLieu(nomLieu)} />}
+        // §11, post-livraison (demandé) : actualisation manuelle à la place du partage, qui
+        // reste accessible depuis le menu du lieu (pastille de droite, `MenuLieu`). Inerte
+        // hors ligne : la requête y serait mise en pause par TanStack Query, jamais résolue.
+        gauche={
+          <Pastille
+            icone="actualiser"
+            libelle={actualisationEnCours ? 'Actualisation en cours' : 'Actualiser la météo'}
+            occupe={actualisationEnCours}
+            desactive={horsLigne}
+            onClick={onActualiser}
+          />
+        }
         avantTitre={
           <span className={styles.miniSigne} style={{ opacity: avancement }} aria-hidden="true">
             <Signe nom={condition.signe} taille={22} />

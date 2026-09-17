@@ -25,6 +25,34 @@
   height: 20px;
 }
 
+.pastille:disabled {
+  cursor: default;
+}
+
+/* Pastille désactivée hors action en cours (actualiser hors ligne) : atténuée, jamais
+   masquée — le bouton reste à sa place, le chapeau ne se décale pas. */
+.pastille:disabled:not(.occupe) {
+  opacity: 0.45;
+}
+
+/* Actualisation en cours : le glyphe tourne par marches, jamais en glissé continu
+   (§5.2, §7 — le mouvement de l'application avance par marches). */
+.occupe svg {
+  animation: tournerPastille 720ms steps(8) infinite;
+}
+
+@keyframes tournerPastille {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .occupe svg {
+    animation: none;
+  }
+}
+
 .plein {
   background: currentColor;
 }
