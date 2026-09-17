@@ -7,6 +7,7 @@ import { useCoordonneesActuelles } from '../features/meteo/useCoordonneesActuell
 import { usePrevisionLieu } from '../features/meteo/usePrevisionLieu';
 import { MenuLieu } from '../features/lieux/MenuLieu';
 import { definirBadgeVigilance } from '../lib/badge';
+import { signalerDonneesPretes } from '../lib/lancement';
 import { useMagasinUi } from '../lib/magasin';
 import { useEnLigne } from '../lib/useEnLigne';
 import { ApresPremierRendu } from '../ui/ApresPremierRendu';
@@ -51,7 +52,13 @@ export function Accueil() {
       // qu'une fois par jour (§10).
       definirBadgeVigilance(vigilanceMax(requete.data.avertissements));
     }
-  }, [requete.data, definirPalierMeteo]);
+    // Relève l'écran de lancement (§7, post-livraison). L'échec compte autant
+    // que la réussite : l'écran d'erreur ci-dessous est lui aussi un état
+    // abouti, il ne doit jamais rester coincé derrière l'écran de lancement.
+    if (requete.data || requete.isError) {
+      signalerDonneesPretes();
+    }
+  }, [requete.data, requete.isError, definirPalierMeteo]);
 
   if (requete.isError) {
     return (
