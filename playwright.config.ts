@@ -20,7 +20,7 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-      testIgnore: /(hors-ligne-pwa|performance|budget-bundle|lancement-echec)\.spec\.ts/,
+      testIgnore: /(hors-ligne-pwa|performance|budget-bundle)\.spec\.ts/,
     },
     {
       // Budget de performance (§11) : dist-pwa est le seul build sans VITE_MOCK (voir
@@ -28,7 +28,7 @@ export default defineConfig({
       // ce que reçoit vraiment un navigateur en production, comme hors-ligne-pwa.spec.ts.
       name: 'pwa',
       use: { ...devices['Desktop Chrome'], baseURL: 'http://localhost:4174' },
-      testMatch: /(hors-ligne-pwa|performance|budget-bundle|lancement-echec)\.spec\.ts/,
+      testMatch: /(hors-ligne-pwa|performance|budget-bundle)\.spec\.ts/,
     },
   ],
   webServer: [

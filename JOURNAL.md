@@ -275,25 +275,3 @@ Non vérifié en réel : le mouvement de lancement et son annulation sous `prefe
 Non vérifié en réel : les transitions de vue dépendent du support de `document.startViewTransition` par le navigateur (Chrome/Edge, Safari 18+ ; dégrade silencieusement en bascule instantanée ailleurs, jamais testé sur un navigateur qui ne la supporte pas) — jamais observées sur un vrai appareil, seulement en Chromium (Playwright) où l'API est disponible.
 
 Commande pour relancer les tests : `pnpm verify`
-
----
-
-## Post-livraison — écran de lancement
-
-État : fait, `pnpm verify` au vert.
-
-Demandé : « une loading page au lancement, full screen, même direction artistique, animations de chargement (jouer avec le soleil ou d'autres signes météo), fondu travaillé pour la transition vers la page principale ».
-
-- **`src/app/EcranLancement.tsx` + `EcranLancement.module.css`** : plein écran, monté par `App.tsx` **hors du routeur**, au-dessus de l'accueil qui se peint déjà dessous. Composition entièrement faite de matière existante — ciel et paysage du palier courant (`<Paysage>` réutilisé tel quel, aucun tracé redessiné), signes du sprite, translittérations de `domain/signes.ts`.
-- **Trois mouvements de lecture** : un anneau de huit rayons et huit points (les primitives « barre » et « point » du §5.4) qui tourne de 45° en `steps(8)` — la figure se referme exactement sur elle-même, la boucle est invisible ; six signes météo qui se substituent en coupe franche toutes les 400 ms (`ŠAM`, `ŠAM·NUB`, `NUB`, `ZAL`, `ZAL·GIR`, `IM` sous le mot-marque) ; une jauge de six marches synchronisée sur la même horloge.
-- **Sortie en trois temps, 460 ms**, en écho aux trois temps du §7 : le bloc central quitte vers le haut (200 ms), le paysage s'enfonce et s'efface (240 ms), l'écran se retire **par le bas** en `steps(4)` (60 → 440 ms) avec un fondu sur les 160 dernières. Par le bas, et non par le haut : les deux paysages (celui de l'écran, celui du héros) ne sont pas à la même hauteur et cohabiteraient en doublon pendant deux marches ; en se retirant par le bas, l'écran évacue son propre paysage d'abord, et la dernière bande qui reste est du ciel plein — le même jeton que celui du héros dessous, donc une couture invisible, sur laquelle seul le contenu du héros apparaît en fondu. Le héros joue ses 600 ms (§7) pendant ce temps-là et se découvre en train de se peindre.
-- **Durées** : plancher de 1 200 ms (trois signes — en dessous, un cache déjà chaud ne ferait que clignoter), plafond dur de 6 000 ms. L'accueil relève l'écran via `signalerDonneesPretes()` (`lib/lancement.ts`, magasin externe minimal et non persisté) dès que la prévision est là **ou définitivement en échec** : l'écran d'erreur est un état abouti, il ne doit jamais rester coincé derrière.
-- **`main.tsx` pose `data-palier` avant le premier rendu** (au lieu du seul effet de `Layout.tsx`, qui reste la source de vérité ensuite) : l'écran est du ciel plein cadre, il ne doit pas peindre en `vigies` puis basculer à la frame suivante. Corrige du même coup le bref clignotement de palier qui existait à chaque lancement.
-- **`prefers-reduced-motion: reduce`** supprime l'anneau, l'entrée, la sortie par marches et la substitution des signes (cadence figée côté TSX, un glyphe qui en remplace un autre restant du mouvement) ; il ne reste que la disparition, en fondu de 160 ms.
-- Ne s'affiche qu'au lancement sur `/` : un lien profond (notification, `/reglages`, `/lexique`) n'attend aucune prévision.
-- Testé : `tests/unit/ecran-lancement.test.ts` verrouille les valeurs par lecture du CSS et de la source (comme `mouvement-lancement.test.ts` le fait pour le §7), y compris la cohérence entre `DUREE_SORTIE_MS` et la plus longue animation de sortie ; `tests/e2e/lancement.spec.ts` vérifie qu'il tient le lancement, se retire **et** rend réellement la main (une pastille du chapeau redevient cliquable) ; `tests/e2e/lancement-echec.spec.ts` (projet `pwa`, hors MSW — voir plus bas) vérifie qu'il se retire même quand la prévision échoue.
-- `playwright.config.ts` : `lancement-echec.spec.ts` bascule dans le projet `pwa` comme `performance.spec.ts`, pour la même raison — sous `VITE_MOCK=1`, MSW répond dans la page elle-même, aucune interception réseau de Playwright ne passe avant lui ; sans `VITE_MOCK`, les `/api/*` échouent réellement, sans rien avoir à simuler.
-
-Non vérifié en réel : jamais observé sur un appareil physique (seulement en Chromium émulé iPhone 13, six paliers). En particulier, la photographie du premier écran par iOS pour le sélecteur d'applications (§7) capture désormais cet écran plutôt que le héros — le résultat visuel est conforme à l'esprit de la règle (rien d'une roue générique sur fond vide), mais n'a pas pu être constaté sur un iPhone.
-
-Commande pour relancer les tests : `pnpm verify`

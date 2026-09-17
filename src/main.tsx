@@ -19,18 +19,6 @@ ecouterInstallationDifferee();
 // d'installation « à la deuxième ou troisième ouverture »).
 useMagasinUi.getState().enregistrerOuverture();
 
-// Palier posé sur `<html>` avant le premier rendu, pas dans l'effet de
-// `Layout.tsx` : l'écran de lancement (§7, post-livraison) est du ciel plein
-// cadre, il ne doit pas peindre en `vigies` puis basculer à la frame suivante.
-// Même priorité que `Layout.tsx`, qui reste la source de vérité ensuite —
-// `persist` de Zustand réhydrate `localStorage` de façon synchrone, l'état est
-// donc déjà le bon ici.
-{
-  const etatInitial = useMagasinUi.getState();
-  document.documentElement.dataset.palier =
-    etatInitial.palierForce ?? etatInitial.palierMeteo ?? 'vigies';
-}
-
 // VITE_MOCK=1 fait tourner l'application entièrement contre les fixtures Foreca,
 // sans réseau (phase 3) : utile en développement et le temps qu'une clé Foreca arrive.
 if (import.meta.env.VITE_MOCK === '1') {
