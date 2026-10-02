@@ -1,24 +1,29 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
-  dateDeDemain,
+  dateDuJour,
   traiterEnvoi,
   type AppareilANotifier,
   type DependancesEnvoi,
   type MeteoGroupe,
 } from '../../supabase/functions/envoi-quotidien/traiter.ts';
 
+// Envoi de 7 h le vendredi 2 octobre 2026 : la prévision envoyée est celle de ce même jour.
 const METEO_TYPE: MeteoGroupe = {
-  courant: { current: { time: '2026-09-19T15:00:00+02:00', temperature: 28, symbol: 'd000' } },
+  courant: { current: { time: '2026-10-02T07:00:00+02:00', temperature: 12, symbol: 'd000' } },
   horaire: {
     forecast: [
-      { time: '2026-09-20T08:00:00+02:00', temperature: 15, symbol: 'd000' },
-      { time: '2026-09-20T16:00:00+02:00', temperature: 22, symbol: 'd421' },
+      // Heure déjà passée (réponse horaire servie par le cache CDN) : ignorée.
+      { time: '2026-10-02T06:00:00+02:00', temperature: 11, symbol: 'd300' },
+      { time: '2026-10-02T08:00:00+02:00', temperature: 15, symbol: 'd000' },
+      { time: '2026-10-02T16:00:00+02:00', temperature: 22, symbol: 'd340' },
+      // Lendemain : ignoré.
+      { time: '2026-10-03T08:00:00+02:00', temperature: 14, symbol: 'd300' },
     ],
   },
   quotidien: {
     forecast: [
-      { date: '2026-09-19', minTemp: 13, maxTemp: 28 },
-      { date: '2026-09-20', minTemp: 14, maxTemp: 31 },
+      { date: '2026-10-02', minTemp: 14, maxTemp: 31 },
+      { date: '2026-10-03', minTemp: 13, maxTemp: 28 },
     ],
   },
 };
@@ -45,15 +50,17 @@ function deps(surcharge: Partial<DependancesEnvoi> = {}): DependancesEnvoi {
   };
 }
 
-describe('dateDeDemain', () => {
-  it('donne la date calendaire du lendemain, dans le fuseau porté par l’horodatage', () => {
-    expect(dateDeDemain('2026-09-19T15:00:00+02:00')).toBe('2026-09-20');
-    expect(dateDeDemain('2026-09-19T23:30:00-05:00')).toBe('2026-09-20');
+describe('dateDuJour', () => {
+  it('donne la date calendaire locale, dans le fuseau porté par l’horodatage — jamais la date UTC', () => {
+    expect(dateDuJour('2026-10-02T07:00:00+02:00')).toBe('2026-10-02');
+    // 7 h à Tokyo : encore la veille en UTC.
+    expect(dateDuJour('2026-10-02T07:00:00+09:00')).toBe('2026-10-02');
+    expect(dateDuJour('2026-10-02T07:00:00-05:00')).toBe('2026-10-02');
   });
 });
 
 describe('traiterEnvoi (§10)', () => {
-  it('un seul appareil : une météo, un envoi, le texte composé avec le bon nom de lieu', async () => {
+  it('un seul appareil : une météo, un envoi, la prévision du jour même avec le bon nom de lieu', async () => {
     const d = deps();
     const resume = await traiterEnvoi([appareil('a1')], d);
 
@@ -61,8 +68,17 @@ describe('traiterEnvoi (§10)', () => {
     expect(d.envoyerPush).toHaveBeenCalledOnce();
     const [appareilEnvoye, titre, texte] = vi.mocked(d.envoyerPush).mock.calls[0]!;
     expect(appareilEnvoye.id).toBe('a1');
-    expect(titre).toBe('Demain à Cestas');
-    expect(texte).toContain('14° → 31°');
+    expect(titre).toBe('Aujourd’hui à Cestas');
+    // Ni l'heure déjà passée (6 h, pluie) ni le lendemain : soleil dès 8 h, orage à 16 h.
+    expect(texte).toBe('Soleil le matin, averses orageuses après 16 h. 14° → 31°.');
+  });
+
+  it('position actuelle sans nom (label null) : titre « Aujourd’hui » seul', async () => {
+    const d = deps();
+    await traiterEnvoi([appareil('a1', { label: null })], d);
+
+    const [, titre] = vi.mocked(d.envoyerPush).mock.calls[0]!;
+    expect(titre).toBe('Aujourd’hui');
   });
 
   it('critère d’acceptation explicite (§10) : 50 appareils dans la même case de grille ne déclenchent qu’un appel météo', async () => {
@@ -109,8 +125,8 @@ describe('traiterEnvoi (§10)', () => {
     expect(d.supprimerAppareil).toHaveBeenCalledWith('a1');
   });
 
-  it('un groupe sans donnée pour demain (ou aujourd’hui) dans la réponse météo n’envoie rien pour ce groupe, sans planter (§7)', async () => {
-    const meteoIncomplete: MeteoGroupe = { ...METEO_TYPE, quotidien: { forecast: [METEO_TYPE.quotidien.forecast[0]!] } };
+  it('un groupe sans donnée pour le jour même dans la réponse météo n’envoie rien pour ce groupe, sans planter (§7)', async () => {
+    const meteoIncomplete: MeteoGroupe = { ...METEO_TYPE, quotidien: { forecast: [METEO_TYPE.quotidien.forecast[1]!] } };
     const d = deps({ recupererMeteo: vi.fn().mockResolvedValue(meteoIncomplete) });
     const resume = await traiterEnvoi([appareil('a1')], d);
 

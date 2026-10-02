@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { Signe } from '../design/Signe';
 import { useAbonnementNotifications } from '../features/notifications/useAbonnementNotifications';
-import { useCoordonneesActuelles } from '../features/meteo/useCoordonneesActuelles';
+import { lieuNotifie } from '../features/notifications/useSuiviPositionNotifications';
 import { effacerDonneesLocales } from '../lib/effacer';
 import { useMagasinUi } from '../lib/magasin';
 import { positionAffinee } from '../lib/position';
-import { usePermissionGeolocalisation } from '../lib/usePosition';
+import { usePermissionGeolocalisation, usePosition } from '../lib/usePosition';
 import { Chapeau } from '../ui/Chapeau';
 import { Interrupteur } from '../ui/Interrupteur';
 import { Pastille } from '../ui/Pastille';
@@ -23,8 +23,9 @@ import styles from './Reglages.module.css';
 export function Reglages() {
   const navigate = useNavigate();
   const permission = usePermissionGeolocalisation();
-  const lieu = useCoordonneesActuelles();
-  const notifications = useAbonnementNotifications(lieu);
+  // Position actuelle de l'appareil, pas le lieu affiché (`lieuActif`) : voir `lieuNotifie`.
+  const position = usePosition();
+  const notifications = useAbonnementNotifications(lieuNotifie(position));
 
   const uniteTemperature = useMagasinUi((etat) => etat.uniteTemperature);
   const definirUniteTemperature = useMagasinUi((etat) => etat.definirUniteTemperature);
@@ -117,19 +118,19 @@ export function Reglages() {
         <div className={styles.reglage}>
           <Signe nom="cloche" className={styles.gl} />
           <div className={styles.txt}>
-            <b>Résumé du lendemain</b>
+            <b>Prévisions du jour</b>
             <span>
               {notifications.erreur
                 ? notifications.erreur
                 : notifications.abonne
-                  ? 'Une notification par jour'
+                  ? 'Chaque matin, pour votre position'
                   : 'Désactivé'}
             </span>
           </div>
           <Interrupteur
             actif={notifications.abonne ?? false}
             onChange={() => notifications.basculer()}
-            libelle="Résumé du lendemain"
+            libelle="Prévisions du jour"
           />
         </div>
         <div className={styles.reglage}>

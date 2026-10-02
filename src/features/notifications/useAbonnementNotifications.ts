@@ -1,13 +1,7 @@
 import { useEffect, useState } from 'react';
-import { abonnerNotifications, desabonnerNotifications, estAbonneNotifications } from '../../lib/push';
+import { abonnerNotifications, desabonnerNotifications, estAbonneNotifications, type LieuAbonnement } from '../../lib/push';
 import { useMagasinUi } from '../../lib/magasin';
 import { estAutonome, estIosDispositif } from '../../lib/plateforme';
-
-interface LieuAbonnement {
-  latitude: number;
-  longitude: number;
-  nomLieu: string;
-}
 
 interface EtatAbonnement {
   /** État réel de l'abonnement navigateur (`PushManager`), pas une préférence enregistrée à part (§8, principe déjà appliqué à « Position en direct » : jamais un faux interrupteur). `null` tant que la vérification initiale (asynchrone) n'a pas répondu. */

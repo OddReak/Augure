@@ -17,11 +17,13 @@ function nomLieuPour(source: 'defaut' | 'stockage' | 'ip' | 'gps'): string {
  * chaîne du §7, elle-même repliée sur Cestas tant que rien n'a répondu.
  * Une seule source de vérité — la même clé de requête TanStack Query partout,
  * donc pas de second appel réseau pour ouvrir le détail d'un jour déjà chargé.
+ * `position` (la position résolue seule, sans `lieuActif`) est exposée pour
+ * la notification quotidienne, qui suit l'appareil et non le lieu affiché.
  */
 export function useCoordonneesActuelles() {
   const position = usePosition();
   const lieuActif = useMagasinUi((etat) => etat.lieuActif);
   const coordonnees = lieuActif?.coordonnees ?? position?.coordonnees ?? POSITION_PAR_DEFAUT;
   const nomLieu = lieuActif?.nom ?? nomLieuPour(position?.source ?? 'defaut');
-  return { latitude: coordonnees.latitude, longitude: coordonnees.longitude, nomLieu };
+  return { latitude: coordonnees.latitude, longitude: coordonnees.longitude, nomLieu, position };
 }

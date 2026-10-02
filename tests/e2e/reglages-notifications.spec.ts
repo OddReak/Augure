@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 /**
- * §10 : l'interrupteur « Résumé du lendemain » reflète l'état réel de
+ * §10 : l'interrupteur « Prévisions du jour » reflète l'état réel de
  * l'abonnement Push (même principe que « Position en direct », phase 8 :
  * jamais un faux interrupteur), et sur iOS hors mode autonome, ouvre la
  * feuille d'installation au lieu de demander une permission qui échouerait
@@ -13,7 +13,7 @@ test.describe('Réglages — notifications (§10)', () => {
   test('tente réellement l’abonnement et rapporte l’échec sans clés Supabase configurées', async ({ page }) => {
     await page.goto('/reglages');
 
-    const interrupteur = page.getByRole('switch', { name: 'Résumé du lendemain' });
+    const interrupteur = page.getByRole('switch', { name: 'Prévisions du jour' });
     await expect(interrupteur).toHaveAttribute('aria-checked', 'false');
     await expect(page.getByText('Désactivé')).toBeVisible();
 
@@ -37,7 +37,7 @@ test.describe('Réglages — notifications (§10)', () => {
     });
 
     await page.goto('/reglages');
-    const interrupteur = page.getByRole('switch', { name: 'Résumé du lendemain' });
+    const interrupteur = page.getByRole('switch', { name: 'Prévisions du jour' });
 
     await interrupteur.click();
 

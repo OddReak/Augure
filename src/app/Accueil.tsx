@@ -6,6 +6,7 @@ import { Hero } from '../features/meteo/Hero';
 import { useCoordonneesActuelles } from '../features/meteo/useCoordonneesActuelles';
 import { usePrevisionLieu } from '../features/meteo/usePrevisionLieu';
 import { MenuLieu } from '../features/lieux/MenuLieu';
+import { useSuiviPositionNotifications } from '../features/notifications/useSuiviPositionNotifications';
 import { definirBadgeVigilance } from '../lib/badge';
 import { useMagasinUi } from '../lib/magasin';
 import { useEnLigne } from '../lib/useEnLigne';
@@ -46,7 +47,8 @@ export function Accueil() {
   const [jourOuvert, setJourOuvert] = useState<string | null>(null);
   const [actualisationEnCours, setActualisationEnCours] = useState(false);
 
-  const { latitude, longitude, nomLieu } = useCoordonneesActuelles();
+  const { latitude, longitude, nomLieu, position } = useCoordonneesActuelles();
+  useSuiviPositionNotifications(position);
   const requete = usePrevisionLieu({ latitude, longitude, nomLieu });
   const definirPalierMeteo = useMagasinUi((etat) => etat.definirPalierMeteo);
   const enLigne = useEnLigne();

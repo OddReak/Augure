@@ -43,14 +43,12 @@ export interface ResumeEnvoi {
   supprimes: number;
 }
 
-/** Date calendaire (`AAAA-MM-JJ`) du lendemain de l'horodatage courant, dans le fuseau qu'il porte lui-même. */
-export function dateDeDemain(horodatageAujourdhui: string): string {
-  const decalage = /([+-]\d{2}:\d{2}|Z)$/.exec(horodatageAujourdhui)?.[1] ?? 'Z';
-  const minutesDecalage =
-    decalage === 'Z' ? 0 : (decalage[0] === '-' ? -1 : 1) * (Number(decalage.slice(1, 3)) * 60 + Number(decalage.slice(4, 6)));
-  const local = new Date(new Date(horodatageAujourdhui).getTime() + minutesDecalage * 60_000);
-  local.setUTCDate(local.getUTCDate() + 1);
-  return local.toISOString().slice(0, 10);
+/** Date calendaire (`AAAA-MM-JJ`) de l'horodatage courant, dans le fuseau qu'il porte lui-même. */
+export function dateDuJour(horodatage: string): string {
+  // L'horodatage Foreca porte déjà l'heure locale du lieu (`2026-10-02T07:00:00+02:00`) : sa
+  // partie date est la date locale, sans conversion — jamais `toISOString()`, qui la ramènerait
+  // en UTC (la veille, pour un envoi à 7 h à l'est de UTC+7).
+  return horodatage.slice(0, 10);
 }
 
 function versPointHoraireNotification(p: PeriodeForeca): PointHoraireNotification {
@@ -68,21 +66,26 @@ export async function traiterEnvoi(appareils: AppareilANotifier[], deps: Dependa
     appelsMeteo += 1;
     const meteo = await deps.recupererMeteo(groupe.latitude, groupe.longitude);
 
-    const demain = dateDeDemain(meteo.courant.current.time);
-    const jourDemain = meteo.quotidien.forecast.find((j) => j.date === demain);
-    const jourAujourdhui = meteo.quotidien.forecast[0];
+    const aujourdhui = dateDuJour(meteo.courant.current.time);
+    // Recherché par date plutôt que pris en tête de liste : la réponse quotidienne vit en cache
+    // CDN, et une réponse de la veille commencerait par la veille.
+    const jourAujourdhui = meteo.quotidien.forecast.find((j) => j.date === aujourdhui);
     // §7 : dernière donnée connue absente plutôt qu'inventée — rien à envoyer pour ce groupe
-    // si le jour de demain ou celui d'aujourd'hui manque dans la réponse.
-    if (!jourDemain || !jourAujourdhui) continue;
+    // si le jour même manque dans la réponse.
+    if (!jourAujourdhui) continue;
 
-    const horairesDemain = meteo.horaire.forecast.filter((p) => p.time.startsWith(demain)).map(versPointHoraireNotification);
+    // Heures du jour à partir de l'heure courante seulement : la réponse horaire peut venir du
+    // cache CDN (`s-maxage=3600`) et commencer une heure plus tôt que l'envoi.
+    const debutHeureCourante = Math.floor(new Date(meteo.courant.current.time).getTime() / 3_600_000) * 3_600_000;
+    const horairesAujourdhui = meteo.horaire.forecast
+      .filter((p) => p.time.startsWith(aujourdhui) && new Date(p.time).getTime() >= debutHeureCourante)
+      .map(versPointHoraireNotification);
 
     for (const appareil of groupe.appareils) {
       const { titre, texte } = composerNotification({
-        nomLieu: appareil.label ?? 'votre position',
-        demain: { temperatureMinC: jourDemain.minTemp, temperatureMaxC: jourDemain.maxTemp },
-        aujourdhui: { temperatureMaxC: jourAujourdhui.maxTemp },
-        horairesDemain,
+        nomLieu: appareil.label,
+        aujourdhui: { temperatureMinC: jourAujourdhui.minTemp, temperatureMaxC: jourAujourdhui.maxTemp },
+        horairesAujourdhui,
       });
 
       try {

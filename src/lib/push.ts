@@ -1,4 +1,5 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { clePositionNotifiee, fuseauNavigateur, memoriserPositionNotifiee, oublierPositionNotifiee } from './positionNotifiee';
 import type { Database } from './supabase-types';
 
 const URL_SUPABASE = import.meta.env.VITE_SUPABASE_URL;
@@ -46,20 +47,50 @@ export async function estAbonneNotifications(): Promise<boolean> {
   return abonnement != null;
 }
 
-interface LieuAbonnement {
+export interface LieuAbonnement {
   latitude: number;
   longitude: number;
-  nomLieu: string;
+  /** `null` : position actuelle sans nom connu — la notification titre alors « Aujourd'hui » seul. */
+  nomLieu: string | null;
+}
+
+/**
+ * Enregistre (ou met à jour, l'endpoint est la clé) la ligne `devices` de
+ * cet abonnement (§10, RPC `abonner_appareil`, seul chemin d'écriture
+ * ouvert à `anon` — voir la migration). Le fuseau est celui du navigateur
+ * (`Intl`), pas le décalage fixe que porte l'horodatage Foreca
+ * (`domain/fuseau.ts`) : `pg_cron` a besoin d'un nom IANA pour rester
+ * correct au changement d'heure, ce dont un simple décalage ne peut pas
+ * répondre (voir DECISIONS.md).
+ */
+async function enregistrerAppareil(
+  supabase: SupabaseClient<Database>,
+  abonnement: PushSubscription,
+  lieu: LieuAbonnement,
+): Promise<void> {
+  const { keys } = abonnement.toJSON();
+  if (!keys?.p256dh || !keys.auth) throw new Error('Abonnement Push sans clés de chiffrement.');
+
+  const fuseau = fuseauNavigateur();
+  const { error } = await supabase.rpc('abonner_appareil', {
+    p_endpoint: abonnement.endpoint,
+    p_p256dh: keys.p256dh,
+    p_auth: keys.auth,
+    p_lat: lieu.latitude,
+    p_lon: lieu.longitude,
+    p_label: lieu.nomLieu,
+    // Envoi fixe à 7 h (`devices_a_notifier`) : valeur ignorée côté base, gardée pour la signature.
+    p_heure_locale: '07:00',
+    p_fuseau: fuseau,
+  });
+  if (error) throw error;
+  memoriserPositionNotifiee(clePositionNotifiee(lieu.latitude, lieu.longitude, fuseau));
 }
 
 /**
  * Demande la permission (geste utilisateur explicite — jamais au lancement,
- * §9), souscrit au Push, et enregistre l'appareil (§10, RPC
- * `abonner_appareil`, seul chemin d'écriture ouvert à `anon` — voir la
- * migration). Le fuseau est celui du navigateur (`Intl`), pas le décalage
- * fixe que porte l'horodatage Foreca (`domain/fuseau.ts`) : `pg_cron` a
- * besoin d'un nom IANA pour rester correct au changement d'heure, ce dont
- * un simple décalage ne peut pas répondre (voir DECISIONS.md).
+ * §9), souscrit au Push, et enregistre l'appareil pour la notification de
+ * 7 h (§10).
  */
 export async function abonnerNotifications(lieu: LieuAbonnement): Promise<void> {
   const supabase = clientSupabase();
@@ -75,23 +106,28 @@ export async function abonnerNotifications(lieu: LieuAbonnement): Promise<void> 
     userVisibleOnly: true,
     applicationServerKey: base64UrlVersOctets(CLE_VAPID_PUBLIQUE),
   });
-  const { keys } = abonnement.toJSON();
-  if (!keys?.p256dh || !keys.auth) throw new Error('Abonnement Push sans clés de chiffrement.');
 
-  const { error } = await supabase.rpc('abonner_appareil', {
-    p_endpoint: abonnement.endpoint,
-    p_p256dh: keys.p256dh,
-    p_auth: keys.auth,
-    p_lat: lieu.latitude,
-    p_lon: lieu.longitude,
-    p_label: lieu.nomLieu,
-    p_heure_locale: '07:00',
-    p_fuseau: Intl.DateTimeFormat().resolvedOptions().timeZone,
-  });
-  if (error) {
+  try {
+    await enregistrerAppareil(supabase, abonnement, lieu);
+  } catch (e) {
     await abonnement.unsubscribe();
-    throw error;
+    throw e;
   }
+}
+
+/**
+ * Met à jour la position d'un abonnement déjà actif, sans jamais demander
+ * de permission (§9) : la notification suit la position actuelle de
+ * l'appareil, pas celle du jour de l'abonnement. Ne fait rien sans
+ * abonnement ni configuration Supabase.
+ */
+export async function mettreAJourPositionNotifications(lieu: LieuAbonnement): Promise<void> {
+  const supabase = clientSupabase();
+  if (!supabase || !pushDisponible()) return;
+  const inscription = await navigator.serviceWorker.getRegistration();
+  const abonnement = await inscription?.pushManager.getSubscription();
+  if (!abonnement) return;
+  await enregistrerAppareil(supabase, abonnement, lieu);
 }
 
 /** Toujours sûre à appeler, même sans abonnement actif — ne lève jamais. */
@@ -103,6 +139,7 @@ export async function desabonnerNotifications(): Promise<void> {
 
   const { endpoint } = abonnement;
   await abonnement.unsubscribe();
+  oublierPositionNotifiee();
 
   const supabase = clientSupabase();
   if (!supabase) return;

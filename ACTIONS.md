@@ -20,7 +20,8 @@ Il reste :
    VITE_VAPID_PUBLIC         = BJeVaD2DtTCWTKJsPT2EppRbdVkY7JnCBnK_t01bcqVZR-q8VGy0-LEZoqrIKVJhizwbnAiN-JL7EpYQZejN9Zc
    ```
    Redéployer ensuite.
-2. **Tester en réel** : ouvrir l'application installée sur un iPhone (Web Push exige le mode autonome sur iOS, §10) ou dans Chrome Android, activer « Résumé du lendemain » dans Réglages, puis rappeler la fonction manuellement pour vérifier l'envoi sans attendre la fenêtre de 15 minutes (la clé secrète elle-même n'est pas recopiée ici — Settings → API → clé `secret` sur le tableau de bord Supabase) :
+2. ~~**Envoi à 7 h avec la prévision du jour (post-livraison)**~~ — **fait** le 2026-10-02 : migration `20261002070000_envoi_7h_jour_meme.sql` appliquée (`supabase db push`) et Edge Function `envoi-quotidien` redéployée. Le CLI Supabase n'est pas installé dans le Codespace : `npx supabase …` (après `npx supabase login` et `npx supabase link --project-ref zbgialxsmmdfvtpqswbo`).
+3. **Tester en réel** : ouvrir l'application installée sur un iPhone (Web Push exige le mode autonome sur iOS, §10) ou dans Chrome Android, activer « Prévisions du jour » dans Réglages, puis rappeler la fonction manuellement pour vérifier l'envoi sans attendre la fenêtre de 15 minutes (la clé secrète elle-même n'est pas recopiée ici — Settings → API → clé `secret` sur le tableau de bord Supabase) :
    ```sh
    curl -X POST https://zbgialxsmmdfvtpqswbo.supabase.co/functions/v1/envoi-quotidien \
      -H "Authorization: Bearer <clé secrète, tableau de bord Supabase>"

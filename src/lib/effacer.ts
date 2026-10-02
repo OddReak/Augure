@@ -19,6 +19,11 @@ export async function effacerDonneesLocales(): Promise<void> {
     // idem.
   }
   try {
+    localStorage.removeItem('augure:position-notifiee');
+  } catch {
+    // idem.
+  }
+  try {
     await del('augure-requetes');
   } catch {
     // IndexedDB indisponible (navigation privée) : les deux localStorage restent effacés.

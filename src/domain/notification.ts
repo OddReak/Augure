@@ -4,15 +4,17 @@ import { signeAffiche } from './symboles.ts';
 import type { JourPrevision } from './types.ts';
 
 /**
- * Générateur du texte de la notification quotidienne (§10). Trois règles,
- * tenues ici :
- * - donner l'écart avec aujourd'hui (`phraseEcart`, sur le maximum du jour —
- *   c'est la lecture qui retombe exactement sur l'exemple du document
- *   maître : 28° aujourd'hui, 31° demain, « trois de plus ») ;
+ * Générateur du texte de la notification quotidienne (§10), envoyée chaque
+ * matin à 7 h avec la prévision du jour même (demande post-livraison, voir
+ * DECISIONS.md — le document maître décrivait un résumé du lendemain).
+ * Deux règles, tenues ici :
  * - donner l'heure de bascule plutôt que la condition moyenne
  *   (`phraseCondition`) ;
  * - aucune exhortation — uniquement des affirmations, jamais un verbe à
  *   l'impératif ni un point d'exclamation (§9, interdits).
+ * L'écart avec la veille n'est pas donné : la réponse quotidienne Foreca
+ * commence au jour même, la veille n'y figure jamais — rien à comparer sans
+ * inventer une donnée (§7).
  *
  * Module partagé tel quel avec l'Edge Function `envoi-quotidien` (Deno) :
  * aucune dépendance Node ni navigateur, uniquement des types et fonctions
@@ -32,11 +34,11 @@ export interface PointHoraireNotification {
 }
 
 export interface ScenarioNotification {
-  nomLieu: string;
-  demain: Pick<JourPrevision, 'temperatureMinC' | 'temperatureMaxC'>;
-  aujourdhui: Pick<JourPrevision, 'temperatureMaxC'>;
-  /** Points horaires de demain seulement, triés chronologiquement, au moins un. */
-  horairesDemain: PointHoraireNotification[];
+  /** `null` : position actuelle de l'appareil, sans nom connu (aucun géocodage inverse, §8). */
+  nomLieu: string | null;
+  aujourdhui: Pick<JourPrevision, 'temperatureMinC' | 'temperatureMaxC'>;
+  /** Points horaires du jour, de l'heure d'envoi à la fin de journée, triés chronologiquement. */
+  horairesAujourdhui: PointHoraireNotification[];
 }
 
 export interface NotificationQuotidienne {
@@ -91,7 +93,7 @@ function heureLocale(horodatage: string): string {
  */
 function phraseCondition(horaires: PointHoraireNotification[]): string {
   const premier = horaires[0];
-  if (!premier) return 'Conditions incertaines demain.';
+  if (!premier) return 'Conditions incertaines aujourd’hui.';
 
   const signeAffichePremier = signeAffiche(premier.signe, premier.temperatureC);
   const matin = capitaliser(phraseSigne(signeAffichePremier, false));
@@ -106,51 +108,15 @@ function phraseCondition(horaires: PointHoraireNotification[]): string {
   return `${matin} le matin, ${phraseSigne(signeAfficheBascule, true)} après ${heureLocale(bascule.horodatage)} h.`;
 }
 
-const NOMBRES_LETTRES = [
-  '',
-  'un',
-  'deux',
-  'trois',
-  'quatre',
-  'cinq',
-  'six',
-  'sept',
-  'huit',
-  'neuf',
-  'dix',
-  'onze',
-  'douze',
-  'treize',
-  'quatorze',
-  'quinze',
-  'seize',
-  'dix-sept',
-  'dix-huit',
-  'dix-neuf',
-  'vingt',
-];
-
-function enLettres(n: number): string {
-  return NOMBRES_LETTRES[n] ?? String(n);
-}
-
-/** §10 : « donner l'écart avec aujourd'hui, qui est l'information réellement cherchée le matin ». */
-function phraseEcart(maxDemainC: number, maxAujourdhuiC: number): string {
-  const ecart = Math.round(maxDemainC) - Math.round(maxAujourdhuiC);
-  if (ecart === 0) return 'comme aujourd’hui';
-  return `${enLettres(Math.abs(ecart))} ${ecart > 0 ? 'de plus' : 'de moins'} qu’aujourd’hui`;
-}
-
 export function composerNotification(scenario: ScenarioNotification): NotificationQuotidienne {
-  const { nomLieu, demain, aujourdhui, horairesDemain } = scenario;
+  const { nomLieu, aujourdhui, horairesAujourdhui } = scenario;
 
-  const condition = phraseCondition(horairesDemain);
-  const min = Math.round(demain.temperatureMinC);
-  const max = Math.round(demain.temperatureMaxC);
-  const ecart = phraseEcart(demain.temperatureMaxC, aujourdhui.temperatureMaxC);
+  const condition = phraseCondition(horairesAujourdhui);
+  const min = Math.round(aujourdhui.temperatureMinC);
+  const max = Math.round(aujourdhui.temperatureMaxC);
 
   return {
-    titre: `Demain à ${nomLieu}`,
-    texte: `${condition} ${min}° → ${max}°, ${ecart}.`,
+    titre: nomLieu ? `Aujourd’hui à ${nomLieu}` : 'Aujourd’hui',
+    texte: `${condition} ${min}° → ${max}°.`,
   };
 }
